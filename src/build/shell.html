@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Витрина анализов</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>try{var t=localStorage.getItem('vitrina-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;}catch(e){}</script>
+<style>
+@@CSS@@
+</style>
+</head>
+<body>
+<div class="stagewrap">
+  <div class="stagebar">
+    <div class="seg" role="group" aria-label="Тема приложения">
+      <button type="button" data-theme-set="light" aria-pressed="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M3.4 12.6l1-1M11.6 4.4l1-1"/></svg><span>Светлая</span></button>
+      <button type="button" data-theme-set="dark" aria-pressed="false"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1Z"/></svg><span>Тёмная</span></button>
+    </div>
+  </div>
+<div class="ph" id="ph">
+
+  <!-- HOME -->
+  <section class="scr" id="s-home">@@HOME@@</section>
+
+  <!-- GENERAL SEARCH: «Запись и анализы» — анализы без корзины, только переход на детальку -->
+  <section class="scr" id="s-gs" hidden>
+    <header class="hdr">
+      @@SB@@
+      <div class="tb">@@BACK@@<div class="tt">Запись и анализы</div></div>
+      <div class="hs g12">
+        <div class="tabs2"><button class="on" type="button">Поиск</button><button type="button" data-act="soon"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M6.6 4.7C5.5 5.7 3.2 5.7 3.2 6.7s2.3 1 3.4 2c1.1 1 1.1 4 2.3 4s1.1-3 2.3-4c1.1-1 2.7-1 2.7-2s-1.6-1-2.7-2c-1.2-1-1.2-4-2.3-4S7.7 3.7 6.6 4.7Z" fill="#61B7C6"/><path d="M2.6 10.7c-.5.6-1.6.6-1.6 1.1 0 .6 1 .6 1.6 1.1.5.6.5 2.2 1 2.2s.5-1.7 1.1-2.2c.5-.6 1.2-.6 1.2-1.1s-.7-.6-1.2-1.1c-.6-.6-.6-2.2-1.1-2.2s-.5 1.7-1 2.2Z" fill="#88C5CE"/></svg>Ассистент записи</button></div>
+        <label class="inp on" id="q-wrap">@@SEARCHIC@@<input id="q" type="text" placeholder="Врач, услуга, клиника..." autocomplete="off" enterkeyhint="search"><button class="clr" data-act="clear" aria-label="Очистить">@@CLEARIC@@</button></label>
+      </div>
+    </header>
+    <div id="gs-body"></div>
+  </section>
+
+  <!-- CATALOG: поиск по анализам с корзиной -->
+  <section class="scr" id="s-cat" hidden>
+    <header class="hdr">
+      @@SB@@
+      <div class="tb">@@BACK@@<div class="tt" id="cat-title">Анализы</div></div>
+      <div class="hs">
+        <label class="inp" id="cq-wrap">@@SEARCHIC@@<input id="cq" type="text" placeholder="Поиск по анализам" autocomplete="off" enterkeyhint="search"><button class="clr" data-act="cclear" aria-label="Очистить">@@CLEARIC@@</button></label>
+        <div class="chips" id="chips"></div>
+      </div>
+    </header>
+    <div id="cat-body" style="padding-bottom:130px"></div>
+  </section>
+
+  <!-- DETAIL -->
+  <section class="scr" id="s-detail" hidden>
+    <header class="hdr">
+      @@SB@@
+      <div class="tb">@@BACK@@<div class="tt" id="d-title"></div></div>
+      <div class="hs"><label class="inp" data-act="catsearch">@@SEARCHIC@@<input type="search" placeholder="Поиск по анализам" readonly tabindex="-1" style="pointer-events:none"></label></div>
+    </header>
+    <div id="d-body" class="detail-body"></div>
+  </section>
+
+  <!-- CART -->
+  <section class="scr" id="s-cart" hidden>
+    <header class="hdr flat">
+      @@SB@@
+      <div class="tb">@@BACK@@<div class="tt">Корзина</div></div>
+    </header>
+    <div id="cart-body" style="display:flex;flex-direction:column;gap:8px;padding:8px 0 190px"></div>
+  </section>
+
+  <!-- MAP -->
+  <section class="scr map" id="s-map" hidden>
+    <div class="mapvp" id="m-vp"><div class="mapw" id="m-world"></div><div class="mklayer" id="m-layer"></div></div>
+    <header class="mhdr">
+      @@SB@@
+      <div class="tb" style="height:46px;padding-bottom:2px">@@BACK@@<div class="tt">Выбор лаборатории</div></div>
+    </header>
+    <div class="mctrls" id="m-ctrls">
+      <button type="button" data-act="zin" aria-label="Приблизить">+</button>
+      <button type="button" data-act="zout" aria-label="Отдалить">−</button>
+      <button type="button" data-act="me" aria-label="Где я"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M17 3 3 9.2l6 1.8 1.8 6L17 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
+    </div>
+    <button class="mtoggle" id="m-toggle" type="button" data-act="mlist"></button>
+    <div class="msheet" id="m-sheet"></div>
+  </section>
+
+  <!-- CHECKOUT -->
+  <section class="scr" id="s-co" hidden>
+    <header class="hdr flat">
+      @@SB@@
+      <div class="tb">@@BACK@@<div class="tt">Оформление заказа</div></div>
+    </header>
+    <div id="co-body" style="display:flex;flex-direction:column;gap:8px;padding:8px 0 220px"></div>
+  </section>
+
+  <!-- SUCCESS -->
+  <section class="scr" id="s-ok" hidden>
+    @@SB@@
+    <div id="ok-body" style="padding-bottom:200px"></div>
+  </section>
+
+  <!-- FAIL -->
+  <section class="scr" id="s-fail" hidden>
+    @@SB@@
+    <div class="failbox">
+      <div style="align-self:center;width:343px;max-width:100%;height:240px;display:flex;align-items:center;justify-content:center">@@FAILSVG@@</div>
+      <h1>Платёж не прошёл</h1>
+      <p>К сожалению, оплата не прошла. Проверьте баланс карты или попробуйте оплатить ещё раз.</p>
+      <p>Не получается оплатить?<br><a href="#" data-act="support">Напишите в поддержку</a></p>
+    </div>
+  </section>
+
+  <div class="tabbar" id="tabbar">@@TABBAR@@</div>
+
+  <div class="ftr clear" id="f-cart" hidden>
+    <button class="gocart" data-act="cart"><span class="t"><b>Перейти в корзину</b><span id="f-cart-n"></span></span>@@CHEVW@@</button>
+    <div class="hi">@@HOMEIND@@</div>
+  </div>
+  <div class="ftr" id="f-detail" hidden>
+    <div id="d-inc" style="display:flex;flex-direction:column;align-items:center;gap:0;width:100%" hidden><button class="drm" data-act="drm">Убрать из корзины</button><button class="gocart" data-act="cart"><span class="t"><b>Перейти в корзину</b><span id="d-inc-n"></span></span>@@CHEVW@@</button></div>
+    <div class="drow" id="d-row"><button class="dadd" id="d-add" data-act="dadd"></button><button class="dcart" data-act="cart" aria-label="Корзина">@@BASKET@@<span class="cnt" id="d-cnt" hidden></span></button></div>
+    <div class="hi">@@HOMEIND@@</div>
+  </div>
+  <div class="ftr" id="f-page" hidden></div>
+
+  <div class="dim" id="dim" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+  <div class="dlg" id="dlg" hidden></div>
+  <div class="loader" id="loader" hidden><div class="spin"></div>Проверяем оплату…</div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
+<p class="hint">Общий поиск ищет анализы, но только ведёт на детальку. Корзина живёт в разделах витрины: каталог, деталька, корзина, карта, оформление. Для проверки отказа оплаты выберите «Карту банка другой страны».</p>
+</div>
+
+<script>
+@@CONSTS@@
+</script>
+<script>
+@@JS@@
+</script>
+</body>
+</html>
