@@ -2,7 +2,7 @@ import json, re, base64, sys, os, urllib.parse
 B = os.path.dirname(os.path.abspath(__file__))
 S = os.path.dirname(B)
 p = json.load(open(f'{B}/parts.json'))
-OUT = sys.argv[1] if len(sys.argv) > 1 else f'{S}/out/prototype-v3.html'
+OUT = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 else f'{S}/out/prototype-v3.html'
 
 BG = {'#FFFFFF': 'var(--base)', '#FFF': 'var(--base)', '#F4F5F6': 'var(--tint)', '#EAEBED': 'var(--border)',
       '#E6F4F6': 'var(--brand-tint)', '#F4F5F699': 'var(--glass)', '#F4F5F600': 'var(--canvas0)'}
