@@ -420,3 +420,5 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .pat .tx,.pat .tx b,.pat .tx span{color:var(--ink)}
 .cb.mid i{background:var(--brand);border-color:var(--brand)}
 .cb.mid i::after{content:'';width:10px;height:2px;border-radius:1px;background:#fff}
+
+.navshade{position:absolute;inset:0;background:rgba(0,0,0,.12);pointer-events:none}

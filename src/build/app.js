@@ -71,7 +71,7 @@ let PAY={method:'card',consent:true,usePts:true,brkOpen:false};
 /* ---------- navigation ---------- */
 const stack=[]; let cur=null;
 const VITRINA=new Set(['s-cat','s-detail']); // экраны, где плавает мини-корзина
-function show(id){
+function show(id){CUR_ID=id;
   $$('.scr').forEach(s=>s.hidden=s.id!==id);
   $('#tabbar').hidden=id!=='s-home';
   updateFooters(id);
@@ -87,17 +87,52 @@ function render(view){
   else if(view.s==='ok'){renderOK(view);show('s-ok');}
   else if(view.s==='fail'){show('s-fail');}
 }
-function go(view,push=true){
-  if(push&&cur){cur.scroll=(document.querySelector('.scr:not([hidden])')||{}).scrollTop||0;stack.push(cur);}
+let CUR_ID='s-home', NOANIM=true;
+/* iOS push/pop: новый экран въезжает справа, старый уходит на 30% влево; назад наоборот */
+const CHROME=['#tabbar','#f-cart','#f-detail','#f-page'];
+const visScr=()=>{const e=document.getElementById(CUR_ID);return e&&!e.hidden?e:document.querySelector('.scr:not([hidden])')};
+const visChrome=()=>CHROME.map(q=>$(q)).filter(e=>!e.hidden);
+function snap(){const el=visScr();return el?{el,top:el.scrollTop,chrome:visChrome()}:null}
+function slide(prev,dir){
+  const next=visScr();
+  if(NOANIM||!prev||!next||prev.el===next||!next.animate||matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.getAnimations().forEach(a=>{if(a.id==='nav')a.finish()});
+  const nextChrome=visChrome(), push=dir>0;
+  const prevChrome=prev.chrome.filter(e=>!nextChrome.includes(e));
+  prev.el.hidden=false; prev.el.scrollTop=prev.top; prevChrome.forEach(e=>e.hidden=false);
+  const zp=push?1:3, zn=push?3:1;
+  const set=(e,z)=>{e.style.zIndex=z};
+  set(prev.el,zp); prevChrome.forEach(e=>set(e,zp+1)); set(next,zn); nextChrome.forEach(e=>set(e,zn+1));
+  const o={duration:420,easing:'cubic-bezier(.32,.72,0,1)',id:'nav'};
+  const IN=push?[{transform:'translateX(100%)'},{transform:'translateX(0)'}]:[{transform:'translateX(-30%)'},{transform:'translateX(0)'}];
+  const OUT=push?[{transform:'translateX(0)'},{transform:'translateX(-30%)'}]:[{transform:'translateX(0)'},{transform:'translateX(100%)'}];
+  const top=push?next:prev.el; top.style.boxShadow='-10px 0 30px rgba(0,0,0,.14)';
+  const shade=document.createElement('div'); shade.className='navshade'; shade.style.zIndex=2; $('#ph').appendChild(shade);
+  shade.animate(push?[{opacity:0},{opacity:1}]:[{opacity:1},{opacity:0}],o);
+  [next,...nextChrome].forEach(e=>e.animate(IN,o));
+  const anims=[prev.el,...prevChrome].map(e=>e.animate(OUT,o));
+  anims[0].finished.catch(()=>{}).then(()=>{
+    prev.el.hidden=prev.el.id!==CUR_ID;
+    prevChrome.forEach(e=>e.hidden=true); updateFooters(CUR_ID);
+    [prev.el,next,...prev.chrome,...nextChrome].forEach(e=>{e.style.zIndex='';e.style.boxShadow=''});
+    shade.remove();
+  });
+}
+function go(view,push=true,anim=push){
+  const prev=snap();
+  if(push&&cur){cur.scroll=prev?prev.top:0;stack.push(cur);}
   cur=view; closeSheet(); render(view);
-  const el=document.querySelector('.scr:not([hidden])'); if(el) el.scrollTop=view.scroll&&!push?view.scroll:0;
+  const el=document.querySelector('.scr:not([hidden])'); if(el){el.scrollTop=view.scroll&&!push?view.scroll:0;CUR_ID=el.id}
+  if(anim) slide(prev,1);
 }
 function back(){
+  const prev=snap();
   const v=stack.pop(); if(!v){go({s:'home'},false);return}
-  cur=v; closeSheet(); render(v); const el=document.querySelector('.scr:not([hidden])'); if(el) el.scrollTop=v.scroll||0;
+  cur=v; closeSheet(); render(v); const el=document.querySelector('.scr:not([hidden])'); if(el){el.scrollTop=v.scroll||0;CUR_ID=el.id}
+  slide(prev,-1);
 }
-function resetTo(view){stack.length=0;cur=null;go(view,false)}
-function curScr(){const e=document.querySelector('.scr:not([hidden])');return e?e.id:''}
+function resetTo(view,dir){const prev=snap();stack.length=0;cur=null;go(view,false,false);if(dir)slide(prev,dir)}
+function curScr(){return CUR_ID}
 
 /* ---------- cart core ---------- */
 const inCart=id=>cart.has(id);
@@ -712,7 +747,7 @@ $('#ph').addEventListener('click',e=>{
     case 'closefail': stack.pop(); back(); break;
     case 'support': e.preventDefault(); toast('Откроем чат поддержки'); break;
     case 'records': toast('Раздел «Мои записи» в прототипе не подключён'); break;
-    case 'home': resetTo({s:'home'}); break;
+    case 'home': resetTo({s:'home'},-1); break;
     /* map */
     case 'zin': zoomAt(1.3); break;
     case 'zout': zoomAt(1/1.3); break;
@@ -777,4 +812,5 @@ else if(start==='search') go({s:'gs',q:''});
 else if(start==='cart'){demo();go({s:'cart'});}
 else if(start==='map'){demo();go({s:'cart'});go({s:'map'});}
 else if(start==='lab'){demo();LAB=LABS[0];go({s:'cart'});}
+NOANIM=false;
 })();
