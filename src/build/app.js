@@ -205,7 +205,8 @@ function renderCat(){
   const v=cur, cid=v.c||'all', q=v.q||'';
   $('#cat-title').textContent=cid==='all'?'Анализы':cats[cid].title;
   const chip=(id,t,n)=>`<button class="chip${id===cid?' on':''}" data-chip="${id}">${t}<i>${n}</i></button>`;
-  $('#chips').innerHTML=chip('all','Все',DATA.items.length)+DATA.cats.map(x=>chip(x.id,x.title,x.items.length)).join('');
+  const qq=q.trim(), cnt=pool=>qq?search(qq,pool).length:pool.length;
+  $('#chips').innerHTML=chip('all','Все',cnt(DATA.items))+DATA.cats.map(x=>chip(x.id,x.title,cnt(x.items.map(id=>items[id])))).join('');
   const cq=$('#cq'); if(cq.value!==q) cq.value=q; $('#cq-wrap').classList.toggle('has',!!q);
   requestAnimationFrame(()=>{const on=$('#chips .on'); if(on) on.scrollIntoView({inline:'center',block:'nearest'})});
   let list=cid==='all'?DATA.items.slice():cats[cid].items.map(id=>items[id]);
