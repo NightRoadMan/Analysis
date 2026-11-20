@@ -516,7 +516,7 @@ const MV={s:0.9,x:0,y:0,sheet:'peek',sel:null,card:false,place:null,brands:new S
 const vp=$('#m-vp'), world=$('#m-world'), layer=$('#m-layer');
 const vpW=()=>vp.clientWidth, vpH=()=>vp.clientHeight;
 const HDR=98;
-function sheetH(){const H=vpH();return MV.card?0:(MV.sheet==='peek'?150:MV.sheet==='half'?Math.round(H*0.5):H-HDR+4)}
+function sheetH(){const H=vpH(),hh=($('#s-map .mhdr')||{}).offsetHeight||HDR;return MV.card?0:(MV.sheet==='peek'?150:MV.sheet==='half'?Math.round(H*0.5):H-hh)}
 function visibleH(){return vpH()-(MV.card?300:sheetH())}
 function clampView(){
   const W=vpW(),H=vpH(),s=MV.s;
@@ -585,6 +585,7 @@ function chipsHTML(){
 }
 function renderMSheet(){
   const s=$('#m-sheet'), ids=mapIds();
+  const isFull=MV.sheet==='full'&&!(MV.card&&MV.sel); s.classList.toggle('card',!!(MV.card&&MV.sel)); s.classList.toggle('full',isFull); $('#s-map').classList.toggle('mfull',isFull);
   if(MV.card&&MV.sel){
     const L=LABS.find(x=>x.id===MV.sel), r=labFor(L,ids);
     s.style.height='auto';

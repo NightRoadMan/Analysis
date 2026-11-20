@@ -377,8 +377,14 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .mtoggle{position:absolute;left:50%;transform:translateX(-50%);z-index:7;height:36px;border-radius:18px;background:var(--chip-on);color:var(--chip-on-fg);display:flex;align-items:center;gap:6px;padding:0 14px;font-size:14px;font-weight:600;box-shadow:var(--shadow);transition:bottom .25s}
 .msheet{position:absolute;left:0;right:0;bottom:0;z-index:6;background:var(--base);border-radius:24px 24px 0 0;box-shadow:0 -4px 24px rgba(0,0,0,.08);display:flex;flex-direction:column;transition:height .25s ease;touch-action:none}
 .msheet.nodrag{transition:none}
-.msheet .mtop{padding:0 16px 12px;display:flex;flex-direction:column;gap:12px;flex-shrink:0}
-.msheet .mlist{flex:1;overflow-y:auto;scrollbar-width:none;background:var(--canvas);padding:8px 0 24px;display:flex;flex-direction:column;gap:8px;touch-action:pan-y}
+.msheet{background:var(--canvas);overflow:hidden}
+.msheet.card{background:var(--base)}
+.msheet.full,.msheet.full>.grabber{border-radius:0;box-shadow:none}
+.scr.map .mhdr{transition:border-radius .2s}
+.scr.map.mfull .mhdr{border-radius:0}
+.msheet .mtop{padding:0 16px 16px;display:flex;flex-direction:column;gap:12px;flex-shrink:0;background:var(--base);border-radius:0 0 24px 24px}
+.msheet>.grabber{background:var(--base);border-radius:24px 24px 0 0}
+.msheet .mlist{flex:1;overflow-y:auto;scrollbar-width:none;background:var(--base);margin-top:8px;border-radius:24px 24px 0 0;padding:16px 0 24px;display:flex;flex-direction:column;gap:12px;touch-action:pan-y}
 .msheet .mlist::-webkit-scrollbar{display:none}
 .mlh{padding:4px 16px 0;font-size:13px;font-weight:600;line-height:16px;color:var(--soft);display:flex;justify-content:space-between;gap:8px}
 .mlh button{color:var(--brand-ink)}
@@ -422,3 +428,4 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .cb.mid i::after{content:'';width:10px;height:2px;border-radius:1px;background:#fff}
 
 .navshade{position:absolute;inset:0;background:rgba(0,0,0,.12);pointer-events:none}
+.msheet .mtop:last-child{flex:1;border-radius:0}
