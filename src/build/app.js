@@ -240,7 +240,7 @@ function renderGS(q){
 
 /* ---------- «Анализы»: главная витрины (Figma 277:105081) ---------- */
 const CATSUB={vitamins:'Дефициты и избытки',biochemistry:'Печень, почки, обмен веществ',hormones:'Щитовидная железа, половые',hematology:'Исследования крови',infections:'ПЦР и антитела',allergy:'Панели аллергенов: пыльца, еда, животные',tumor_markers:'Оценка рисков',general:'Моча, кал'};
-const TILES=[['vitamins','span2'],['biochemistry','low'],['hormones',''],['hematology',''],['infections','low'],['allergy','span2'],['tumor_markers',''],['general','']];
+const TILES=[['vitamins','g-a'],['allergy','g-b'],['hematology','g-c'],['hormones','g-d'],['biochemistry','g-e'],['infections','g-f'],['tumor_markers','g-g'],['general','g-h']]; // компактная «шахматка» в духе СберЗдоровья
 const POPULAR=(()=>{
   const out=[],have=new Set(),add=i=>{if(i&&!have.has(i.name)){have.add(i.name);out.push(i)}};
   [/^Глюкоза$/,/АЛТ/,/^Ферритин/,/Гомоцистеин/,/^Группа крови/].forEach(re=>add(UNIQ.find(i=>re.test(i.name))));

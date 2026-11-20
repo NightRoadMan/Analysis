@@ -451,25 +451,24 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 #s-an.srch .anhero{position:sticky;top:98px;z-index:4;padding-top:0}
 #s-an.srch .anhero-t{display:none}
 .agrid-w{padding:16px}
-.agrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.atile{position:relative;width:100%;height:200px;border-radius:20px;background:var(--tile);padding:16px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-start;text-align:left;isolation:isolate}
-.atile.span2{grid-column:1/-1;height:130px}
-.atile.low{justify-content:flex-end}
-.atx{position:relative;z-index:2;display:flex;flex-direction:column;gap:4px}
-.atx b{font-size:16px;line-height:20px;font-weight:600;color:var(--ink);hyphens:auto;-webkit-hyphens:auto}
-.atx span{font-size:14px;line-height:20px;font-weight:500;color:var(--light)}
-.atile.span2 .atx{max-width:62%}
-.aimg{position:absolute;z-index:1;width:150px;height:150px;background-size:contain;background-position:center;background-repeat:no-repeat;pointer-events:none}
-.t-vitamins .a1{width:96px;height:96px;right:58px;top:-4px}
-.t-vitamins .a2{width:150px;height:150px;right:-30px;bottom:-46px;transform:rotate(-38deg)}
-.t-biochemistry .a1{width:170px;height:170px;left:4px;top:-30px}
-.t-hormones .a1{width:230px;height:230px;right:-60px;bottom:-62px;opacity:.9}
-.t-hormones .a2{width:140px;height:140px;right:-26px;bottom:-34px}
-.t-hematology .a1{width:160px;height:160px;right:-14px;bottom:-44px}
-.t-infections .a1{width:160px;height:160px;right:-34px;top:-46px}
-.t-allergy .a1{width:150px;height:150px;right:-18px;bottom:-42px}
-.t-tumor_markers .a1{width:160px;height:160px;right:-36px;bottom:-46px}
-.t-general .a1{width:160px;height:160px;right:-34px;bottom:-50px}
+.agrid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:96px 24px 96px 96px 88px;gap:8px;
+  grid-template-areas:"a b" "c b" "c d" "e f" "g h"}
+.g-a{grid-area:a}.g-b{grid-area:b}.g-c{grid-area:c}.g-d{grid-area:d}.g-e{grid-area:e}.g-f{grid-area:f}.g-g{grid-area:g}.g-h{grid-area:h}
+.atile{position:relative;width:100%;height:100%;min-width:0;border-radius:20px;background:var(--tile);padding:12px 12px 12px 14px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-start;text-align:left;isolation:isolate}
+.atx{position:relative;z-index:2;display:flex;flex-direction:column;gap:2px}
+.atx b{font-size:15px;line-height:20px;font-weight:600;color:var(--ink);hyphens:auto;-webkit-hyphens:auto}
+.atx span{font-size:13px;line-height:16px;font-weight:500;color:var(--light)}
+.aimg{position:absolute;z-index:1;background-size:contain;background-position:center;background-repeat:no-repeat;pointer-events:none}
+.t-biochemistry .atx span{max-width:104px}
+.t-vitamins .a1,.t-hormones .a1{display:none}
+.t-vitamins .a2{width:88px;height:88px;right:-18px;bottom:-26px;transform:rotate(-38deg)}
+.t-allergy .a1{width:100px;height:100px;right:-16px;bottom:-24px}
+.t-hematology .a1{width:104px;height:104px;right:-12px;bottom:-28px}
+.t-hormones .a2{width:80px;height:80px;right:-12px;bottom:-24px}
+.t-biochemistry .a1{width:82px;height:82px;right:-14px;bottom:-22px}
+.t-infections .a1{width:82px;height:82px;right:-16px;bottom:-22px}
+.t-tumor_markers .a1{width:74px;height:74px;right:-12px;bottom:-24px}
+.t-general .a1{width:70px;height:70px;right:-10px;bottom:-26px}
 .apop{gap:16px;padding-bottom:16px}
 .apop .sh{font-size:20px;line-height:28px}
 .alist{display:flex;flex-direction:column;gap:8px}
@@ -892,7 +891,7 @@ function renderGS(q){
 
 /* ---------- «Анализы»: главная витрины (Figma 277:105081) ---------- */
 const CATSUB={vitamins:'Дефициты и избытки',biochemistry:'Печень, почки, обмен веществ',hormones:'Щитовидная железа, половые',hematology:'Исследования крови',infections:'ПЦР и антитела',allergy:'Панели аллергенов: пыльца, еда, животные',tumor_markers:'Оценка рисков',general:'Моча, кал'};
-const TILES=[['vitamins','span2'],['biochemistry','low'],['hormones',''],['hematology',''],['infections','low'],['allergy','span2'],['tumor_markers',''],['general','']];
+const TILES=[['vitamins','g-a'],['allergy','g-b'],['hematology','g-c'],['hormones','g-d'],['biochemistry','g-e'],['infections','g-f'],['tumor_markers','g-g'],['general','g-h']]; // компактная «шахматка» в духе СберЗдоровья
 const POPULAR=(()=>{
   const out=[],have=new Set(),add=i=>{if(i&&!have.has(i.name)){have.add(i.name);out.push(i)}};
   [/^Глюкоза$/,/АЛТ/,/^Ферритин/,/Гомоцистеин/,/^Группа крови/].forEach(re=>add(UNIQ.find(i=>re.test(i.name))));
