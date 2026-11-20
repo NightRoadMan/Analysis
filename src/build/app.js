@@ -80,6 +80,7 @@ function show(id){CUR_ID=id;
 function render(view){
   if(view.s==='home') show('s-home');
   else if(view.s==='gs'){renderGS(view.q||'');show('s-gs');}
+  else if(view.s==='an'){renderAn();show('s-an');}
   else if(view.s==='cat'){renderCat();show('s-cat');}
   else if(view.s==='detail'){renderDetail(view.id);show('s-detail');}
   else if(view.s==='cart'){renderCart();show('s-cart');}
@@ -153,7 +154,7 @@ function btnHTML(id,up){
 }
 function updateFooters(id){
   const n=cart.size;
-  $('#f-cart').hidden=!(n>0&&id==='s-cat'&&$('#dim').hidden);
+  $('#f-cart').hidden=!(n>0&&(id==='s-cat'||id==='s-an')&&$('#dim').hidden);
   $('#f-cart-n').textContent=anW(n);
   $('#f-detail').hidden=id!=='s-detail';
   const c=$('#d-cnt'); c.hidden=!n; c.textContent=n;
@@ -235,6 +236,58 @@ function renderGS(q){
    <div class="sec pb0"><div class="sh">Популярные</div><div class="rows">${soon('Осмотр офтальмолога')}${soon('ЭКГ сердца')}${soon('Рентген грудной клетки')}${soon('Консультация дерматолога')}${soon('Биохимический анализ крови')}</div></div>
   </div>`;
 }
+
+
+/* ---------- «Анализы»: главная витрины (Figma 277:105081) ---------- */
+const CATSUB={vitamins:'Дефициты и избытки',biochemistry:'Печень, почки, обмен веществ',hormones:'Щитовидная железа, половые',hematology:'Исследования крови',infections:'ПЦР и антитела',allergy:'Панели аллергенов: пыльца, еда, животные',tumor_markers:'Оценка рисков',general:'Моча, кал'};
+const TILES=[['vitamins','span2'],['biochemistry','low'],['hormones',''],['hematology',''],['infections','low'],['allergy','span2'],['tumor_markers',''],['general','']];
+const POPULAR=(()=>{
+  const out=[],have=new Set(),add=i=>{if(i&&!have.has(i.name)){have.add(i.name);out.push(i)}};
+  [/^Глюкоза$/,/АЛТ/,/^Ферритин/,/Гомоцистеин/,/^Группа крови/].forEach(re=>add(UNIQ.find(i=>re.test(i.name))));
+  UNIQ.filter(i=>i.cat==='infections').sort((a,b)=>b.clinics-a.clinics).slice(0,2).forEach(add);
+  return out;
+})();
+const studyW=n=>`${n}${nb}${plural(n,'исследование','исследования','исследований')}`;
+function tileHTML([cid,kind]){
+  const c=cats[cid], imgs=(CATIMG[cid]||[]).map((u,k)=>`<i class="aimg a${k+1}" style="background-image:url(${u})"></i>`).join('');
+  return `<button class="atile ${kind} t-${cid}" data-cat="${cid}" aria-label="${c.title}"><span class="atx"><b>${c.title}</b><span>${CATSUB[cid]||''}</span></span>${imgs}</button>`;
+}
+function popHTML(i){
+  return `<article class="card acard tap" data-open="${i.id}">
+    <div class="ctop"><div class="cn">${esc(i.name)}</div><div class="cc">${clinicWord(i.clinics)}</div></div>
+    <div class="prs"><span class="pr"><i>от</i><b>${fmt(i.price)}</b></span></div>
+    ${btnHTML(i.id,1)}
+  </article>`;
+}
+function renderAn(){
+  const q=cur.q||'', inp=$('#aq'); if(inp.value!==q) inp.value=q;
+  $('#an-total').textContent=studyW(UNIQ.length);
+  renderAnBody();
+}
+function renderAnBody(){
+  const q=(cur.q||'').trim(), s=$('#s-an');
+  $('#aq-wrap').classList.toggle('has',!!cur.q);
+  const was=s.classList.contains('srch'); s.classList.toggle('srch',!!q);
+  if(q){
+    const list=search(q,UNIQ);
+    $('#an-body').innerHTML=`<div class="found">Найдено ${anW(list.length)}</div><div class="list">${
+      list.length?list.map(cardHTML).join(''):`<div class="card"><div class="empty"><b>Ничего не нашли</b><span>Проверьте написание или выберите категорию.</span><button class="more" style="align-self:center" data-act="aclear">Показать категории</button></div></div>`
+    }</div>`;
+    if(!was) s.scrollTop=0;
+  } else {
+    $('#an-body').innerHTML=`<div class="secs" style="padding-bottom:0">
+      <div class="sec agrid-w"><div class="agrid">${TILES.map(tileHTML).join('')}</div></div>
+      <div class="sec apop"><div class="sh">Популярные анализы</div><div class="alist">${POPULAR.map(popHTML).join('')}</div>
+        <button class="big in" data-act="allcat">Смотреть все ${anW(UNIQ.length)}</button></div>
+    </div>`;
+  }
+  anBar();
+}
+function anBar(){
+  const s=$('#s-an'), h=$('#an-hero'), b=$('#an-bar'); if(!h||s.hidden) return;
+  b.classList.toggle('sc',!s.classList.contains('srch')&&s.scrollTop>=h.offsetTop+h.offsetHeight-b.offsetHeight-1);
+}
+$('#s-an').addEventListener('scroll',anBar,{passive:true});
 
 /* ---------- catalog ---------- */
 function renderCat(){
@@ -505,7 +558,7 @@ function renderOK(){
 
 /* ---------- sheet & dialog & toast ---------- */
 function openSheet(html){const s=$('#sheet');s.innerHTML=html;$('#dim').hidden=false;updateFooters(curScr());}
-function closeSheet(){if(!$('#dim').hidden){$('#dim').hidden=true;updateFooters(curScr());if(cur&&cur.s==='cat')renderCat();}}
+function closeSheet(){if(!$('#dim').hidden){$('#dim').hidden=true;updateFooters(curScr());if(cur&&cur.s==='cat')renderCat();if(cur&&cur.s==='an')renderAnBody();}}
 function dialog(title,text,acts){
   const d=$('#dlg'); d.innerHTML=`<div class="box" role="alertdialog" aria-modal="true"><h3>${title}</h3>${text?`<p>${text}</p>`:''}<div class="acts">${acts.map((a,k)=>`<button class="big${k?' in':''}" data-dlg="${k}">${a[0]}</button>`).join('')}</div></div>`;
   d.hidden=false; d.onclick=e=>{const b=e.target.closest('[data-dlg]'); if(b){d.hidden=true;acts[+b.dataset.dlg][1]()} else if(e.target===d) d.hidden=true;};
@@ -705,7 +758,7 @@ $('#ph').addEventListener('click',e=>{
   if(d.me){const L=LABS[0];pickPlace({n:'Рядом со мной',x:L.x+60,y:L.y+90,me:true});return}
   if(d.brand){MV.brands.has(d.brand)?MV.brands.delete(d.brand):MV.brands.add(d.brand);t.querySelector('.cb').classList.toggle('on');return}
   if(d.cart){e.stopPropagation();const id=d.cart;const was=inCart(id);toggleCart(id);refresh();
-    if(!was&&d.up&&curScr()==='s-cat'&&$('#dim').hidden){openUpsell(id);}
+    if(!was&&d.up&&(curScr()==='s-cat'||curScr()==='s-an')&&$('#dim').hidden){openUpsell(id);}
     else if(!$('#dim').hidden&&$('#up-go')){$('#up-go .t span').textContent=anW(cart.size);toast(was?'Убрали из корзины':'Добавили в корзину')}
     else{toast(was?'Убрали из корзины':'Добавили в корзину'); if(curScr()==='s-cart'){renderCart();updateFooters('s-cart')}}
     return}
@@ -724,7 +777,9 @@ $('#ph').addEventListener('click',e=>{
     case 'back': back(); break;
     case 'search': go({s:'gs',q:''}); setTimeout(()=>$('#q').focus(),50); break;
     case 'catsearch': go({s:'cat',c:'all',q:''}); setTimeout(()=>$('#cq').focus(),50); break;
-    case 'allan': go({s:'cat',c:'all',q:''}); break;
+    case 'allan': go({s:'an',q:''}); break;
+    case 'allcat': go({s:'cat',c:'all',q:''}); break;
+    case 'aclear': cur.q='';renderAnBody();$('#aq').focus(); break;
     case 'clear': cur.q='';renderGS('');$('#q').focus(); break;
     case 'cclear': cur.q='';renderCat();$('#cq').focus(); break;
     case 'morecats': {const rows=$('#cat-rows');rows.innerHTML+=DATA.cats.slice(5).map(c=>`<button class="row" data-cat="${c.id}"><span>${c.title}</span><span style="color:var(--light)">${SV.chevR}</span></button>`).join('');t.remove();break;}
@@ -776,6 +831,7 @@ $('#ph').addEventListener('click',e=>{
 });
 $('#dim').addEventListener('click',e=>{if(e.target.id==='dim') closeSheet()});
 $('#q').addEventListener('input',e=>{cur.q=e.target.value;renderGS(e.target.value)});
+$('#aq').addEventListener('input',e=>{cur.q=e.target.value;renderAnBody()});
 $('#cq').addEventListener('input',e=>{cur.q=e.target.value;if(cur.q.trim())cur.c='all';renderCat();const i=$('#cq');i.focus()});
 $('#m-sheet').addEventListener('input',e=>{if(e.target.id!=='mq')return;MV.q=e.target.value;$('#mq-wrap').classList.toggle('has',!!MV.q);if(!MV.searching){MV.searching=true;MV.sheet='full';const v=MV.q;renderMSheet();const i=$('#mq');i.focus();i.setSelectionRange(v.length,v.length);}else renderSugg();});
 $('#m-sheet').addEventListener('focusin',e=>{if(e.target.id==='mq'&&!MV.searching){MV.searching=true;MV.sheet='full';renderMSheet();const i=$('#mq');i.focus();}});
@@ -803,13 +859,14 @@ window.addEventListener('resize',()=>{if(curScr()==='s-map'){renderMSheet();appl
   window.__chipLock=()=>{lock=Date.now()+700};
 })();
 
-/* start: #cat-<id>, #all, #search, #cart, #demo (корзина с анализами) */
+/* start: #analyses, #cat-<id>, #all, #search, #cart, #demo (корзина с анализами) */
 const start=(location.hash||'').slice(1);
 cur={s:'home'}; show('s-home');
 const demo=()=>['Пролактин','Билирубин общий','Глюкоза','Ферритин'].forEach(n=>{const i=DATA.items.find(x=>x.name===n||x.name.startsWith(n));if(i)addCart(i.id)});
 const m=start.match(/^cat-(\w+)$/);
 if(m&&cats[m[1]]) go({s:'cat',c:m[1],q:''});
 else if(start==='all') go({s:'cat',c:'all',q:''});
+else if(start==='analyses') go({s:'an',q:''});
 else if(start==='search') go({s:'gs',q:''});
 else if(start==='cart'){demo();go({s:'cart'});}
 else if(start==='map'){demo();go({s:'cart'});go({s:'map'});}

@@ -34,18 +34,29 @@ def theme(html):
 # ---- HOME ----
 h = p['HOME'].strip()
 h = re.sub(r'^<section[^>]*>', '', h); h = re.sub(r'</section>\s*$', '', h)
-h = h.replace('height:1290px', 'height:1342px', 1).replace('height:1258px', 'height:1310px', 1)
-# «Смотреть все анализы» в конце блока анализов
+# Блок «Анализы на НаПоправку» убран с главной: вход в витрину через плитку «Сдача анализов»
 i = h.find('Анализы на НаПоправку')
 start = h.rfind('<div style="align-items:start;align-self:stretch;background-color:#FFFFFF;border-radius:16px', 0, i)
-# find the end of that card by tag balance
 depth = 0; end = None
 for m in re.finditer(r'<(/?)div\b[^>]*>', h[start:]):
     depth += -1 if m.group(1) else 1
-    if depth == 0: end = start + m.start(); break
-allan = ('<button class="allan" type="button" data-act="allan">Смотреть все анализы'
-         '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="m6 4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>')
-h = h[:end] + allan + h[end:]
+    if depth == 0: end = start + m.end(); break
+card = h[start:end]
+# иллюстрации категорий из этого блока (прозрачные webp 300×300) переиспользуем на странице «Анализы»
+CATIMG = {}
+_lbl = {'vitamins': 'Витамины', 'biochemistry': 'Био', 'hormones': 'Гормоны', 'hematology': 'Гемато',
+        'infections': 'Инфекции', 'allergy': 'Аллерго', 'tumor_markers': 'Онкомаркеры', 'general': 'Общеклини'}
+_pos = []
+for m in re.finditer(r'data:image/webp;base64,[A-Za-z0-9+/=]+', card):
+    pre = card[:m.start()]; pre = re.sub(r'<[^>]+>', ' ', pre[:pre.rfind('<')]); pre = ' '.join(pre.replace('\u00ad', '').split())
+    _pos.append((pre, m.group(0)))
+for pre, uri in _pos:
+    last = pre.split()[-1]
+    for cid, lb in _lbl.items():
+        if lb in last: CATIMG.setdefault(cid, []).append(uri)
+h = h[:start] + h[end:]
+DH = 220 + 8  # высота карточки + gap
+h = h.replace('height:1290px', f'height:{1290-DH}px', 1).replace('height:1258px', f'height:{1258-DH}px', 1)
 h = h.replace('<div style="background-color:#F4F5F6;', '<div class="homefix" style="background-color:#F4F5F6;', 1)
 _i = h.find('Сдача<br>анализов'); _k = h.rfind('data-act="search"', 0, _i)
 h = h[:_k] + 'data-act="allan" role="button" tabindex="0" aria-label="Сдача анализов"' + h[_k+len('data-act="search"'):]
@@ -98,6 +109,7 @@ consts = '\n'.join([
     'const PEOPLE=' + js([theme(x) for x in p['PEOPLE']]) + ';',
     'const LOGO=' + js(p['LOGO']) + ';',
     'const ASSET=' + js(ASSET) + ';',
+    'const CATIMG=' + js(CATIMG) + ';',
     'const SUCCESS=' + js(SUCCESS) + ';',
     'const CHEVW=' + js(p['CHEVW']) + ';',
     'const SEARCHIC=' + js(p['SEARCHIC']) + ';',

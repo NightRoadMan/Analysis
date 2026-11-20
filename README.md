@@ -20,7 +20,7 @@
 python3 src/build/assemble.py index.html
 ```
 
-Для демо можно открыть сразу нужный экран: `#all`, `#cat-vitamins`, `#search`, `#cart`, `#map`, `#lab`.
+Для демо можно открыть сразу нужный экран: `#analyses`, `#all`, `#cat-vitamins`, `#search`, `#cart`, `#map`, `#lab`.
 
 Цены, лаборатории и адреса демонстрационные.
 

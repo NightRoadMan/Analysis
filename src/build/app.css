@@ -1,7 +1,7 @@
 /* Phone 375×812 on a neutral stage; full-bleed on phones. Colours are the app's tokens from Figma (light / dark modes). */
 :root{
   --stage:#E4E6EA; --stage-fg:#5D5E63; --stage-ctl:#FFFFFF; --stage-ctl-on:#3F4045; --stage-ctl-on-fg:#FFFFFF;
-  --canvas:#F4F5F6; --canvas0:#F4F5F600; --fgrad:#F4F5F6; --fgrad0:#F4F5F600; --sw-knob:#FFFFFF; --tab-on:#EDEDED; --tab-hl:#FFFFFF; --tab-hl2:#E6E6E6; --sw-off:#E2E3E6; --base:#FFFFFF; --raised:#FFFFFF; --tint:#F4F5F6; --glass:#F4F5F699;
+  --tile:#F3F5FC; --canvas:#F4F5F6; --canvas0:#F4F5F600; --fgrad:#F4F5F6; --fgrad0:#F4F5F600; --sw-knob:#FFFFFF; --tab-on:#EDEDED; --tab-hl:#FFFFFF; --tab-hl2:#E6E6E6; --sw-off:#E2E3E6; --base:#FFFFFF; --raised:#FFFFFF; --tint:#F4F5F6; --glass:#F4F5F699;
   --ink:#0D0D0D; --soft:#5D5E63; --light:#929297; --border:#EAEBED; --line:#EAEBED;
   --brand:#61B7C6; --brand-ink:#31858C; --brand-tint:#E6F4F6; --brand-tint-ink:#31858C;
   --chip-on:#3F4045; --chip-on-fg:#FFFFFF; --ok:#6ABF68; --badge:#FF7777; --accent:#F3AA00; --yellow:#FFC63D;
@@ -13,7 +13,7 @@
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --stage:#17181B; --stage-fg:#A3A4A9; --stage-ctl:#26272B; --stage-ctl-on:#FFFFFF; --stage-ctl-on-fg:#0D0D0D;
-  --canvas:#0D0D0D; --canvas0:#0D0D0D00; --fgrad:#1A1A1A; --fgrad0:#1A1A1A00; --sw-knob:#1A1A1A; --tab-on:#252628; --tab-hl:rgba(255,255,255,.08); --tab-hl2:#3A3A3D; --sw-off:#3F4045; --base:#1A1A1A; --raised:#272728; --tint:#272728; --glass:#5D5E6380;
+  --tile:#272728; --canvas:#0D0D0D; --canvas0:#0D0D0D00; --fgrad:#1A1A1A; --fgrad0:#1A1A1A00; --sw-knob:#1A1A1A; --tab-on:#252628; --tab-hl:rgba(255,255,255,.08); --tab-hl2:#3A3A3D; --sw-off:#3F4045; --base:#1A1A1A; --raised:#272728; --tint:#272728; --glass:#5D5E6380;
   --ink:#FFFFFF; --soft:#AAAAAF; --light:#7A7A7F; --border:#3F4045; --line:#2C2C2E;
   --brand-ink:#61B7C6; --brand-tint:#213A3E; --brand-tint-ink:#61B7C6;
   --chip-on:#FFFFFF; --chip-on-fg:#0D0D0D;
@@ -24,7 +24,7 @@
 }}
 :root[data-theme="dark"]{
   --stage:#17181B; --stage-fg:#A3A4A9; --stage-ctl:#26272B; --stage-ctl-on:#FFFFFF; --stage-ctl-on-fg:#0D0D0D;
-  --canvas:#0D0D0D; --canvas0:#0D0D0D00; --fgrad:#1A1A1A; --fgrad0:#1A1A1A00; --sw-knob:#1A1A1A; --tab-on:#252628; --tab-hl:rgba(255,255,255,.08); --tab-hl2:#3A3A3D; --sw-off:#3F4045; --base:#1A1A1A; --raised:#272728; --tint:#272728; --glass:#5D5E6380;
+  --tile:#272728; --canvas:#0D0D0D; --canvas0:#0D0D0D00; --fgrad:#1A1A1A; --fgrad0:#1A1A1A00; --sw-knob:#1A1A1A; --tab-on:#252628; --tab-hl:rgba(255,255,255,.08); --tab-hl2:#3A3A3D; --sw-off:#3F4045; --base:#1A1A1A; --raised:#272728; --tint:#272728; --glass:#5D5E6380;
   --ink:#FFFFFF; --soft:#AAAAAF; --light:#7A7A7F; --border:#3F4045; --line:#2C2C2E;
   --brand-ink:#61B7C6; --brand-tint:#213A3E; --brand-tint-ink:#61B7C6;
   --chip-on:#FFFFFF; --chip-on-fg:#0D0D0D;
@@ -429,3 +429,37 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 .navshade{position:absolute;inset:0;background:rgba(0,0,0,.12);pointer-events:none}
 .msheet .mtop:last-child{flex:1;border-radius:0}
+
+/* «Анализы»: главная витрины (Figma 277:105081), поиск с корзиной */
+.anbar{border-radius:0!important;padding-bottom:0;transition:border-radius .2s}
+.anbar.sc{border-radius:0 0 24px 24px!important}
+.anhero{background:var(--base);border-radius:0 0 24px 24px;padding:8px 16px 16px;display:flex;flex-direction:column;gap:24px}
+.anhero-t{text-align:center;padding:0 8px}
+.anhero h1{margin:0;font-size:24px;line-height:30px;font-weight:700;letter-spacing:-.2px}
+.anhero p{margin:8px 0 0;font-size:13px;line-height:16px;font-weight:500;color:var(--soft)}
+#s-an.srch .anhero{position:sticky;top:98px;z-index:4;padding-top:0}
+#s-an.srch .anhero-t{display:none}
+.agrid-w{padding:16px}
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.atile{position:relative;width:100%;height:200px;border-radius:20px;background:var(--tile);padding:16px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-start;text-align:left;isolation:isolate}
+.atile.span2{grid-column:1/-1;height:130px}
+.atile.low{justify-content:flex-end}
+.atx{position:relative;z-index:2;display:flex;flex-direction:column;gap:4px}
+.atx b{font-size:16px;line-height:20px;font-weight:600;color:var(--ink);hyphens:auto;-webkit-hyphens:auto}
+.atx span{font-size:14px;line-height:20px;font-weight:500;color:var(--light)}
+.atile.span2 .atx{max-width:62%}
+.aimg{position:absolute;z-index:1;width:150px;height:150px;background-size:contain;background-position:center;background-repeat:no-repeat;pointer-events:none}
+.t-vitamins .a1{width:96px;height:96px;right:58px;top:-4px}
+.t-vitamins .a2{width:150px;height:150px;right:-30px;bottom:-46px;transform:rotate(-38deg)}
+.t-biochemistry .a1{width:170px;height:170px;left:4px;top:-30px}
+.t-hormones .a1{width:230px;height:230px;right:-60px;bottom:-62px;opacity:.9}
+.t-hormones .a2{width:140px;height:140px;right:-26px;bottom:-34px}
+.t-hematology .a1{width:160px;height:160px;right:-14px;bottom:-44px}
+.t-infections .a1{width:160px;height:160px;right:-34px;top:-46px}
+.t-allergy .a1{width:150px;height:150px;right:-18px;bottom:-42px}
+.t-tumor_markers .a1{width:160px;height:160px;right:-36px;bottom:-46px}
+.t-general .a1{width:160px;height:160px;right:-34px;bottom:-50px}
+.apop{gap:16px;padding-bottom:16px}
+.apop .sh{font-size:20px;line-height:28px}
+.alist{display:flex;flex-direction:column;gap:8px}
+.acard{box-shadow:inset 0 0 0 1px var(--border)}
