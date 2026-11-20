@@ -117,7 +117,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;height:44px;padding:8px 12px;background:var(--brand);color:#fff;font-size:16px;font-weight:600;line-height:16px;white-space:nowrap;width:100%}
 .btn.in{background:var(--brand-tint);color:var(--brand-tint-ink)}
 .btn .ic svg [stroke]{stroke:currentColor}
-.btn.in [fill="#31858C"],.btn.in [stroke="#31858C"]{fill:var(--brand-tint-ink)}
+.btn.in [fill="#31858C"]{fill:var(--brand-tint-ink)} .btn.in [stroke="#31858C"]{stroke:var(--brand-tint-ink)}
 .sbtn{height:32px;padding:8px 12px;border-radius:12px;background:var(--base);box-shadow:0 0 0 1px var(--border) inset;font-size:14px;font-weight:600;line-height:16px;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:4px;flex-shrink:0}
 .sbtn.sq{width:32px;padding:0}
 

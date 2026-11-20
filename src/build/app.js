@@ -3,6 +3,7 @@
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
 const items={}; DATA.items.forEach(i=>items[i.id]=i);
+const UNIQ=(()=>{const seen=new Set();return DATA.items.filter(i=>{const k=i.name.toLowerCase();if(seen.has(k))return false;seen.add(k);return true})})(); // «Все» без повторов между категориями
 const cats={}; DATA.cats.forEach(c=>cats[c.id]=c);
 const nb=' ';
 const fmt=n=>String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,nb)+nb+'₽';
@@ -147,7 +148,7 @@ function refresh(){
 function btnHTML(id,up){
   const u=up?` data-up="1"`:'';
   return inCart(id)
-    ? `<button class="btn in" data-cart="${id}"${u}>${ic('check',16)}В корзине</button>`
+    ? `<button class="btn in" data-cart="${id}"${u}>${ic('check',20)}В корзине</button>`
     : `<button class="btn" data-cart="${id}"${u}>${ic('basketW',24)}Добавить в корзину</button>`;
 }
 function updateFooters(id){
@@ -241,10 +242,10 @@ function renderCat(){
   $('#cat-title').textContent=cid==='all'?'Анализы':cats[cid].title;
   const chip=(id,t,n)=>`<button class="chip${id===cid?' on':''}" data-chip="${id}">${t}<i>${n}</i></button>`;
   const qq=q.trim(), cnt=pool=>qq?search(qq,pool).length:pool.length;
-  $('#chips').innerHTML=chip('all','Все',cnt(DATA.items))+DATA.cats.map(x=>chip(x.id,x.title,cnt(x.items.map(id=>items[id])))).join('');
+  $('#chips').innerHTML=chip('all','Все',cnt(UNIQ))+DATA.cats.map(x=>chip(x.id,x.title,cnt(x.items.map(id=>items[id])))).join('');
   const cq=$('#cq'); if(cq.value!==q) cq.value=q; $('#cq-wrap').classList.toggle('has',!!q);
   requestAnimationFrame(()=>{const on=$('#chips .on'); if(on) on.scrollIntoView({inline:'center',block:'nearest'})});
-  let list=cid==='all'?DATA.items.slice():cats[cid].items.map(id=>items[id]);
+  let list=cid==='all'?UNIQ.slice():cats[cid].items.map(id=>items[id]);
   if(cid==='all'&&!q.trim()){ // «Все»: сначала популярные (по числу клиник)
     list.sort((a,b)=>b.clinics-a.clinics);
   }
