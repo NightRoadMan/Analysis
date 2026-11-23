@@ -507,8 +507,9 @@ function renderPageFooter(id){
     f.innerHTML=`<button class="big wide two" data-act="patnext"><span class="t">Продолжить</span>${CHEVW}</button>${hi()}`;
   } else if(id==='s-co'){
     const t=cartTotals(), pts=ptsOff(t.total), pay=t.total-(PAY.usePts?pts:0);
-    f.innerHTML=`<div class="pts-row"><button class="sw${PAY.usePts?' on':''}" data-act="pts" role="switch" aria-checked="${PAY.usePts}" aria-label="Списать баллы"></button><div class="tx"><b>Списать ${fmt(pts)} баллами</b><span>У вас ${SV.coinY} ${String(BALANCE).replace(/\B(?=(\d{3})+(?!\d))/g,nb)} баллов</span></div></div>
-      <button class="big wide paybtn" data-act="pay" ${PAY.consent?'':'disabled'}><span>Оплатить ${fmt(pay)}</span><span class="sep"></span><span class="bn">${SV.coinY}+100</span></button>${hi()}`;
+    const bal=String(BALANCE).replace(/\B(?=(\d{3})+(?!\d))/g,nb);
+    f.innerHTML=`<div class="pts-row${pts?'':' dis'}"><button class="sw${PAY.usePts&&pts?' on':''}" data-act="pts" role="switch" aria-checked="${!!(PAY.usePts&&pts)}" aria-label="Списать баллы" ${pts?'':'disabled'}></button><div class="tx"><b>Списать ${fmt(PTS_FIX)} баллами</b><span>${pts?`У вас ${SV.coinY} ${bal} баллов`:BALANCE<PTS_FIX?`Нужно ${PTS_FIX} баллов, у вас ${SV.coinY} ${bal}`:`Доступно для заказа дороже ${fmt(PTS_FIX)}`}</span></div></div>
+      <button class="big wide paybtn" data-act="pay" ${PAY.consent?'':'disabled'}><span>Оплатить ${fmt(pay)}</span><span class="sep"></span><span class="bn">${SV.coinY}+${fmt0(t.ids.length*PTS_PER)}</span></button>${hi()}`;
   } else if(id==='s-res'){
     f.innerHTML=`<button class="lnk" data-act="resskip">Пропустить</button><button class="big wide" data-act="resok">Даю согласие</button>${hi()}`;
   } else if(id==='s-ok'){
@@ -544,7 +545,7 @@ function openPrep(ids){
 }
 
 /* ---------- patient data (Figma 518:32601) ---------- */
-function patFill(k){const d=k!=null&&k>=0?PDATA[k]:{f:'',i:'',o:'',b:'',g:''};PF={...d,k,phone:CONTACT.phone,email:CONTACT.email,err:{}};}
+function patFill(k){const d=k!=null&&k>=0?PDATA[k]:{f:'',i:'',o:'',b:'',g:'m'};PF={...d,k,phone:CONTACT.phone,email:CONTACT.email,err:{}};}
 function fld(k,label,req,opts){
   const v=PF[k]||'', e=PF.err[k];
   return `<label class="fld${v?' has':''}${e?' err':''}"><span class="fl">${label}${req?'<i>*</i>':''}</span><input data-f="${k}" value="${esc(v)}" placeholder="${label}" ${opts||''} autocomplete="off"><button class="fx" type="button" data-act="fclear" data-fk="${k}" aria-label="Очистить">${CLEARIC}</button></label>${e?`<div class="ferr">${e}</div>`:''}`;
@@ -574,7 +575,8 @@ function patValid(){
 }
 
 /* ---------- checkout ---------- */
-const ptsOff=total=>Math.min(500,BALANCE,Math.floor(total*0.2/10)*10);
+const PTS_FIX=500; // списать можно только ровно 500 баллов: это и минимум, и максимум
+const ptsOff=total=>BALANCE>=PTS_FIX&&total>PTS_FIX?PTS_FIX:0;
 function renderCO(){
   const t=cartTotals();
   const pm=[['sber','Sber Pay',`<svg width="44" height="22" viewBox="0 0 44 22"><rect x=".75" y=".75" width="42.5" height="20.5" rx="10.25" fill="none" stroke="#21A038" stroke-width="1.5"/><circle cx="11" cy="11" r="6" fill="none" stroke="#21A038" stroke-width="1.6"/><path d="m8.5 11 1.8 1.8 3.4-3.6" fill="none" stroke="#21A038" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><text x="20" y="15" font-family="Montserrat,sans-serif" font-size="11" font-weight="700" fill="#21A038">Pay</text></svg>`],
@@ -582,7 +584,7 @@ function renderCO(){
     ['foreign','Карта банка другой страны',`<svg width="34" height="26" viewBox="0 0 34 26"><rect x="1" y="2" width="28" height="19" rx="3" fill="#D7D9DE"/><rect x="1" y="6" width="28" height="3.5" fill="#B5B9C2"/><rect x="4" y="13" width="9" height="3" rx="1" fill="#fff"/><circle cx="27" cy="20" r="6" fill="#4F9FE8"/><path d="M21.5 20h11M27 14.5c2 2 2 9 0 11M27 14.5c-2 2-2 9 0 11" stroke="#fff" stroke-width="1.1" fill="none"/></svg>`]];
   $('#co-body').innerHTML=`
   <div class="csec"><button class="ttl${PAY.brkOpen?' open':''}" data-act="brk"><span>Итого</span><span class="v">${fmt(t.total)}${SV.chevUp}</span></button>
-    ${PAY.brkOpen?`<div class="brk">${t.ids.map(id=>`<div><span>${esc(shortName(items[id].name))}</span><b>${fmt(labPrice(LAB,id))}</b></div>`).join('')}${t.blood?`<div><span>Взятие крови из вены</span><b>${fmt(380)}</b></div>`:''}${PAY.usePts?`<div class="ptsl"><span>Оплата баллами</span><b>−${fmt(ptsOff(t.total))}</b></div>`:''}</div>`:''}
+    ${PAY.brkOpen?`<div class="brk">${t.ids.map(id=>`<div><span>${esc(shortName(items[id].name))}</span><b>${fmt(labPrice(LAB,id))}</b></div>`).join('')}${t.blood?`<div><span>Взятие крови из вены</span><b>${fmt(380)}</b></div>`:''}${PAY.usePts&&ptsOff(t.total)?`<div class="ptsl"><span>Оплата баллами</span><b>−${fmt(ptsOff(t.total))}</b></div>`:''}</div>`:''}
   </div>
   <div class="csec"><div class="sh" style="font-size:22px;line-height:28px">Способы оплаты</div>
     <div>${pm.map(([k,n,svg])=>`<button class="pay" data-pm="${k}"><span class="pi">${svg}</span><span class="pn">${n}</span><span class="radio${PAY.method===k?' on':''}"></span></button>`).join('')}</div>
@@ -617,7 +619,7 @@ function renderRes(){ // Figma 557:39952: согласие на получени
 function renderOK(){
   const P=PAID; if(!P){return}
   const L=P.lab;
-  $('#ok-body').innerHTML=`<div class="okbox"><div style="width:171px;height:120px;display:flex;align-items:center;justify-content:center">${SUCCESS}</div><h1>Заказ оплачен<br>${fmt(P.total)}</h1><div class="s">Вам будет начислено ${SV.coinY} 100</div></div>
+  $('#ok-body').innerHTML=`<div class="okbox"><div style="width:171px;height:120px;display:flex;align-items:center;justify-content:center">${SUCCESS}</div><h1>Заказ оплачен<br>${fmt(P.total)}</h1><div class="s">Вам будет начислено ${SV.coinY} ${fmt0(P.ids.length*PTS_PER)}</div></div>
   <div style="display:flex;flex-direction:column;gap:8px">
   <div class="csec" style="gap:24px">
     <div class="irow">${SV.cal}<div class="tx"><b>Сдать анализы нужно до ${P.until}</b><span class="k">Заказ действителен 14 дней</span></div></div>

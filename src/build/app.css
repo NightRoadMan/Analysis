@@ -584,3 +584,5 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 :root{--fchip-on:#FFF8E6}
 :root[data-theme="dark"]{--fchip-on:#3A3220}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--fchip-on:#3A3220}}
+.pts-row.dis .tx b{color:var(--light)}
+.pts-row.dis .sw{opacity:.4}
