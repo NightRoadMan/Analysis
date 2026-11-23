@@ -552,3 +552,35 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .rnote p{margin:0}
 .rnote u{text-decoration-color:currentColor}
 #f-page .lnk+.big{margin-top:0}
+/* деталька: баннер баллов вместо кнопки (Figma 439:110854) */
+.coinb{position:relative;display:flex;align-items:center;gap:6px;height:38px;padding:0 64px 0 12px;border-radius:12px;background:linear-gradient(90deg,#5FBF68 0%,#A6DC8E 100%);color:#fff;font-size:14px;font-weight:600;line-height:20px;text-align:left;white-space:nowrap;margin-top:-8px}
+.coinb .c50{display:inline-flex;align-items:center;gap:2px;height:24px;padding:0 4px 0 8px;border-radius:12px;background:#fff;color:#F3AA00;font-size:13px;font-weight:700}
+.coinb .c50 svg{width:18px;height:18px}
+.coinb .ii{display:flex;color:#fff;opacity:.9}
+.coinb .gift{position:absolute;right:6px;bottom:2px;width:52px;height:52px;background:center/contain no-repeat;pointer-events:none}
+/* корзина: один островок со списком, итогом и баллами (Figma 439:109975) */
+.cbox{gap:0}
+.ckrow{display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.clist{display:flex;flex-direction:column;padding-top:12px}
+.clist .draw{padding-bottom:12px;border-bottom:1px solid var(--line)}
+.citem .rc{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;align-self:stretch;gap:8px}
+.ptp{display:inline-flex;align-items:center;gap:3px;height:20px;padding:0 6px;border-radius:10px;background:#FFF5DC;color:#F3AA00;font-size:12px;font-weight:600;line-height:16px;white-space:nowrap}
+.ptp svg{width:14px;height:14px}
+.ptp.lg{height:28px;padding:0 6px 0 10px;border-radius:14px;font-size:14px;gap:4px}
+.ptp.lg svg{width:22px;height:22px}
+.cbox .tot{padding-top:16px}
+.ptsrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:12px}
+.ptsrow .tx{display:flex;flex-direction:column}
+.ptsrow .tx b{font-size:14px;font-weight:500;line-height:20px}
+.ptsrow .tx span{font-size:12px;font-weight:500;line-height:16px;color:var(--light)}
+:root[data-theme="dark"] .ptp{background:#3A3220}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ptp{background:#3A3220}}
+/* чипсы-фильтры: выбран — светло-жёлтый фон, жёлтая обводка, крестик (Figma 518:32466) */
+.qf button.on,.wfc.on{background:var(--fchip-on)!important;color:var(--ink)!important;border-color:var(--accent)!important;outline:1.5px solid var(--accent)!important;outline-offset:-1.5px!important}
+.qf button.on{border-color:transparent!important}
+.qf .fx,.wfc .fx{display:flex;color:var(--light);margin-left:2px}
+.qf .fx svg,.wfc .fx svg{width:16px;height:16px}
+.wfc{cursor:pointer;flex-shrink:0}
+:root{--fchip-on:#FFF8E6}
+:root[data-theme="dark"]{--fchip-on:#3A3220}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--fchip-on:#3A3220}}

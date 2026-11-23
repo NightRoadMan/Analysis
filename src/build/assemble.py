@@ -84,6 +84,9 @@ CHR = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="m8 5
 WHERE = re.sub(r"(<div style='[^']*' class=\"cp\")", lambda m: f'<button class="lhrs" type="button" data-act="hours"><span class="ci">{CLOCK}</span><b>Забор до 19:30</b>{CHR}</button>' + m.group(1), p['WHERE'])
 assert WHERE.count('class="lhrs"') == 10, WHERE.count('class="lhrs"')
 WHERE = WHERE.replace('Записаться сейчас', 'Записаться на 1 анализ')
+# чипсы-фильтры «Где сдать» переключаются как на карте (Figma 518:32466)
+WHERE, _n = re.subn(r'(<div style="align-items:center;background-color:#FFFFFF;border-radius:16px;[^"]*outline:1px solid #EAEBED;[^"]*") data-act="soon"', r'\1 class="wfc" data-act="wf" role="button" aria-pressed="false"', WHERE)
+assert _n >= 2, _n
 
 def b64(path, mime='image/png'):
     return f'data:{mime};base64,' + base64.b64encode(open(path, 'rb').read()).decode()
