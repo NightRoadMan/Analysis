@@ -586,3 +586,8 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--fchip-on:#3A3220}}
 .pts-row.dis .tx b{color:var(--light)}
 .pts-row.dis .sw{opacity:.4}
+/* ТЗ 2.6: карточка выбранного филиала — «В корзине» */
+#b-where [data-clinic-add]{cursor:pointer}
+#b-where [data-clinic-add].inc{background-color:var(--brand-tint)!important}
+#b-where [data-clinic-add].inc>div:first-child{display:none}
+#b-where [data-clinic-add].inc>div:last-child{color:var(--brand-tint-ink)!important}

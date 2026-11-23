@@ -157,7 +157,7 @@ function delCart(id){cart.delete(id)}
 function toggleCart(id){inCart(id)?delCart(id):addCart(id)}
 function refresh(){
   $$('[data-cart]').forEach(b=>{b.outerHTML=b.dataset.k?rowBtn(b.dataset.cart,b.dataset.k):btnHTML(b.dataset.cart,b.dataset.up)});
-  if(cur&&cur.s==='detail') setDetailAdd(cur.id);
+  if(cur&&cur.s==='detail'){setDetailAdd(cur.id);updWhere();}
   updateFooters(curScr());
 }
 function btnHTML(id,up){
@@ -421,7 +421,7 @@ function renderDetail(id){
   $$('#d-map .pp').forEach(el=>{el.textContent=el.dataset.pre+fmt(r10(+el.dataset.base*fac))});
   $$('#b-where [data-clinic-add]').forEach(b=>b.dataset.cartId=id);
   $$('#b-where .lhrs b').forEach(b=>b.textContent=hoursToday());
-  setDetailAdd(id); window.__detailSticky&&window.__detailSticky();
+  setDetailAdd(id); updWhere(); window.__detailSticky&&window.__detailSticky();
   const desc=$('#d-desc'); requestAnimationFrame(()=>{ if(desc.scrollHeight<=desc.clientHeight+2) desc.nextElementSibling.hidden=true; });
 }
 
@@ -445,7 +445,17 @@ const LABS=(function(){
   });
 })();
 function labHas(L,id){return L.cov>=1||rnd(L.id+'|'+id)<L.cov}
-function labPrice(L,id){return r10(items[id].price*L.f*(.92+rnd(id+L.id)*.16))}
+function labPrice(L,id){return L.w?r10(items[id].price*L.f):r10(items[id].price*L.f*(.92+rnd(id+L.id)*.16))}
+/* филиалы из карточек «Где сдать» на детальке: выбор филиала прямо оттуда (ТЗ 2.6) */
+function wlab(k){const w=WLABS[k];return {id:'w'+k,w:1,x:MC[0],y:MC[1],brand:BRANDS.find(b=>b.k===w.brand)||BRANDS[0],n:w.n,a:w.a,metro:w.metro,mc:w.mc,md:w.md,rate:'4,5',rev:36,cov:1,f:w.base/CLINIC_BASE,pts:true,hours:['7:30—19:00','8:00—14:00']}}
+function updWhere(){ // у выбранного филиала «В корзине», у остальных «Добавить в корзину»
+  const id=cur&&cur.id; if(!id) return;
+  document.querySelectorAll('#b-where [data-clinic-add]').forEach(b=>{
+    const on=!!(LAB&&LAB.id==='w'+b.dataset.wk&&inCart(id)); b.classList.toggle('inc',on);
+    const tx=b.lastElementChild; if(tx) tx.textContent=on?'В корзине':'Добавить в корзину';
+    b.setAttribute('role','button'); b.setAttribute('aria-label',on?'В корзине, перейти в корзину':'Добавить в корзину');
+  });
+}
 function labFor(L,ids){
   const avail=ids.filter(id=>labHas(L,id)), miss=ids.filter(id=>!labHas(L,id));
   return {k:avail.length,N:ids.length,full:!miss.length,miss,avail,p:avail.reduce((a,id)=>a+labPrice(L,id),0)+(avail.some(id=>isBlood(items[id]))?380:0)};
@@ -468,10 +478,9 @@ function labHead(L,act){
 function renderCart(){
   const b=$('#cart-body');
   if(!cart.size){
-    const pop=['Глюкоза','АлАТ','АсАТ','Билирубин общий'].map(n=>DATA.items.find(i=>i.name===n||i.name.startsWith(n+' ')||i.name.startsWith(n+' ('))).filter(Boolean);
-    const pop2=pop.length>=3?pop:DATA.items.slice().sort((a,b)=>b.clinics-a.clinics).slice(0,4);
+    // пустая корзина (Figma 439:111882): популярные — те же 8 анализов, строки с круглой кнопкой
     b.innerHTML=`<div class="csec"><div class="ebig"><div style="width:74px;height:74px;background:url(${ASSET.basket}) center/contain no-repeat"></div><h2>В корзине пока что пусто</h2><p>Добавьте анализы — покажем, в каких клиниках вашего города их можно сдать</p><button class="big" data-act="allan">Перейти к анализам</button></div></div>
-    <div class="csec"><div class="sh" style="font-size:22px;line-height:28px">Популярные анализы</div><div>${pop2.map(miniAddRow).join('')}</div></div>`;
+    <div class="csec slist"><div class="sh">Популярные анализы</div><div class="rows3">${POP8.map(i=>rowHTML(i,'mini')).join('')}</div></div>`;
     return;
   }
   const ids=[...cart.keys()], allOn=ids.every(id=>cart.get(id).on||(LAB&&!labHas(LAB,id)));
@@ -541,7 +550,7 @@ function openPrep(ids){
     <div style="font-size:12px;font-weight:500;line-height:18px;color:var(--soft)">Для ${anW(L.length)} в корзине</div></div>
     ${g.map(([icn,t,p,a])=>`<div class="pcard">${icn}<div class="tx"><b>${t}</b>${p?`<p>${p}</p>`:''}<span class="for">${names(a)}</span></div></div>`).join('')}
     ${conflict?`<div class="csec"><div class="warn">${SV.alert}<div style="font-weight:500">Есть анализы с разными требованиями к подготовке, которые могут противоречить друг другу. Проконсультируйтесь с врачом</div></div></div>`:''}
-  </div><div class="sfoot"><button class="big wide" data-act="close">Отлично</button>${hi()}</div>`);
+  </div><div class="sfoot"><button class="lnk" data-act="pdf" style="height:44px">Отправить как PDF</button><button class="big wide" data-act="close">Отлично</button>${hi()}</div>`);
 }
 
 /* ---------- patient data (Figma 518:32601) ---------- */
@@ -839,7 +848,13 @@ $('#ph').addEventListener('click',e=>{
     if(!$('#dim').hidden&&$('#up-go')){$('#up-go .t span').textContent=anW(cart.size);toast(was?'Убрали из корзины':'Добавили в корзину')}
     else{toast(was?'Убрали из корзины':'Добавили в корзину'); if(curScr()==='s-cart'){renderCart();updateFooters('s-cart')}}
     return}
-  if(d.clinicAdd!==undefined){const id=t.dataset.cartId;if(!inCart(id)){addCart(id);refresh();openUpsell(id)}else toast('Анализ уже в корзине');return}
+  if(d.clinicAdd!==undefined){ // ТЗ 2.6: добавление с карточки выбирает филиал; другой филиал — через «Заменить филиал?»
+    const id=t.dataset.cartId, W=wlab(+t.dataset.wk);
+    if(LAB&&LAB.id===W.id&&inCart(id)){go({s:'cart'});return}
+    const pick=()=>{const had=inCart(id);LAB=W;addCart(id);cart.get(id).on=true;[...cart.keys()].forEach(x=>{if(!labHas(W,x))cart.get(x).on=false});refresh();if(!had)openUpsell(id);return had};
+    if(LAB&&LAB.id!==W.id) dialog('Заменить филиал?',`В корзине выбран филиал «${esc(LAB.n)}». Заменим его на «${esc(W.n)}», цены в корзине пересчитаем.`,[['Заменить',()=>{pick();toast('Филиал заменён')}],['Отмена',()=>{}]]);
+    else pick();
+    return}
   if(d.rm){delCart(d.rm);renderCart();updateFooters('s-cart');toast('Убрали из корзины');return}
   if(d.ck){const v=cart.get(d.ck);v.on=!v.on;renderCart();updateFooters('s-cart');return}
   if(d.pat!==undefined){PATIENT=+d.pat;closeSheet();renderCart();return}
@@ -915,6 +930,8 @@ $('#ph').addEventListener('click',e=>{
       else dialog(`Сдать ${anW(r.k)} здесь?`,`В «${esc(L.n)}» нет: ${esc(r.miss.map(id=>shortName(items[id].name)).join(', '))}. Их можно сдать в другой лаборатории позже.`,[[`Сдать ${r.k} из ${r.N} здесь`,done],['Найти филиал со всеми анализами',()=>{MV.card=false;const best=sortedLabs(filtered().filter(x=>labFor(x,mapIds()).full),mapIds()).sort((a,b)=>Math.hypot(a.L.x-L.x,a.L.y-L.y)-Math.hypot(b.L.x-L.x,b.L.y-L.y))[0];if(best)selectLab(best.L.id);}]]);
       break;}
     case 'soon': toast('В этом прототипе раздел не подключён'); break;
+    case 'sort': toast('Сортировка: сначала популярные'); break;
+    case 'pdf': toast('Подготовим PDF и откроем «Поделиться»'); break;
     case 'coininfo': toast(`Начислим ${PTS_PER} баллов за каждый анализ после сдачи`); break;
     default: if(a&&a.startsWith('cat:')) go({s:'ctg',c:a.slice(4)});
   }

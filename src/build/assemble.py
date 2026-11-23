@@ -84,9 +84,61 @@ CHR = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="m8 5
 WHERE = re.sub(r"(<div style='[^']*' class=\"cp\")", lambda m: f'<button class="lhrs" type="button" data-act="hours"><span class="ci">{CLOCK}</span><b>Забор до 19:30</b>{CHR}</button>' + m.group(1), p['WHERE'])
 assert WHERE.count('class="lhrs"') == 10, WHERE.count('class="lhrs"')
 WHERE = WHERE.replace('Записаться сейчас', 'Записаться на 1 анализ')
+# данные филиалов из карточек — для выбора филиала с детальки (ТЗ 2.6)
+WLABS = []
+for chunk, base in zip(WHERE.split('class="cp" data-base=')[:-1], re.findall(r'class="cp" data-base="(\d+)"', WHERE)):
+    txt = re.findall(r'>([^<>]{2,})<', chunk)
+    ai = max(i for i, t in enumerate(txt) if t.startswith('г. Санкт-Петербург'))
+    mt = re.findall(r'background-color:(#[0-9A-Fa-f]{6});border-radius:100px[^>]*></div></div><div[^>]*>([^<]+), (\d+ м)<', chunk)
+    c, st, d = mt[0]
+    nm = txt[ai - 1]
+    br = 'inv' if nm.startswith('Invitro') else 'kdl' if nm.startswith('KDL') else 'gem' if nm.startswith('Гемотест') else 'rem'
+    WLABS.append({'base': int(base), 'n': nm, 'a': txt[ai], 'metro': st, 'mc': c, 'md': d, 'brand': br})
+_i = [0]
+def _wk(m):
+    _i[0] += 1
+    return m.group(0) + f' data-wk="{_i[0] - 1}"'
+WHERE = re.sub(r'data-clinic-add=""', _wk, WHERE)
+assert _i[0] == len(WLABS) == 10, (_i[0], len(WLABS))
 # чипсы-фильтры «Где сдать» переключаются как на карте (Figma 518:32466)
 WHERE, _n = re.subn(r'(<div style="align-items:center;background-color:#FFFFFF;border-radius:16px;[^"]*outline:1px solid #EAEBED;[^"]*") data-act="soon"', r'\1 class="wfc" data-act="wf" role="button" aria-pressed="false"', WHERE)
 assert _n >= 2, _n
+# чипсы «Где сдать» как в макете 439:111092: сортировка иконкой, «Оплата баллами», «Район или метро»
+def _elem(h, start):
+    depth, i = 0, start
+    while True:
+        o, c = h.find('<div', i), h.find('</div>', i)
+        if o != -1 and o < c: depth += 1; i = o + 4
+        else:
+            depth -= 1; i = c + 6
+            if depth == 0: return h[start:i]
+_pos = [m.start() for m in re.finditer(r'<div style="[^"]*" class="wfc"', WHERE)][:3]
+_ch = [_elem(WHERE, s) for s in _pos]
+assert 'Популярные' in _ch[0] and 'Район' in _ch[1] and 'Оплата' in _ch[2], [re.findall(r'>([^<>]{2,})<', c) for c in _ch]
+_sort = re.sub(r"<div style='[^']*'>Популярные</div>", '', _ch[0]).replace('class="wfc" data-act="wf" role="button" aria-pressed="false"', 'data-act="sort" role="button" aria-label="Сортировка"')
+WHERE = WHERE[:_pos[0]] + _sort + _ch[2] + _ch[1] + WHERE[_pos[2] + len(_ch[2]):]
+
+
+# ---- мок-данные приведены к макетам (Figma 562:61332, 562:46676, 466:134038): число клиник и цены
+FIGMA_MOCK = {  # имя (начало) -> (клиник, цена или None)
+    '25-ОН витамин D': (96, None), 'Витамин В12 (цианокобаламин)': (88, None), 'Витамин B9 (Фолиевая кислота)': (81, None),
+    'Витамин В6': (74, None), 'Витамин А (ретинол)': (63, None),
+    'Ферритин': (84, None), 'Пролактин': (71, None), 'Тестостерон': (63, None), 'Железо сыворотки': (58, 396),
+    'Сифилис RPR': (47, None), 'Опухолевый маркёр HE4': (39, None), 'Хеликобактер пилори': (22, None), 'Глюкоза': (84, 369),
+}
+DATA = json.loads(json.dumps(p['DATA']))
+for it in DATA['items']:
+    hit = next((v for k, v in FIGMA_MOCK.items() if it['name'] == k or it['name'].startswith(k)), None)
+    if hit:
+        it['clinics'] = hit[0]
+        if hit[1]: it['price'] = hit[1]
+    elif it['cat'] == 'vitamins':  # остальные витамины ниже, чтобы порядок совпадал с макетом
+        it['clinics'] = round(it['clinics'] * 0.7)
+# один и тот же анализ в разных категориях — одна цена и одно число клиник
+_first = {}
+for it in DATA['items']:
+    f = _first.setdefault(it['name'], it)
+    it['price'], it['clinics'] = f['price'], f['clinics']
 
 def b64(path, mime='image/png'):
     return f'data:{mime};base64,' + base64.b64encode(open(path, 'rb').read()).decode()
@@ -128,9 +180,10 @@ def js(v):
     return json.dumps(v, ensure_ascii=False).replace('</', '<\\/')
 
 consts = '\n'.join([
-    'const DATA=' + js(p['DATA']) + ';',
+    'const DATA=' + js(DATA) + ';',
     'const IC=' + js(p['IC']) + ';',
     'const WHERE=' + js(theme(WHERE)) + ';',
+    'const WLABS=' + json.dumps(WLABS, ensure_ascii=False) + ';',
     'const MAP=' + js('<div class="mapmini">' + p['MAP'] + '</div>') + ';',
     'const PEOPLE=' + js([theme(x) for x in p['PEOPLE']]) + ';',
     'const LOGO=' + js(p['LOGO']) + ';',
