@@ -19,6 +19,10 @@
       <button type="button" data-theme-set="light" aria-pressed="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M3.4 12.6l1-1M11.6 4.4l1-1"/></svg><span>Светлая</span></button>
       <button type="button" data-theme-set="dark" aria-pressed="false"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1Z"/></svg><span>Тёмная</span></button>
     </div>
+    <div class="seg" role="group" aria-label="Кнопка корзины в списке">
+      <button type="button" data-btnmode="mini" aria-pressed="true"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" fill="currentColor"/></svg><span>Мини-кнопка</span></button>
+      <button type="button" data-btnmode="full" aria-pressed="false"><svg viewBox="0 0 16 16"><rect x="1" y="4.5" width="14" height="7" rx="3.5" fill="currentColor"/></svg><span>«В корзину»</span></button>
+    </div>
   </div>
 <div class="ph" id="ph">
 
@@ -38,30 +42,27 @@
     <div id="gs-body"></div>
   </section>
 
-  <!-- ANALYSES: главная витрины (вход с плитки «Сдача анализов»), поиск с корзиной -->
+  <!-- ANALYSES: главная витрины (Figma 466:134038), поиск открывает экран поиска -->
   <section class="scr" id="s-an" hidden>
     <header class="hdr flat anbar" id="an-bar">
       @@SB@@
-      <div class="tb">@@BACK@@<div class="tt">Анализы</div></div>
+      <div class="tb">@@BACK@@<div class="tt">Анализы возле дома</div></div>
     </header>
-    <div class="anhero" id="an-hero">
-      <div class="anhero-t"><h1>Анализы возле дома. Скидка до&nbsp;25% на&nbsp;все виды исследований</h1><p id="an-total"></p></div>
-      <label class="inp" id="aq-wrap">@@SEARCHIC@@<input id="aq" type="text" placeholder="Искать анализы" autocomplete="off" enterkeyhint="search"><button class="clr" data-act="aclear" aria-label="Очистить">@@CLEARIC@@</button></label>
-    </div>
+    <div class="anhero" id="an-hero"><h1>Анализы возле дома. <br>Скидка до&nbsp;25% на&nbsp;все виды исследований</h1><p id="an-total"></p></div>
+    <div class="anq"><div class="inp" data-act="catsearch" role="button" tabindex="0" aria-label="Поиск по анализам">@@SEARCHIC@@<input type="text" placeholder="Поиск по анализам" readonly tabindex="-1" aria-hidden="true" style="pointer-events:none"></div></div>
     <div id="an-body" style="padding-bottom:130px"></div>
   </section>
 
-  <!-- CATALOG: поиск по анализам с корзиной -->
+  <!-- SEARCH / CATALOG (Figma 496:28920): поиск по анализам с корзиной, «Отмена» = назад -->
   <section class="scr" id="s-cat" hidden>
     <header class="hdr">
       @@SB@@
-      <div class="tb">@@BACK@@<div class="tt" id="cat-title">Анализы</div></div>
-      <div class="hs">
-        <label class="inp" id="cq-wrap">@@SEARCHIC@@<input id="cq" type="text" placeholder="Поиск по анализам" autocomplete="off" enterkeyhint="search"><button class="clr" data-act="cclear" aria-label="Очистить">@@CLEARIC@@</button></label>
+      <div class="hs" style="padding-top:8px">
+        <div class="qrow"><label class="inp" id="cq-wrap">@@SEARCHIC@@<input id="cq" type="text" placeholder="Поиск по анализам" autocomplete="off" enterkeyhint="search"><button class="clr" data-act="cclear" aria-label="Очистить">@@CLEARIC@@</button></label><button class="cancel" type="button" data-act="back">Отмена</button></div>
         <div class="chips" id="chips"></div>
       </div>
     </header>
-    <div id="cat-body" style="padding-bottom:130px"></div>
+    <div id="cat-body" style="padding:8px 0 130px"></div>
   </section>
 
   <!-- DETAIL -->
@@ -69,7 +70,7 @@
     <header class="hdr">
       @@SB@@
       <div class="tb">@@BACK@@<div class="tt" id="d-title"></div></div>
-      <div class="hs"><label class="inp" data-act="catsearch">@@SEARCHIC@@<input type="search" placeholder="Поиск по анализам" readonly tabindex="-1" style="pointer-events:none"></label></div>
+      <div class="hs"><div class="inp" data-act="catsearch" role="button" tabindex="0" aria-label="Поиск по анализам">@@SEARCHIC@@<input type="search" placeholder="Поиск по анализам" readonly tabindex="-1" aria-hidden="true" style="pointer-events:none"></div></div>
     </header>
     <div id="d-body" class="detail-body"></div>
   </section>
@@ -97,6 +98,15 @@
     </div>
     <button class="mtoggle" id="m-toggle" type="button" data-act="mlist"></button>
     <div class="msheet" id="m-sheet"></div>
+  </section>
+
+  <!-- PATIENT DATA (Figma 518:32601) -->
+  <section class="scr" id="s-pat" hidden>
+    <header class="hdr flat">
+      @@SB@@
+      <div class="tb">@@BACK@@<div class="tt">Данные пациента</div></div>
+    </header>
+    <div id="pat-body" style="display:flex;flex-direction:column;gap:8px;padding:8px 0 150px"></div>
   </section>
 
   <!-- CHECKOUT -->

@@ -430,35 +430,95 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .navshade{position:absolute;inset:0;background:rgba(0,0,0,.12);pointer-events:none}
 .msheet .mtop:last-child{flex:1;border-radius:0}
 
-/* «Анализы»: главная витрины (Figma 277:105081), поиск с корзиной */
-.anbar{border-radius:0!important;padding-bottom:0;transition:border-radius .2s}
-.anbar.sc{border-radius:0 0 24px 24px!important}
-.anhero{background:var(--base);border-radius:0 0 24px 24px;padding:8px 16px 16px;display:flex;flex-direction:column;gap:24px}
-.anhero-t{text-align:center;padding:0 8px}
-.anhero h1{margin:0;font-size:24px;line-height:30px;font-weight:700;letter-spacing:-.2px}
-.anhero p{margin:8px 0 0;font-size:13px;line-height:16px;font-weight:500;color:var(--soft)}
-#s-an.srch .anhero{position:sticky;top:98px;z-index:4;padding-top:0}
-#s-an.srch .anhero-t{display:none}
+/* «Анализы»: главная витрины (Figma 466:134038) */
+.anbar{border-radius:0!important;padding-bottom:0}
+.anbar .tt{opacity:0;transition:opacity .2s}
+.anbar.sc .tt{opacity:1}
+.anhero{background:var(--base);padding:8px 24px 16px;text-align:center}
+.anhero h1{margin:0;font-size:22px;line-height:28px;font-weight:700}
+.anhero p{margin:8px 0 0;font-size:13px;line-height:16px;font-weight:400;color:var(--soft)}
+.anq{position:sticky;top:98px;z-index:4;background:var(--base);border-radius:0 0 24px 24px;padding:8px 16px 16px}
 .agrid-w{padding:16px}
-.agrid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:96px 24px 96px 96px 88px;gap:8px;
-  grid-template-areas:"a b" "c b" "c d" "e f" "g h"}
-.g-a{grid-area:a}.g-b{grid-area:b}.g-c{grid-area:c}.g-d{grid-area:d}.g-e{grid-area:e}.g-f{grid-area:f}.g-g{grid-area:g}.g-h{grid-area:h}
-.atile{position:relative;width:100%;height:100%;min-width:0;border-radius:20px;background:var(--tile);padding:12px 12px 12px 14px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-start;text-align:left;isolation:isolate}
-.atx{position:relative;z-index:2;display:flex;flex-direction:column;gap:2px}
-.atx b{font-size:15px;line-height:20px;font-weight:600;color:var(--ink);hyphens:auto;-webkit-hyphens:auto}
-.atx span{font-size:13px;line-height:16px;font-weight:500;color:var(--light)}
+.agrid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:136px 136px 174px 120px;gap:8px}
+.atile{position:relative;width:100%;height:100%;min-width:0;border-radius:20px;background:var(--tile);padding:12px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-start;text-align:left;isolation:isolate}
+.atx{position:relative;z-index:2;display:flex;flex-direction:column;gap:2px;max-width:112px}
+.atx b{font-size:13px;line-height:16px;font-weight:600;color:var(--ink)}
+.atx span{font-size:12px;line-height:16px;font-weight:500;color:var(--light)}
+.t-general .atx{max-width:none}
 .aimg{position:absolute;z-index:1;background-size:contain;background-position:center;background-repeat:no-repeat;pointer-events:none}
-.t-biochemistry .atx span{max-width:104px}
-.t-vitamins .a1,.t-hormones .a1{display:none}
-.t-vitamins .a2{width:88px;height:88px;right:-18px;bottom:-26px;transform:rotate(-38deg)}
-.t-allergy .a1{width:100px;height:100px;right:-16px;bottom:-24px}
-.t-hematology .a1{width:104px;height:104px;right:-12px;bottom:-28px}
-.t-hormones .a2{width:80px;height:80px;right:-12px;bottom:-24px}
-.t-biochemistry .a1{width:82px;height:82px;right:-14px;bottom:-22px}
-.t-infections .a1{width:82px;height:82px;right:-16px;bottom:-22px}
-.t-tumor_markers .a1{width:74px;height:74px;right:-12px;bottom:-24px}
-.t-general .a1{width:70px;height:70px;right:-10px;bottom:-26px}
+.t-vitamins .a1{width:66px;height:66px;right:52px;bottom:4px}
+.t-vitamins .a2{width:112px;height:112px;right:-26px;bottom:-30px;transform:rotate(-38deg)}
+.t-biochemistry .a1{width:116px;height:116px;right:-22px;bottom:-24px}
+.t-hematology .a1{width:126px;height:126px;right:-16px;bottom:-32px}
+.t-infections .a1{width:118px;height:118px;right:-22px;bottom:-22px}
+.t-hormones .a1{width:170px;height:170px;right:-56px;bottom:-56px;opacity:.9}
+.t-hormones .a2{width:124px;height:124px;right:-18px;bottom:-24px}
+.t-allergy .a1{width:132px;height:132px;right:-24px;bottom:-34px}
+.t-tumor_markers .a1{width:108px;height:108px;right:-18px;bottom:-30px}
+.t-general .a1{width:106px;height:106px;right:-20px;bottom:-36px}
 .apop{gap:16px;padding-bottom:16px}
-.apop .sh{font-size:20px;line-height:28px}
+.apop .sh,.afaq .sh{font-size:22px;line-height:28px}
 .alist{display:flex;flex-direction:column;gap:8px}
 .acard{box-shadow:inset 0 0 0 1px var(--border)}
+.afaq{gap:8px;padding-bottom:8px}
+.afaq .sh{align-items:center;gap:4px;text-align:left}
+.faq{display:flex;flex-direction:column}
+.fq+.fq{border-top:1px solid var(--line)}
+.fqh{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:14px 0;font-size:16px;font-weight:600;line-height:20px;text-align:left}
+.fqh i{display:flex;flex-shrink:0;transition:transform .2s}
+.fq.open .fqh i{transform:rotate(45deg)}
+.fqa{display:none;font-size:13px;line-height:18px;color:var(--soft);padding:0 36px 14px 0}
+.fq.open .fqa{display:block}
+
+/* поиск (Figma 496:28920): «Отмена», белая секция со списком строк */
+.qrow{display:flex;align-items:center;gap:12px}
+.qrow .inp{flex:1;min-width:0}
+.cancel{font-size:14px;font-weight:600;line-height:18px;color:var(--ink);padding:8px 0;flex-shrink:0}
+.slist{padding:16px 16px 4px;gap:8px}
+.slist .sh{font-size:22px;line-height:28px;align-items:baseline}
+.rows3{display:flex;flex-direction:column}
+.srow{display:flex;flex-direction:column;gap:4px;padding:16px 0;text-align:left}
+.srow+.srow{border-top:1px solid var(--line)}
+.rows3>.srow:first-child{padding-top:8px}
+.srow .st{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.srow .cn{font-size:16px;font-weight:600;line-height:20px}
+.srow .st .pr{flex-shrink:0}
+.srow .sm{display:flex;align-items:center;gap:12px}
+.srow .sl{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.srow .cc{font-size:14px;font-weight:500;line-height:20px;color:var(--light)}
+.srow .tags{display:flex;flex-wrap:wrap;gap:4px}
+.cbtn{width:44px;height:44px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cbtn.in{background:var(--brand-tint);color:var(--brand-tint-ink)}
+.cbtn2{display:flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:10px;background:var(--brand);color:#fff;font-size:14px;font-weight:600;line-height:16px;white-space:nowrap;flex-shrink:0;align-self:flex-start}
+.cbtn2.in{background:var(--brand-tint);color:var(--brand-tint-ink)}
+.cbtn .ic svg [stroke],.cbtn2 .ic svg [stroke]{stroke:currentColor}
+.cbtn.in [fill="#31858C"],.cbtn2.in [fill="#31858C"]{fill:var(--brand-tint-ink)}
+
+/* данные пациента (Figma 518:32601) */
+.pform{gap:16px;padding-bottom:20px}
+.pdesc{margin:-8px 0 0;font-size:14px;line-height:20px;color:var(--soft)}
+.pchips{display:flex;gap:8px;margin:0 -16px;padding:0 16px}
+.pchip{flex-shrink:0;height:36px;padding:0 14px;border-radius:12px;background:var(--tint);font-size:13px;font-weight:600;line-height:16px;white-space:nowrap}
+.pchip.on{background:var(--brand);color:#fff}
+.fld{position:relative;display:flex;align-items:center;height:56px;border-radius:16px;outline:1.5px solid var(--border);outline-offset:-1.5px;padding:0 12px 0 16px;background:var(--base);cursor:text}
+.fld:focus-within{outline-color:var(--light)}
+.fld.err{outline-color:var(--badge)}
+.fld input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:16px;line-height:24px;color:var(--ink);padding:0}
+.fld input::placeholder{color:var(--light)}
+.fld .fl{position:absolute;left:12px;top:-9px;padding:0 4px;background:var(--base);font-size:13px;font-weight:600;line-height:16px;color:var(--light);display:none}
+.fld .fl i{font-style:normal;color:var(--badge);margin-left:2px}
+.fld.has .fl,.fld:focus-within .fl{display:block}
+.fld:focus-within input::placeholder{color:transparent}
+.fld .fx{display:none;width:24px;height:24px;align-items:center;justify-content:center;flex-shrink:0}
+.fld.has .fx{display:flex}
+.ferr{margin-top:-10px;font-size:12px;line-height:16px;color:var(--badge);padding-left:16px}
+.glab{font-size:13px;font-weight:500;line-height:16px;color:var(--soft);margin-bottom:-8px}
+.gseg{display:grid;grid-template-columns:1fr 1fr;background:var(--tint);border-radius:12px;padding:2px;height:40px}
+.gseg button{border-radius:10px;font-size:13px;font-weight:600;line-height:16px;text-align:center}
+.gseg button.on{background:var(--base);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.pinfo{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:500;line-height:16px;margin-top:-4px}
+.brk .ptsl span,.brk .ptsl b{color:var(--ok)}
+
+/* главная: «новое» на плитке «Сдача анализов» */
+.newt{position:relative}
+.newb{position:absolute;right:4px;top:4px;background:#FF7777;color:#fff;border-radius:300px;padding:1px 5px;font-size:9px;font-weight:600;line-height:10px}

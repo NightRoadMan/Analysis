@@ -60,6 +60,21 @@ h = h.replace('height:1290px', f'height:{1290-DH}px', 1).replace('height:1258px'
 h = h.replace('<div style="background-color:#F4F5F6;', '<div class="homefix" style="background-color:#F4F5F6;', 1)
 _i = h.find('Сдача<br>анализов'); _k = h.rfind('data-act="search"', 0, _i)
 h = h[:_k] + 'data-act="allan" role="button" tabindex="0" aria-label="Сдача анализов"' + h[_k+len('data-act="search"'):]
+# Figma 439:109476: «Сдача анализов» открывает второй ряд плиток и помечена «новое»
+_i = h.find('Сдача<br>анализов')
+_ts = h.rfind('<div style="align-items:start;background-color:#F4F5F6;border-radius:12px', 0, _i)
+_d = 0
+for _m in re.finditer(r'<(/?)div\b[^>]*>', h[_ts:]):
+    _d += -1 if _m.group(1) else 1
+    if _d == 0: _te = _ts + _m.end(); break
+tile = h[_ts:_te]
+tile = tile.replace('<div style="align-items:start;', '<div class="newt" style="align-items:start;', 1)
+tile = tile[:-len('</div>')] + '<span class="newb">новое</span></div>'
+h = h[:_ts] + h[_te:]
+_row2 = '<div style="align-items:center;box-sizing:border-box;display:flex;gap:8px">'
+_r = h.find(_row2, _ts)
+assert _r > 0
+h = h[:_r + len(_row2)] + tile + h[_r + len(_row2):]
 h = theme(h)
 
 def b64(path, mime='image/png'):
