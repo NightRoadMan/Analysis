@@ -477,19 +477,17 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .slist{padding:16px 16px 4px;gap:8px}
 .slist .sh{font-size:22px;line-height:28px;align-items:baseline}
 .rows3{display:flex;flex-direction:column}
-.srow{display:flex;flex-direction:column;gap:4px;padding:16px 0;text-align:left}
+.srow{display:flex;align-items:center;gap:12px;padding:16px 0;text-align:left}
 .srow+.srow{border-top:1px solid var(--line)}
 .rows3>.srow:first-child{padding-top:8px}
-.srow .st{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.srow .sl{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
 .srow .cn{font-size:16px;font-weight:600;line-height:20px}
-.srow .st .pr{flex-shrink:0}
-.srow .sm{display:flex;align-items:center;gap:12px}
-.srow .sl{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
 .srow .cc{font-size:14px;font-weight:500;line-height:20px;color:var(--light)}
-.srow .tags{display:flex;flex-wrap:wrap;gap:4px}
+.srow .tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.srow .pr{margin-top:6px}
 .cbtn{width:44px;height:44px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .cbtn.in{background:var(--brand-tint);color:var(--brand-tint-ink)}
-.cbtn2{display:flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:10px;background:var(--brand);color:#fff;font-size:14px;font-weight:600;line-height:16px;white-space:nowrap;flex-shrink:0;align-self:flex-start}
+.cbtn2{display:flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:10px;background:var(--brand);color:#fff;font-size:14px;font-weight:600;line-height:16px;white-space:nowrap;flex-shrink:0}
 .cbtn2.in{background:var(--brand-tint);color:var(--brand-tint-ink)}
 .cbtn .ic svg [stroke],.cbtn2 .ic svg [stroke]{stroke:currentColor}
 .cbtn.in [fill="#31858C"],.cbtn2.in [fill="#31858C"]{fill:var(--brand-tint-ink)}
@@ -522,3 +520,35 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 /* главная: «новое» на плитке «Сдача анализов» */
 .newt{position:relative}
 .newb{position:absolute;right:4px;top:4px;background:#FF7777;color:#fff;border-radius:300px;padding:1px 5px;font-size:9px;font-weight:600;line-height:10px}
+
+/* допродажа (Figma 564:63433) */
+.upok{align-items:center;gap:12px}
+.upill{width:120px;height:86px;display:flex;align-items:center;justify-content:center}
+.upill svg{width:100%;height:100%}
+.upok h2{margin:0;font-size:22px;font-weight:700;line-height:28px;text-align:center}
+.upitem{align-self:stretch;display:flex;justify-content:space-between;gap:12px;padding:16px;border-radius:16px;background:var(--canvas);text-align:left}
+.upitem .tx{display:flex;flex-direction:column;gap:4px;min-width:0}
+.upitem .tx b{font-size:16px;font-weight:600;line-height:20px}
+.upitem .tx span{font-size:14px;font-weight:500;line-height:20px;color:var(--light)}
+.upitem .pr{flex-shrink:0}
+/* часы забора */
+.hrs{display:flex;flex-direction:column;margin:0 -16px}
+.hr{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;font-size:14px;font-weight:500;line-height:20px}
+.hr+.hr{border-top:1px solid var(--line)}
+.hr b{font-size:16px;font-weight:600}
+.hr.on{background:var(--brand-tint);color:var(--brand-tint-ink);border-color:transparent}
+.hr.on+.hr{border-color:transparent}
+.lhrs{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:14px;line-height:20px;margin:-4px 0 -4px}
+.lhrs .ci{display:flex;color:var(--soft)}
+.lhrs b{font-weight:600}
+/* согласие на результаты (Figma 557:39952) */
+.resc{gap:16px}
+.resc h2{margin:0;font-size:22px;font-weight:700;line-height:28px}
+.resc .pdesc{margin-top:-8px}
+.rlist{display:flex;flex-direction:column;gap:12px}
+.rlist>div{display:flex;align-items:center;gap:12px;font-size:14px;font-weight:600;line-height:20px}
+.rlist i{width:32px;height:36px;flex-shrink:0;background:center/contain no-repeat}
+.rnote{display:flex;flex-direction:column;gap:8px;font-size:12px;font-weight:500;line-height:18px;color:var(--light)}
+.rnote p{margin:0}
+.rnote u{text-decoration-color:currentColor}
+#f-page .lnk+.big{margin-top:0}

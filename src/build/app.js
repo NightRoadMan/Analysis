@@ -68,7 +68,7 @@ const PATIENTS=[
 ];
 const BALANCE=2190;
 let PAY={method:'card',consent:true,usePts:true,brkOpen:true};
-let BTNMODE='mini'; try{const m=localStorage.getItem('vitrina-btn');if(m==='mini'||m==='full')BTNMODE=m}catch(e){}
+// вид кнопки в списках задан макетами: поиск и корзина — мини, категории и популярные — «В корзину»
 const PDATA=[
   {f:'Смирнова',i:'Ксения',o:'Алексеевна',b:'06.08.1989',g:'f'},
   {f:'Смирнов',i:'Дмитрий',o:'Андреевич',b:'14.03.1987',g:'m'},
@@ -79,7 +79,7 @@ const CONTACT={phone:'+7 911 167 45 67',email:'analysis@napopravku.ru'};
 
 /* ---------- navigation ---------- */
 const stack=[]; let cur=null;
-const VITRINA=new Set(['s-cat','s-detail']); // экраны, где плавает мини-корзина
+const VITRINA=new Set(['s-cat','s-ctg','s-detail']); // экраны, где плавает мини-корзина
 function show(id){CUR_ID=id;
   $$('.scr').forEach(s=>s.hidden=s.id!==id);
   $('#tabbar').hidden=id!=='s-home';
@@ -90,11 +90,13 @@ function render(view){
   else if(view.s==='gs'){renderGS(view.q||'');show('s-gs');}
   else if(view.s==='an'){renderAn();show('s-an');}
   else if(view.s==='cat'){renderCat();show('s-cat');}
+  else if(view.s==='ctg'){renderCtg();show('s-ctg');}
   else if(view.s==='detail'){renderDetail(view.id);show('s-detail');}
   else if(view.s==='cart'){renderCart();show('s-cart');}
   else if(view.s==='map'){show('s-map');renderMap(true);}
   else if(view.s==='pat'){renderPat();show('s-pat');}
   else if(view.s==='co'){renderCO();show('s-co');}
+  else if(view.s==='res'){renderRes();show('s-res');}
   else if(view.s==='ok'){renderOK(view);show('s-ok');}
   else if(view.s==='fail'){show('s-fail');}
 }
@@ -151,7 +153,7 @@ function addCart(id){if(!cart.has(id)){cart.set(id,{on:true});if(LAB&&!labHas(LA
 function delCart(id){cart.delete(id)}
 function toggleCart(id){inCart(id)?delCart(id):addCart(id)}
 function refresh(){
-  $$('[data-cart]').forEach(b=>{b.outerHTML=b.dataset.k?rowBtn(b.dataset.cart):btnHTML(b.dataset.cart,b.dataset.up)});
+  $$('[data-cart]').forEach(b=>{b.outerHTML=b.dataset.k?rowBtn(b.dataset.cart,b.dataset.k):btnHTML(b.dataset.cart,b.dataset.up)});
   if(cur&&cur.s==='detail') setDetailAdd(cur.id);
   updateFooters(curScr());
 }
@@ -163,11 +165,11 @@ function btnHTML(id,up){
 }
 function updateFooters(id){
   const n=cart.size;
-  $('#f-cart').hidden=!(n>0&&(id==='s-cat'||id==='s-an')&&$('#dim').hidden);
+  $('#f-cart').hidden=!(n>0&&(id==='s-cat'||id==='s-an'||id==='s-ctg')&&$('#dim').hidden);
   $('#f-cart-n').textContent=anW(n);
   $('#f-detail').hidden=id!=='s-detail';
   const c=$('#d-cnt'); c.hidden=!n; c.textContent=n;
-  $('#f-page').hidden=!['s-cart','s-pat','s-co','s-ok','s-fail'].includes(id);
+  $('#f-page').hidden=!['s-cart','s-pat','s-co','s-res','s-ok','s-fail'].includes(id);
   if(!$('#f-page').hidden) renderPageFooter(id);
 }
 
@@ -186,17 +188,16 @@ function cardHTML(i){
     ${btnHTML(i.id,1)}
   </article>`;
 }
-/* строка списка (Figma 496:28920): название и цена, клиники, теги, кнопка корзины справа */
-function rowBtn(id){
+/* строка списка: mini — круглая кнопка (поиск, корзина; Figma 562:46676), full — «В корзину» (категории, популярные, допродажа; Figma 562:61332) */
+function rowBtn(id,mode){
   const on=inCart(id);
-  return BTNMODE==='full'
-    ? `<button class="cbtn2${on?' in':''}" data-cart="${id}" data-up="1" data-k="r">${on?ic('check',16):ic('basketW',16)}${on?'В корзине':'В корзину'}</button>`
-    : `<button class="cbtn${on?' in':''}" data-cart="${id}" data-up="1" data-k="r" aria-label="${on?'В корзине':'В корзину'}">${on?ic('check',24):ic('basketW',28)}</button>`;
+  return mode==='full'
+    ? `<button class="cbtn2${on?' in':''}" data-cart="${id}" data-k="full">${on?ic('check',16):ic('basketW',16)}${on?'В корзине':'В корзину'}</button>`
+    : `<button class="cbtn${on?' in':''}" data-cart="${id}" data-k="mini" aria-label="${on?'В корзине':'В корзину'}">${on?ic('check',24):ic('basketW',28)}</button>`;
 }
-function rowHTML(i){
+function rowHTML(i,mode,tags){
   return `<article class="srow tap" data-open="${i.id}">
-    <div class="st"><div class="cn">${esc(i.name)}</div><span class="pr"><i>от</i><b>${fmt(i.price)}</b></span></div>
-    <div class="sm"><div class="sl"><div class="cc">${clinicWord(i.clinics)}</div><div class="tags">${tagsHTML(i)}</div></div>${rowBtn(i.id)}</div>
+    <div class="sl"><div class="cn">${esc(i.name)}</div><div class="cc">${clinicWord(i.clinics)}</div>${tags?`<div class="tags">${tagsHTML(i)}</div>`:''}<span class="pr"><i>от</i><b>${fmt(i.price)}</b></span></div>${rowBtn(i.id,mode||'mini')}
   </article>`;
 }
 function miniAddRow(i){ // «Вместе с этим сдают», «Часто добавляют», «Популярные»
@@ -263,7 +264,7 @@ function renderGS(q){
 /* ---------- «Анализы»: главная витрины (Figma 466:134038) ---------- */
 const CATSUB={vitamins:'Дефициты и избытки',biochemistry:'Печень, почки, обмен веществ',hormones:'Щитовидная железа, половые',hematology:'Исследования крови',infections:'ПЦР и антитела',allergy:'Панели аллергенов: пыльца, еда, животные',tumor_markers:'Оценка рисков',general:'Моча, кал'};
 const TILES=['vitamins','biochemistry','hematology','infections','hormones','allergy','tumor_markers','general']; // сетка 2×4 по макету
-const POPULAR=(()=>{
+const POPULAR_OLD=(()=>{
   const out=[],have=new Set(),add=i=>{if(i&&!have.has(i.name)){have.add(i.name);out.push(i)}};
   [/^Глюкоза$/,/АЛТ/,/^Ферритин/,/Гомоцистеин/].forEach(re=>add(UNIQ.find(i=>re.test(i.name))));
   return out;
@@ -280,13 +281,7 @@ function tileHTML(cid){
   const c=cats[cid], imgs=(CATIMG[cid]||[]).map((u,k)=>`<i class="aimg a${k+1}" style="background-image:url(${u})"></i>`).join('');
   return `<button class="atile t-${cid}" data-cat="${cid}" aria-label="${c.title}"><span class="atx"><b>${c.title}</b><span>${CATSUB[cid]||''}</span></span>${imgs}</button>`;
 }
-function popHTML(i){
-  return `<article class="card acard tap" data-open="${i.id}">
-    <div class="ctop"><div class="cn">${esc(i.name)}</div><div class="cc">${clinicWord(i.clinics)}</div></div>
-    <div class="prs"><span class="pr"><i>от</i><b>${fmt(i.price)}</b></span></div>
-    ${btnHTML(i.id,1)}
-  </article>`;
-}
+const POP8=['25-ОН витамин D','Ферритин','Пролактин','Тестостерон','Железо сыворотки','Сифилис RPR','Опухолевый маркёр HE4','Хеликобактер пилори'].map(n=>DATA.items.find(i=>i.name===n||i.name.startsWith(n))).filter(Boolean);
 const PLUS='<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 6v12M6 12h12" stroke="#F3AA00" stroke-width="2" stroke-linecap="round"/></svg>';
 function renderAn(){
   $('#an-total').textContent=studyW(UNIQ.length);
@@ -295,7 +290,7 @@ function renderAn(){
 function renderAnBody(){
   $('#an-body').innerHTML=`<div class="secs" style="padding-bottom:0">
     <div class="sec agrid-w"><div class="agrid">${TILES.map(tileHTML).join('')}</div></div>
-    <div class="sec apop"><div class="sh">Популярные анализы</div><div class="alist">${POPULAR.map(popHTML).join('')}</div></div>
+    <div class="sec slist apop"><div class="sh">Популярные анализы</div><div class="rows3">${POP8.map(i=>rowHTML(i,'full')).join('')}</div></div>
     <div class="sec afaq"><button class="sh" data-act="soon">Частые вопросы <span style="color:var(--accent);display:flex">${SV.chevR}</span></button>
       <div class="faq">${FAQ.map(([q,a],k)=>`<div class="fq" data-fq="${k}"><button class="fqh" data-act="fq" aria-expanded="false"><span>${q}</span><i>${PLUS}</i></button><div class="fqa">${a}</div></div>`).join('')}</div></div>
   </div>`;
@@ -307,21 +302,23 @@ function anBar(){
 }
 $('#s-an').addEventListener('scroll',anBar,{passive:true});
 
-/* ---------- catalog ---------- */
+/* ---------- search (Figma 562:46676): без чипсов, «Отмена» — назад ---------- */
 function renderCat(){
-  const v=cur, cid=v.c||'all', q=v.q||'';
-  const chip=(id,t,n)=>`<button class="chip${id===cid?' on':''}" data-chip="${id}">${t}<i>${n}</i></button>`;
-  const qq=q.trim(), cnt=pool=>qq?search(qq,pool).length:pool.length;
-  $('#chips').innerHTML=chip('all','Все',cnt(UNIQ))+DATA.cats.map(x=>chip(x.id,x.title,cnt(x.items.map(id=>items[id])))).join('');
+  const q=cur.q||'', qq=q.trim();
   const cq=$('#cq'); if(cq.value!==q) cq.value=q; $('#cq-wrap').classList.toggle('has',!!q);
-  requestAnimationFrame(()=>{const on=$('#chips .on'); if(on) on.scrollIntoView({inline:'center',block:'nearest'})});
-  let list=cid==='all'?UNIQ.slice():cats[cid].items.map(id=>items[id]);
-  if(!qq) list.sort((a,b)=>b.clinics-a.clinics); // без запроса: сначала популярные
-  else list=search(q,list);
-  const title=qq?`Анализы <em>${list.length}</em>`:(cid==='all'?'Рекомендации':esc(cats[cid].title)+` <em>${list.length}</em>`);
+  const list=qq?search(q,UNIQ):POP8;
+  const title=qq?`Анализы <em>${list.length}</em>`:'Рекомендации';
   $('#cat-body').innerHTML=`<div class="sec slist"><div class="sh">${title}</div><div class="rows3">${
-    list.length?list.map(rowHTML).join(''):`<div class="empty"><b>Ничего не нашли</b><span>${cid==='all'?'Проверьте написание.':'В этой категории нет такого анализа.'}</span>${cid!=='all'?'<button class="more" style="align-self:center" data-chip="all">Искать во всех анализах</button>':''}</div>`
+    list.length?list.map(i=>rowHTML(i,'mini')).join(''):`<div class="empty"><b>Ничего не нашли</b><span>Проверьте написание или попробуйте другое название.</span></div>`
   }</div></div>`;
+}
+/* ---------- category (Figma 562:61332): плитка витрины → категория, чипсы с количеством ---------- */
+function renderCtg(){
+  const cid=cur.c&&cats[cur.c]?cur.c:TILES[0]; cur.c=cid;
+  $('#ctg-chips').innerHTML=TILES.map(id=>`<button class="chip${id===cid?' on':''}" data-chip="${id}">${esc(cats[id].title)}<i>${cats[id].items.length}</i></button>`).join('');
+  requestAnimationFrame(()=>{const on=$('#ctg-chips .on'); if(on) on.parentNode.scrollTo({left:on.offsetLeft-16})});
+  const list=cats[cid].items.map(id=>items[id]).sort((a,b)=>b.clinics-a.clinics);
+  $('#ctg-body').innerHTML=`<div class="sec slist"><div class="sh">${esc(cats[cid].title)}</div><div class="rows3">${list.map(i=>rowHTML(i,'full',true)).join('')}</div></div>`;
 }
 
 /* ---------- upsell sheet ---------- */
@@ -332,18 +329,31 @@ function related(ids,n){
   out.sort((a,b)=>rnd(a.id+ids.join())-rnd(b.id+ids.join()));
   return out.slice(0,n);
 }
-function openUpsell(id){
+function openUpsell(id){ // только при добавлении с детальки анализа (Figma 564:63433)
   const i=items[id];
   openSheet(`<div class="sbody">
-    <div class="csec" style="border-radius:0 0 24px 24px;padding-top:0">
+    <div class="csec upok" style="border-radius:0 0 24px 24px;padding-top:0">
       <div class="chev-ctl" data-act="close" style="color:var(--ink)">${SV.grabDown}</div>
-      <div class="okh">${ic('okc',24)}Добавили в корзину</div>
-      <div class="ctop"><div class="cn">${esc(i.name)}</div><div class="cc">${clinicWord(i.clinics)}</div></div>
-      ${priceHTML(i)}
+      <div class="upill">${SUCCESS}</div>
+      <h2>Добавили в корзину</h2>
+      <div class="upitem"><div class="tx"><b>${esc(i.name)}</b><span>${clinicWord(i.clinics)}</span></div><span class="pr"><i>от</i><b>${fmt(i.price)}</b></span></div>
     </div>
-    <div class="csec"><div class="sh" style="font-size:22px;line-height:28px">Вместе с этим сдают</div><div>${related([id],3).map(miniAddRow).join('')}</div></div>
+    <div class="csec slist" style="padding-bottom:4px"><div class="sh">Вместе с этим сдают</div><div class="rows3">${related([id],4).map(x=>rowHTML(x,'full')).join('')}</div></div>
   </div>
   <div class="sfoot"><button class="big in wide" data-act="close">Продолжить покупки</button><button class="gocart" data-act="cart" id="up-go"><span class="t"><b>Перейти в корзину</b><span>${anW(cart.size)}</span></span>${CHEVW}</button>${hi()}</div>`);
+}
+/* ---------- часы забора (Figma 571:66491) ---------- */
+const HOURS=[['Понедельник','07:30—19:00'],['Вторник','07:00—19:30'],['Среда','07:30—19:00'],['Четверг','08:00—20:00'],['Пятница','07:30—17:00'],['Суббота','08:00—14:00'],['Воскресенье','Выходной']];
+const today=()=>(new Date().getDay()+6)%7;
+const hoursToday=()=>{const h=HOURS[today()][1];return h.includes('—')?'Забор до '+h.split('—')[1]:'Сегодня выходной'};
+function openHours(){
+  const td=today();
+  openSheet(`<div class="sbody"><div class="csec" style="border-radius:0 0 24px 24px;padding-top:0;gap:8px">
+    <div class="chev-ctl" data-act="close" style="color:var(--ink)">${SV.grabDown}</div>
+    <div class="sh" style="font-size:22px;line-height:28px">Часы забора биоматериала</div>
+    <div class="hrs">${HOURS.map(([d,h],k)=>`<div class="hr${k===td?' on':''}"><span>${d}</span><b>${h}</b></div>`).join('')}</div>
+  </div></div>
+  <div class="sfoot"><button class="big wide" data-act="close">Понятно</button>${hi()}</div>`);
 }
 
 /* ---------- detail ---------- */
@@ -405,6 +415,7 @@ function renderDetail(id){
   $$('#b-where .cp').forEach(el=>{el.textContent=fmt(r10(+el.dataset.base*fac))});
   $$('#d-map .pp').forEach(el=>{el.textContent=el.dataset.pre+fmt(r10(+el.dataset.base*fac))});
   $$('#b-where [data-clinic-add]').forEach(b=>b.dataset.cartId=id);
+  $$('#b-where .lhrs b').forEach(b=>b.textContent=hoursToday());
   setDetailAdd(id); window.__detailSticky&&window.__detailSticky();
   const desc=$('#d-desc'); requestAnimationFrame(()=>{ if(desc.scrollHeight<=desc.clientHeight+2) desc.nextElementSibling.hidden=true; });
 }
@@ -474,7 +485,7 @@ function renderCart(){
     ${t.blood?`<div class="draw"><div class="n">Взятие крови из вены</div><span class="pr">${LAB?'':'<i>от</i>'}<b>${fmt(380)}</b></span></div>`:''}</div>
   <div class="csec" style="padding-block:16px"><div class="tot"><span>Итого</span><span class="pr">${LAB?'':'<i>от</i>'}<b style="font-size:18px">${fmt(t.total)}</b></span></div></div>
   <button class="csec pickrow" data-act="prep" style="flex-direction:row"><span class="illu" style="background-image:url(${ASSET.prep})"></span><span class="tx"><b>Подготовка к анализам</b><span>Чтобы результаты были точными</span></span><span>${SV.chevR}</span></button>
-  <div class="csec slist"><div class="sh" style="font-size:22px;line-height:28px">Часто добавляют к этим анализам</div><div class="rows3">${related(ids,6).map(rowHTML).join('')}</div></div>`;
+  <div class="csec slist"><div class="sh" style="font-size:22px;line-height:28px">Часто добавляют к этим анализам</div><div class="rows3">${related(ids,6).map(i=>rowHTML(i,'mini')).join('')}</div></div>`;
 }
 function renderPageFooter(id){
   const f=$('#f-page');
@@ -488,6 +499,8 @@ function renderPageFooter(id){
     const t=cartTotals(), pts=ptsOff(t.total), pay=t.total-(PAY.usePts?pts:0);
     f.innerHTML=`<div class="pts-row"><button class="sw${PAY.usePts?' on':''}" data-act="pts" role="switch" aria-checked="${PAY.usePts}" aria-label="Списать баллы"></button><div class="tx"><b>Списать ${fmt(pts)} баллами</b><span>У вас ${SV.coinY} ${String(BALANCE).replace(/\B(?=(\d{3})+(?!\d))/g,nb)} баллов</span></div></div>
       <button class="big wide paybtn" data-act="pay" ${PAY.consent?'':'disabled'}><span>Оплатить ${fmt(pay)}</span><span class="sep"></span><span class="bn">${SV.coinY}+100</span></button>${hi()}`;
+  } else if(id==='s-res'){
+    f.innerHTML=`<button class="lnk" data-act="resskip">Пропустить</button><button class="big wide" data-act="resok">Даю согласие</button>${hi()}`;
   } else if(id==='s-ok'){
     f.innerHTML=`<button class="big wide" data-act="home">Хорошо</button>${hi()}`;
   } else if(id==='s-fail'){
@@ -521,14 +534,14 @@ function openPrep(ids){
 }
 
 /* ---------- patient data (Figma 518:32601) ---------- */
-function patFill(k){const d=k>=0?PDATA[k]:{f:'',i:'',o:'',b:'',g:''};PF={...d,phone:CONTACT.phone,email:CONTACT.email,err:{}};}
+function patFill(k){const d=k!=null&&k>=0?PDATA[k]:{f:'',i:'',o:'',b:'',g:''};PF={...d,k,phone:CONTACT.phone,email:CONTACT.email,err:{}};}
 function fld(k,label,req,opts){
   const v=PF[k]||'', e=PF.err[k];
   return `<label class="fld${v?' has':''}${e?' err':''}"><span class="fl">${label}${req?'<i>*</i>':''}</span><input data-f="${k}" value="${esc(v)}" placeholder="${label}" ${opts||''} autocomplete="off"><button class="fx" type="button" data-act="fclear" data-fk="${k}" aria-label="Очистить">${CLEARIC}</button></label>${e?`<div class="ferr">${e}</div>`:''}`;
 }
 function renderPat(){
-  if(!PF) patFill(PATIENT);
-  const chips=PATIENTS.map((p,k)=>`<button class="pchip${k===PATIENT?' on':''}" data-pk="${k}">${esc(p.n)}</button>`).join('')+`<button class="pchip${PATIENT<0?' on':''}" data-pk="-1">+ Новый пациент</button>`;
+  if(!PF) patFill(null); // пустая форма, предзаполнение — по чипсе
+  const chips=PATIENTS.map((p,k)=>`<button class="pchip${k===PF.k?' on':''}" data-pk="${k}">${esc(p.n)}</button>`).join('')+`<button class="pchip${PF.k===-1?' on':''}" data-pk="-1">+ Новый пациент</button>`;
   $('#pat-body').innerHTML=`
   <div class="csec pform"><div class="sh" style="font-size:22px;line-height:28px">Кто будет сдавать</div>
     <p class="pdesc">Указывайте данные, как в документе того, кто сдаёт. В лаборатории попросят его паспорт или другой документ</p>
@@ -576,8 +589,20 @@ function pay(){
     const d=new Date(); d.setDate(d.getDate()+14);
     PAID={lab:LAB,total,ids:t.ids.slice(),until:d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})};
     t.ids.forEach(id=>cart.delete(id));
-    resetTo({s:'ok'});
+    resetTo({s:'res'});
   },1300);
+}
+function renderRes(){ // Figma 557:39952: согласие на получение результатов, между оплатой и успехом
+  $('#res-body').innerHTML=`<div class="csec resc">
+    <h2>Результаты анализов<br>в НаПоправку</h2>
+    <p class="pdesc">Чтобы результаты приходили в НаПоправку, нужно ваше согласие.</p>
+    <div class="rlist">
+      <div><i style="background-image:url(${ASSET.res1})"></i><span>Результаты появятся в «Моих записях»</span></div>
+      <div><i style="background-image:url(${ASSET.res2})"></i><span>Видно, какие анализы уже готовы</span></div>
+      <div><i style="background-image:url(${ASSET.res3})"></i><span>Открыть их можно в приложении на телефоне</span></div>
+    </div>
+    <div class="rnote"><p>Нажимая «Даю согласие», вы принимаете <u>согласие на получение результатов в НаПоправку</u>.</p><p>Без согласия результаты можно будет получить только в лаборатории.</p></div>
+  </div>`;
 }
 function renderOK(){
   const P=PAID; if(!P){return}
@@ -596,7 +621,7 @@ function renderOK(){
 
 /* ---------- sheet & dialog & toast ---------- */
 function openSheet(html){const s=$('#sheet');s.innerHTML=html;$('#dim').hidden=false;updateFooters(curScr());}
-function closeSheet(){if(!$('#dim').hidden){$('#dim').hidden=true;updateFooters(curScr());if(cur&&cur.s==='cat')renderCat();if(cur&&cur.s==='an')renderAnBody();}}
+function closeSheet(){if(!$('#dim').hidden){$('#dim').hidden=true;updateFooters(curScr());if(cur&&cur.s==='cat')renderCat();if(cur&&cur.s==='ctg')renderCtg();if(cur&&cur.s==='an')renderAnBody();}}
 function dialog(title,text,acts){
   const d=$('#dlg'); d.innerHTML=`<div class="box" role="alertdialog" aria-modal="true"><h3>${title}</h3>${text?`<p>${text}</p>`:''}<div class="acts">${acts.map((a,k)=>`<button class="big${k?' in':''}" data-dlg="${k}">${a[0]}</button>`).join('')}</div></div>`;
   d.hidden=false; d.onclick=e=>{const b=e.target.closest('[data-dlg]'); if(b){d.hidden=true;acts[+b.dataset.dlg][1]()} else if(e.target===d) d.hidden=true;};
@@ -604,11 +629,12 @@ function dialog(title,text,acts){
 let tt; function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),1800)}
 
 /* =================== MAP =================== */
-const MV={s:0.9,x:0,y:0,sheet:'peek',sel:null,card:false,place:null,brands:new Set(),pts:false,q:'',searching:false,inited:false};
+const PEEK=104;
+const MV={s:0.9,x:0,y:0,sheet:'peek',sel:null,card:false,place:null,brands:new Set(),pts:false,full:false,q:'',searching:false,inited:false};
 const vp=$('#m-vp'), world=$('#m-world'), layer=$('#m-layer');
 const vpW=()=>vp.clientWidth, vpH=()=>vp.clientHeight;
 const HDR=98;
-function sheetH(){const H=vpH(),hh=($('#s-map .mhdr')||{}).offsetHeight||HDR;return MV.card?0:(MV.sheet==='peek'?150:MV.sheet==='half'?Math.round(H*0.5):H-hh)}
+function sheetH(){const H=vpH(),hh=($('#s-map .mhdr')||{}).offsetHeight||HDR;return MV.card?0:(MV.sheet==='peek'?PEEK:MV.sheet==='half'?Math.round(H*0.5):H-hh)}
 function visibleH(){return vpH()-(MV.card?300:sheetH())}
 function clampView(){
   const W=vpW(),H=vpH(),s=MV.s;
@@ -624,7 +650,7 @@ function applyView(){world.style.transform=`translate(${MV.x}px,${MV.y}px) scale
 const mapIds=()=>{const ids=checkedIds(); return ids.length?ids:[...cart.keys()]};
 function filtered(){
   const ids=mapIds();
-  return LABS.filter(L=>(!MV.brands.size||MV.brands.has(L.brand.k))&&(!MV.pts||L.pts)&&labFor(L,ids).k>0);
+  return LABS.filter(L=>(!MV.brands.size||MV.brands.has(L.brand.k))&&(!MV.pts||L.pts)&&(!MV.full||labFor(L,ids).full)&&labFor(L,ids).k>0);
 }
 const toScr=(L)=>[MV.x+L.x*MV.s, MV.y+L.y*MV.s];
 function inView(L){const [sx,sy]=toScr(L);return sx>-10&&sx<vpW()+10&&sy>HDR-10&&sy<visibleH()+10}
@@ -668,12 +694,13 @@ function renderMList(){
   if(area) list=list.filter(inView);
   const arr=sortedLabs(list,ids);
   const head='';
-  el.innerHTML=head+(arr.length?arr.map(o=>lcardHTML(o.L,ids,o.d!=null?distTxt(o.d)+' от места':'')).join(''):`<div class="empty"><b>Здесь нет лабораторий</b><span>Сдвиньте или отдалите карту${MV.brands.size||MV.pts?', или сбросьте фильтры':''}.</span></div>`);
+  el.innerHTML=head+(arr.length?arr.map(o=>lcardHTML(o.L,ids,o.d!=null?distTxt(o.d)+' от места':'')).join(''):`<div class="empty"><b>Здесь нет лабораторий</b><span>Сдвиньте или отдалите карту${MV.brands.size||MV.pts||MV.full?', или сбросьте фильтры':''}.</span></div>`);
 }
 function chipsHTML(){
   const bn=MV.brands.size?(MV.brands.size===1?BRANDS.find(b=>MV.brands.has(b.k)).n:`Сети: ${MV.brands.size}`):'Лаборатория';
   const pl=MV.place&&!MV.place.me?MV.place.n:'Район или метро';
-  return `<button data-act="f-brand" class="${MV.brands.size?'on':''}">${SV.clinic}${esc(bn)}${SV.chevD}</button><button data-act="f-place" class="${MV.place&&!MV.place.me?'on':''}">${SV.pin}${esc(pl.length>18?pl.slice(0,17)+'…':pl)}${SV.chevD}</button><button data-act="f-pts" class="${MV.pts?'on':''}">${SV.coin}Оплата баллами</button>`;
+  const okI='<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.25" stroke="#F3AA00" stroke-width="1.5"/><path d="m5.4 8.1 1.8 1.8 3.4-3.6" stroke="#F3AA00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  return `<button data-act="f-pts" class="${MV.pts?'on':''}">${SV.coin}Оплата баллами</button><button data-act="f-full" class="${MV.full?'on':''}">${okI}Всё в наличии</button><button data-act="f-place" class="${MV.place&&!MV.place.me?'on':''}">${SV.pin}${esc(pl.length>18?pl.slice(0,17)+'…':pl)}${SV.chevD}</button><button data-act="f-brand" class="${MV.brands.size?'on':''}">${SV.clinic}${esc(bn)}${SV.chevD}</button>`;
 }
 function renderMSheet(){
   const s=$('#m-sheet'), ids=mapIds();
@@ -692,10 +719,8 @@ function renderMSheet(){
   const H=sheetH();
   s.style.height=H+'px';
   s.innerHTML=`<div class="grabber" id="m-grab" data-act="mgrab" role="button" aria-label="Список лабораторий"><i></i></div>
-    <div class="mtop"><label class="inp" id="mq-wrap">${SEARCHIC}<input id="mq" type="text" placeholder="Адрес или метро" autocomplete="off" value="${esc(MV.q)}"><button class="clr" data-act="mqclear" aria-label="Очистить">${CLEARIC}</button></label>
-    <div class="qf" id="m-qf">${chipsHTML()}</div></div>
+    <div class="mtop"><div class="qf" id="m-qf">${chipsHTML()}</div></div>
     ${MV.searching?`<div class="mlist" id="m-sugg" style="background:var(--base)"></div>`:(MV.sheet==='peek'?'':`<div class="mlist" id="m-list"></div>`)}`;
-  $('#mq-wrap').classList.toggle('has',!!MV.q);
   if(MV.searching) renderSugg(); else renderMList();
   const ctl=$('#m-ctrls'); ctl.style.bottom=(H+12)+'px'; ctl.hidden=MV.sheet==='full';
   const tg=$('#m-toggle'); tg.hidden=true; tg.style.bottom=(MV.sheet==='full'?28:H+16)+'px';
@@ -780,7 +805,7 @@ function openBrandSheet(){
   $('#m-sheet').addEventListener('pointermove',e=>{if(!sd)return;const dy=e.clientY-sd.y;if(Math.abs(dy)>4)sd.moved=true;$('#m-sheet').style.height=Math.max(120,Math.min(vpH()-HDR+4,sd.h-dy))+'px'});
   $('#m-sheet').addEventListener('pointerup',e=>{if(!sd)return;const s=$('#m-sheet');s.classList.remove('nodrag');const h=s.offsetHeight,H=vpH();
     if(!sd.moved){sd=null;setSheet(MV.sheet==='peek'?'half':MV.sheet==='half'?'full':'peek');return}
-    const opts=[['peek',150],['half',H*.5],['full',H-HDR]];opts.sort((a,b)=>Math.abs(a[1]-h)-Math.abs(b[1]-h));sd=null;MV.searching=false;setSheet(opts[0][0]);});
+    const opts=[['peek',PEEK],['half',H*.5],['full',H-HDR]];opts.sort((a,b)=>Math.abs(a[1]-h)-Math.abs(b[1]-h));sd=null;MV.searching=false;setSheet(opts[0][0]);});
 })();
 
 /* ---------- events ---------- */
@@ -796,25 +821,27 @@ $('#ph').addEventListener('click',e=>{
   if(d.me){const L=LABS[0];pickPlace({n:'Рядом со мной',x:L.x+60,y:L.y+90,me:true});return}
   if(d.brand){MV.brands.has(d.brand)?MV.brands.delete(d.brand):MV.brands.add(d.brand);t.querySelector('.cb').classList.toggle('on');return}
   if(d.cart){e.stopPropagation();const id=d.cart;const was=inCart(id);toggleCart(id);refresh();
-    if(!was&&d.up&&(curScr()==='s-cat'||curScr()==='s-an')&&$('#dim').hidden){openUpsell(id);}
-    else if(!$('#dim').hidden&&$('#up-go')){$('#up-go .t span').textContent=anW(cart.size);toast(was?'Убрали из корзины':'Добавили в корзину')}
+    if(!$('#dim').hidden&&$('#up-go')){$('#up-go .t span').textContent=anW(cart.size);toast(was?'Убрали из корзины':'Добавили в корзину')}
     else{toast(was?'Убрали из корзины':'Добавили в корзину'); if(curScr()==='s-cart'){renderCart();updateFooters('s-cart')}}
     return}
-  if(d.clinicAdd!==undefined){const id=t.dataset.cartId;if(!inCart(id))addCart(id);refresh();toast('Добавили в корзину');return}
+  if(d.clinicAdd!==undefined){const id=t.dataset.cartId;if(!inCart(id)){addCart(id);refresh();openUpsell(id)}else toast('Анализ уже в корзине');return}
   if(d.rm){delCart(d.rm);renderCart();updateFooters('s-cart');toast('Убрали из корзины');return}
   if(d.ck){const v=cart.get(d.ck);v.on=!v.on;renderCart();updateFooters('s-cart');return}
   if(d.pat!==undefined){PATIENT=+d.pat;closeSheet();renderCart();return}
   if(d.pm){PAY.method=d.pm;renderCO();return}
   if(d.pk!==undefined){PATIENT=+d.pk;patFill(PATIENT);renderPat();return}
   if(d.g){PF.g=d.g;delete PF.err.g;renderPat();return}
-  if(d.open){go({s:'detail',id:d.open});return}
-  if(d.cat){go({s:'cat',c:d.cat,q:''});return}
-  if(d.chip){cur.c=d.chip;if(d.chip!=='all'||!cur.q)cur.q=cur.q||'';renderCat();$('#s-cat').scrollTop=0;return}
+  if(d.open){if(!$('#dim').hidden)closeSheet();go({s:'detail',id:d.open});return}
+  if(d.cat){go({s:'ctg',c:d.cat});return}
+  if(d.chip){cur.c=d.chip;renderCtg();$('#s-ctg').scrollTop=0;return}
   if(d.q){cur.q=d.q;renderGS(d.q);return}
   if(d.jump){window.__chipLock&&window.__chipLock();t.parentNode.scrollTo({left:t.offsetLeft-16,behavior:'smooth'});$$('#d-chips .chip').forEach(c=>c.classList.toggle('on',c===t));$('#'+d.jump).scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});return}
   const a=d.act;
   switch(a){
-    case 'back': back(); break;
+    case 'back': if(curScr()==='s-res'){resetTo({s:'ok'});break} back(); break;
+    case 'resok': if(PAID)PAID.res=true; resetTo({s:'ok'}); toast('Результаты придут в «Мои записи»'); break;
+    case 'resskip': resetTo({s:'ok'}); break;
+    case 'hours': openHours(); break;
     case 'search': go({s:'gs',q:''}); setTimeout(()=>$('#q').focus(),50); break;
     case 'catsearch': go({s:'cat',c:'all',q:''}); setTimeout(()=>$('#cq').focus(),50); break;
     case 'allan': go({s:'an',q:''}); break;
@@ -823,7 +850,7 @@ $('#ph').addEventListener('click',e=>{
     case 'cclear': cur.q='';renderCat();$('#cq').focus(); break;
     case 'morecats': {const rows=$('#cat-rows');rows.innerHTML+=DATA.cats.slice(5).map(c=>`<button class="row" data-cat="${c.id}"><span>${c.title}</span><span style="color:var(--light)">${SV.chevR}</span></button>`).join('');t.remove();break;}
     case 'showall': $('#d-desc').classList.add('full');t.hidden=true; break;
-    case 'dadd': if(!inCart(cur.id)){addCart(cur.id);refresh();toast('Добавили в корзину')} else go({s:'cart'}); break;
+    case 'dadd': if(!inCart(cur.id)){addCart(cur.id);refresh();openUpsell(cur.id)} else go({s:'cart'}); break;
     case 'drm': delCart(cur.id);refresh();toast('Убрали из корзины'); break;
     case 'cart': closeSheet(); go({s:'cart'}); break;
     case 'close': closeSheet(); break;
@@ -860,8 +887,9 @@ $('#ph').addEventListener('click',e=>{
     case 'f-brand': openBrandSheet(); break;
     case 'brand-ok': closeSheet(); renderMSheet(); renderMarkers(); break;
     case 'brand-reset': MV.brands.clear(); closeSheet(); renderMSheet(); renderMarkers(); break;
-    case 'f-place': if(MV.place&&!MV.place.me){MV.place=null;MV.q='';renderMSheet();renderMarkers();break} MV.searching=true; MV.sheet='full'; renderMSheet(); setTimeout(()=>$('#mq')&&$('#mq').focus(),30); break;
+    case 'f-place': if(MV.place&&!MV.place.me){MV.place=null;MV.q='';renderMSheet();renderMarkers();break} MV.q=''; MV.searching=true; MV.sheet='full'; renderMSheet(); break;
     case 'f-pts': MV.pts=!MV.pts; renderMSheet(); renderMarkers(); break;
+    case 'f-full': MV.full=!MV.full; renderMSheet(); renderMarkers(); break;
     case 'mpick': {
       const L=LABS.find(x=>x.id===MV.sel), r=labFor(L,mapIds());
       const done=()=>{LAB=L; [...cart.keys()].forEach(id=>{if(!labHas(L,id))cart.get(id).on=false;}); back(); toast(`Выбрали ${L.n}`)};
@@ -869,7 +897,7 @@ $('#ph').addEventListener('click',e=>{
       else dialog(`Сдать ${anW(r.k)} здесь?`,`В «${esc(L.n)}» нет: ${esc(r.miss.map(id=>shortName(items[id].name)).join(', '))}. Их можно сдать в другой лаборатории позже.`,[[`Сдать ${r.k} из ${r.N} здесь`,done],['Найти филиал со всеми анализами',()=>{MV.card=false;const best=sortedLabs(filtered().filter(x=>labFor(x,mapIds()).full),mapIds()).sort((a,b)=>Math.hypot(a.L.x-L.x,a.L.y-L.y)-Math.hypot(b.L.x-L.x,b.L.y-L.y))[0];if(best)selectLab(best.L.id);}]]);
       break;}
     case 'soon': toast('В этом прототипе раздел не подключён'); break;
-    default: if(a&&a.startsWith('cat:')) go({s:'cat',c:a.slice(4),q:''});
+    default: if(a&&a.startsWith('cat:')) go({s:'ctg',c:a.slice(4)});
   }
 });
 $('#dim').addEventListener('click',e=>{if(e.target.id==='dim') closeSheet()});
@@ -877,9 +905,7 @@ $('#q').addEventListener('input',e=>{cur.q=e.target.value;renderGS(e.target.valu
 $('#pat-body').addEventListener('input',e=>{const k=e.target.dataset.f;if(!k)return;let v=e.target.value;
   if(k==='b'){const dg=v.replace(/\D/g,'').slice(0,8);v=dg.replace(/^(\d{2})(\d)/,'$1.$2').replace(/^(\d{2}\.\d{2})(\d)/,'$1.$2');if(v!==e.target.value)e.target.value=v;}
   PF[k]=v;const l=e.target.closest('.fld');l.classList.toggle('has',!!v);if(PF.err[k]){delete PF.err[k];l.classList.remove('err');const n=l.nextElementSibling;if(n&&n.classList.contains('ferr'))n.remove();}});
-function setBtnMode(m){BTNMODE=m;try{localStorage.setItem('vitrina-btn',m)}catch(e){}$$('[data-btnmode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.btnmode===m)));$$('[data-k="r"]').forEach(b=>{b.outerHTML=rowBtn(b.dataset.cart)});}
-$$('[data-btnmode]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.btnmode===BTNMODE));b.addEventListener('click',()=>setBtnMode(b.dataset.btnmode))});
-$('#cq').addEventListener('input',e=>{cur.q=e.target.value;if(cur.q.trim())cur.c='all';renderCat();const i=$('#cq');i.focus()});
+$('#cq').addEventListener('input',e=>{cur.q=e.target.value;renderCat();const i=$('#cq');i.focus()});
 $('#m-sheet').addEventListener('input',e=>{if(e.target.id!=='mq')return;MV.q=e.target.value;$('#mq-wrap').classList.toggle('has',!!MV.q);if(!MV.searching){MV.searching=true;MV.sheet='full';const v=MV.q;renderMSheet();const i=$('#mq');i.focus();i.setSelectionRange(v.length,v.length);}else renderSugg();});
 $('#m-sheet').addEventListener('focusin',e=>{if(e.target.id==='mq'&&!MV.searching){MV.searching=true;MV.sheet='full';renderMSheet();const i=$('#mq');i.focus();}});
 document.addEventListener('keydown',e=>{
@@ -906,15 +932,16 @@ window.addEventListener('resize',()=>{if(curScr()==='s-map'){renderMSheet();appl
   window.__chipLock=()=>{lock=Date.now()+700};
 })();
 
-/* start: #analyses, #cat-<id>, #all, #search, #cart, #demo (корзина с анализами) */
+/* start: #analyses, #cat-<id> (категория), #all/#find (поиск по анализам), #search (общий поиск), #cart, #map, #lab, #pat, #res, #ok */
 const start=(location.hash||'').slice(1);
 cur={s:'home'}; show('s-home');
 const demo=()=>['Пролактин','Билирубин общий','Глюкоза','Ферритин'].forEach(n=>{const i=DATA.items.find(x=>x.name===n||x.name.startsWith(n));if(i)addCart(i.id)});
 const m=start.match(/^cat-(\w+)$/);
-if(m&&cats[m[1]]) go({s:'cat',c:m[1],q:''});
-else if(start==='all') go({s:'cat',c:'all',q:''});
+if(m&&cats[m[1]]){go({s:'an',q:''});go({s:'ctg',c:m[1]});}
+else if(start==='all'||start==='find'){go({s:'an',q:''});go({s:'cat',q:''});}
 else if(start==='analyses') go({s:'an',q:''});
 else if(start==='pat'){demo();LAB=LABS[0];go({s:'cart'});go({s:'pat'});}
+else if(start==='res'){demo();LAB=LABS[0];const t=cartTotals();const d=new Date();d.setDate(d.getDate()+14);PAID={lab:LAB,total:t.total-ptsOff(t.total),ids:t.ids.slice(),until:d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})};t.ids.forEach(id=>cart.delete(id));go({s:'res'});}
 else if(start==='ok'){demo();LAB=LABS[0];const t=cartTotals();const d=new Date();d.setDate(d.getDate()+14);PAID={lab:LAB,total:t.total-ptsOff(t.total),ids:t.ids.slice(),until:d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})};go({s:'ok'});}
 else if(start==='search') go({s:'gs',q:''});
 else if(start==='cart'){demo();go({s:'cart'});}

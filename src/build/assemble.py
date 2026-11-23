@@ -77,11 +77,19 @@ assert _r > 0
 h = h[:_r + len(_row2)] + tile + h[_r + len(_row2):]
 h = theme(h)
 
+
+# ---- карточки лаб в детальке (Figma 439:111091): «Забор до …» → БШ часов, «Записаться на 1 анализ»
+CLOCK = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.25" stroke="currentColor" stroke-width="1.5"/><path d="M10 6v4.2l2.6 1.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+CHR = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="m8 5.5 4.5 4.5L8 14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+WHERE = re.sub(r"(<div style='[^']*' class=\"cp\")", lambda m: f'<button class="lhrs" type="button" data-act="hours"><span class="ci">{CLOCK}</span><b>Забор до 19:30</b>{CHR}</button>' + m.group(1), p['WHERE'])
+assert WHERE.count('class="lhrs"') == 10, WHERE.count('class="lhrs"')
+WHERE = WHERE.replace('Записаться сейчас', 'Записаться на 1 анализ')
+
 def b64(path, mime='image/png'):
     return f'data:{mime};base64,' + base64.b64encode(open(path, 'rb').read()).decode()
 
 A = f'{S}/assets'
-ASSET = {k: b64(f'{A}/{k}.png') for k in ['woman', 'man', 'child', 'basket', 'pin', 'gift', 'prep', 'passport']}
+ASSET = {k: b64(f'{A}/{k}.png') for k in ['woman', 'man', 'child', 'basket', 'pin', 'gift', 'prep', 'passport', 'res1', 'res2', 'res3']}
 SUCCESS = open(f'{A}/success.svg').read().strip()
 FAIL = open(f'{A}/failed.svg').read().strip()
 
@@ -119,7 +127,7 @@ def js(v):
 consts = '\n'.join([
     'const DATA=' + js(p['DATA']) + ';',
     'const IC=' + js(p['IC']) + ';',
-    'const WHERE=' + js(theme(p['WHERE'])) + ';',
+    'const WHERE=' + js(theme(WHERE)) + ';',
     'const MAP=' + js('<div class="mapmini">' + p['MAP'] + '</div>') + ';',
     'const PEOPLE=' + js([theme(x) for x in p['PEOPLE']]) + ';',
     'const LOGO=' + js(p['LOGO']) + ';',
