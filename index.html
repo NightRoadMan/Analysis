@@ -302,7 +302,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .ttl{display:flex;justify-content:space-between;align-items:center;font-size:18px;font-weight:700;line-height:24px;width:100%}
 .ttl .v{display:flex;align-items:center;gap:6px}
 .ttl .v svg{transition:transform .2s}
-.ttl.open .v svg{transform:rotate(180deg)}
+.ttl:not(.open) .v svg{transform:rotate(180deg)}
 .brk{display:flex;flex-direction:column;gap:8px}
 .brk div{display:flex;justify-content:space-between;gap:12px;font-size:12px;font-weight:500;line-height:18px;color:var(--light)}
 .brk div b{font-weight:600;color:var(--light);white-space:nowrap}
@@ -600,8 +600,64 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 /* ТЗ 2.6: карточка выбранного филиала — «В корзине» */
 #b-where [data-clinic-add]{cursor:pointer}
 #b-where [data-clinic-add].inc{background-color:var(--brand-tint)!important}
-#b-where [data-clinic-add].inc>div:first-child{display:none}
+#b-where [data-clinic-add].inc>div:first-child{color:var(--brand-tint-ink)}
+#b-where [data-clinic-add].inc>div:first-child svg{position:static!important;width:24px!important;height:24px!important}
+#b-where [data-clinic-add].here>div:first-child svg{position:static!important;width:24px!important;height:24px!important}
 #b-where [data-clinic-add].inc>div:last-child{color:var(--brand-tint-ink)!important}
+/* вариант A: разница с выбранным филиалом под ценой, текст БШ замены */
+.wdelta{display:block;margin-top:-4px;font-size:12px;font-weight:500;line-height:16px;color:var(--light)}
+.wdelta.cheap{color:var(--ok,#2E9E5B)}
+.rpl{margin:0;font-size:16px;line-height:22px;color:var(--light)}
+.rpl b{color:var(--ink);font-weight:600}
+/* режим «Сценарии для показа» */
+.stagerow{display:flex;gap:24px;align-items:flex-start;justify-content:center}
+.scp{width:340px;height:812px;max-height:calc(100vh - 96px);display:flex;flex-direction:column;background:var(--stage-ctl);color:var(--stage-fg);border-radius:20px;box-shadow:0 1px 2px rgba(0,0,0,.08);font-family:var(--font);overflow:hidden}
+.scph{display:flex;gap:8px;align-items:flex-start;padding:16px 16px 12px}
+.scph b{display:block;font-size:16px;line-height:22px}
+.scph span{display:block;font-size:12px;line-height:16px;opacity:.7;margin-top:2px}
+.scpt{display:none;width:32px;height:32px;border-radius:10px;align-items:center;justify-content:center;flex-shrink:0;color:inherit}
+.scpt svg{width:18px;height:18px;transition:transform .2s}
+.scpb{flex:1;overflow-y:auto;padding:0 8px 8px;display:flex;flex-direction:column;gap:6px}
+.scpf{padding:10px 16px 14px;border-top:1px solid rgba(127,127,127,.18)}
+.scc{border-radius:14px;padding:2px}
+.scc.on{background:var(--stage)}
+.sch{display:flex;gap:10px;align-items:flex-start;width:100%;padding:10px;border-radius:12px;text-align:left;color:inherit}
+.sch:hover{background:rgba(127,127,127,.1)}
+.scn{width:24px;height:24px;border-radius:12px;background:rgba(127,127,127,.18);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.scc.done .scn{background:#6ABF68;color:#fff}
+.sct{flex:1;display:flex;flex-direction:column;gap:2px}
+.sct b{font-size:14px;line-height:20px;font-weight:600}
+.sct span{font-size:12px;line-height:16px;opacity:.7}
+.scq{font-size:12px;font-weight:600;opacity:.7;line-height:24px}
+.scs{list-style:none;margin:0;padding:0 6px 4px 6px;display:flex;flex-direction:column;gap:2px}
+.scs li{display:flex;gap:6px;align-items:flex-start;border-radius:10px}
+.scs li.nx{background:rgba(243,170,0,.14)}
+.scb{width:22px;height:22px;margin:7px 0 7px 6px;border-radius:6px;border:1.5px solid rgba(127,127,127,.55);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:transparent}
+.scb svg{width:14px;height:14px}
+.scs li.ok .scb{background:#61B7C6;border-color:#61B7C6;color:#fff}
+.scl{flex:1;display:flex;align-items:flex-start;justify-content:space-between;gap:6px;padding:8px 6px 8px 2px;font-size:13px;line-height:18px;font-weight:500;color:inherit;text-align:left}
+.scl span{display:flex;flex-direction:column}
+.scl i{font-style:normal;font-size:12px;opacity:.75;margin-top:2px}
+.scs li.ok .scl span{opacity:.6}
+.scl svg{width:16px;height:16px;flex-shrink:0;margin-top:1px;opacity:.5}
+.scl:hover svg{opacity:1}
+.scf{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:6px 10px 10px}
+.scok{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:#3E9A3C;width:100%}
+.scok svg{width:14px;height:14px}
+.scbtn{height:34px;padding:0 14px;border-radius:10px;font:600 13px/16px var(--font);background:rgba(127,127,127,.16);color:inherit}
+.scbtn:hover{background:rgba(127,127,127,.26)}
+.scbtn.pri{background:#61B7C6;color:#fff}
+.sc-hl{outline:3px solid #F3AA00!important;outline-offset:2px;animation:schl 1.4s ease-in-out infinite}
+@keyframes schl{0%,100%{box-shadow:0 0 0 0 rgba(243,170,0,.55)}50%{box-shadow:0 0 0 8px rgba(243,170,0,0)}}
+@media (prefers-reduced-motion:reduce){.sc-hl{animation:none}}
+@media (max-width:900px){.stagerow{flex-direction:column;align-items:center}.scp{height:auto;max-height:none;width:375px}}
+@media (max-width:440px){
+  .stagerow{display:block;height:100%;width:100%}
+  .scp{position:fixed;left:8px;right:8px;bottom:8px;width:auto;max-height:50vh;z-index:120;box-shadow:0 8px 30px rgba(0,0,0,.3)}
+  .scpt{display:flex}
+  .scp.min .scpb,.scp.min .scpf,.scp.min .scph span{display:none}
+  .scp.min .scpt svg{transform:rotate(180deg)}
+}
 
 </style>
 </head>
@@ -612,7 +668,12 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
       <button type="button" data-theme-set="light" aria-pressed="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M3.4 12.6l1-1M11.6 4.4l1-1"/></svg><span>Светлая</span></button>
       <button type="button" data-theme-set="dark" aria-pressed="false"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1Z"/></svg><span>Тёмная</span></button>
     </div>
+    <div class="seg" role="group" aria-label="Режим прототипа">
+      <button type="button" data-mode-set="free" aria-pressed="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2.5 12.5 7 8 8.2 6.6 13 3 2.5Z"/></svg><span>Свободно</span></button>
+      <button type="button" data-mode-set="sc" aria-pressed="false"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="4" height="4" rx="1"/><path d="m3.4 11 1.1 1.1 2-2.1M9 4.5h4.5M9 11h4.5"/></svg><span>Сценарии</span></button>
+    </div>
   </div>
+<div class="stagerow">
 <div class="ph" id="ph">
 
   <!-- HOME -->
@@ -772,7 +833,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
     <div class="hi"><svg viewBox="0 0 134 5" width="134" height="5" xmlns="http://www.w3.org/2000/svg" style="width:134px;height:5px;left:calc(50% + 0.5px);bottom:9px;display:inline-block;overflow:visible;translate:-50%;position:absolute"><path d="M2.500 0.000C2.500 0.000 131.500 0.000 131.500 0.000C132.163 0.000 132.799 0.263 133.268 0.732C133.737 1.201 134.000 1.837 134.000 2.500C134.000 2.500 134.000 2.500 134.000 2.500C134.000 3.163 133.737 3.799 133.268 4.268C132.799 4.737 132.163 5.000 131.500 5.000C131.500 5.000 2.500 5.000 2.500 5.000C1.837 5.000 1.201 4.737 0.732 4.268C0.263 3.799 0.000 3.163 0.000 2.500C0.000 2.500 0.000 2.500 0.000 2.500C-0.000 1.119 1.119 0.000 2.500 0.000Z" fill-rule="evenodd" fill="#070707" /></svg></div>
   </div>
   <div class="ftr" id="f-detail" hidden>
-    <div id="d-inc" style="display:flex;flex-direction:column;align-items:center;gap:0;width:100%" hidden><button class="drm" data-act="drm">Убрать из корзины</button><button class="gocart" data-act="cart"><span class="t"><b>Перейти в корзину</b><span id="d-inc-n"></span></span><span class="ic" style="width:24px;height:24px"><svg viewBox="0 0 5 10" width="5" height="10" xmlns="http://www.w3.org/2000/svg" style="width:round(20.8333%, 1px);height:round(41.6667%, 1px);left:41.6667%;top:29.1667%;display:inline-block;overflow:visible;position:absolute"><path d="M0.000 10.000C0.000 10.000 5.000 5.000 5.000 5.000C5.000 5.000 0.000 0.000 0.000 0.000" vector-effect="non-scaling-stroke" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span></button></div>
+    <div id="d-inc" style="display:flex;flex-direction:column;align-items:center;gap:0;width:100%" hidden><button class="gocart" data-act="cart"><span class="t"><b>Перейти в корзину</b><span id="d-inc-n"></span></span><span class="ic" style="width:24px;height:24px"><svg viewBox="0 0 5 10" width="5" height="10" xmlns="http://www.w3.org/2000/svg" style="width:round(20.8333%, 1px);height:round(41.6667%, 1px);left:41.6667%;top:29.1667%;display:inline-block;overflow:visible;position:absolute"><path d="M0.000 10.000C0.000 10.000 5.000 5.000 5.000 5.000C5.000 5.000 0.000 0.000 0.000 0.000" vector-effect="non-scaling-stroke" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg></span></button><button class="drm" data-act="drm">Убрать из корзины</button></div>
     <div class="drow" id="d-row"><button class="dadd" id="d-add" data-act="dadd"></button><button class="dcart" data-act="cart" aria-label="Корзина"><span class="ic" style="width:24px;height:24px"><svg viewBox="0 0 22.5 19.5" preserveAspectRatio="none" width="22.5" height="19.5" xmlns="http://www.w3.org/2000/svg" style="width:round(93.75%, 1px);height:round(81.25%, 1px);left:3.125%;top:6.25%;display:inline-block;overflow:visible;position:absolute"><path d="M19.211 5.250C19.211 5.250 17.250 5.250 17.250 5.250C17.250 5.250 17.250 3.000 17.250 3.000C17.250 1.343 15.907 0.000 14.250 0.000C14.250 0.000 8.250 0.000 8.250 0.000C6.593 0.000 5.250 1.343 5.250 3.000C5.250 3.000 5.250 5.250 5.250 5.250C5.250 5.250 3.289 5.250 3.289 5.250C1.473 5.250 0.000 6.723 0.000 8.539C0.000 8.845 0.043 9.149 0.127 9.443C0.127 9.443 2.067 16.236 2.067 16.236C2.619 18.168 4.385 19.500 6.394 19.500C6.394 19.500 8.250 19.500 8.250 19.500C8.250 19.500 16.106 19.500 16.106 19.500C18.115 19.500 19.881 18.168 20.433 16.236C20.433 16.236 22.373 9.443 22.373 9.443C22.457 9.149 22.500 8.845 22.500 8.539C22.500 6.723 21.027 5.250 19.211 5.250ZM7.500 3.000C7.500 3.000 7.500 5.250 7.500 5.250C7.500 5.250 8.250 5.250 8.250 5.250C8.250 5.250 15.000 5.250 15.000 5.250C15.000 5.250 15.000 3.000 15.000 3.000C15.000 2.586 14.664 2.250 14.250 2.250C14.250 2.250 8.250 2.250 8.250 2.250C7.836 2.250 7.500 2.586 7.500 3.000ZM8.250 17.250C8.250 17.250 16.106 17.250 16.106 17.250C17.110 17.250 17.993 16.584 18.269 15.618C18.269 15.618 20.210 8.825 20.210 8.825C20.237 8.732 20.250 8.636 20.250 8.539C20.250 7.965 19.785 7.500 19.211 7.500C19.211 7.500 8.250 7.500 8.250 7.500C8.250 7.500 3.289 7.500 3.289 7.500C2.715 7.500 2.250 7.965 2.250 8.539C2.250 8.636 2.263 8.732 2.290 8.825C2.290 8.825 4.231 15.618 4.231 15.618C4.507 16.584 5.390 17.250 6.394 17.250C6.394 17.250 8.250 17.250 8.250 17.250ZM7.897 14.471C8.019 15.080 8.611 15.475 9.221 15.353C9.830 15.231 10.225 14.639 10.103 14.029C10.103 14.029 9.353 10.279 9.353 10.279C9.231 9.670 8.639 9.275 8.029 9.397C7.420 9.519 7.025 10.111 7.147 10.721C7.147 10.721 7.897 14.471 7.897 14.471ZM14.471 9.397C15.080 9.519 15.475 10.111 15.353 10.721C15.353 10.721 14.603 14.471 14.603 14.471C14.481 15.080 13.889 15.475 13.279 15.353C12.670 15.231 12.275 14.639 12.397 14.029C12.397 14.029 13.147 10.279 13.147 10.279C13.269 9.670 13.861 9.275 14.471 9.397Z" fill-rule="evenodd" fill="#31858C" /></svg></span><span class="cnt" id="d-cnt" hidden></span></button></div>
     <div class="hi"><svg viewBox="0 0 134 5" width="134" height="5" xmlns="http://www.w3.org/2000/svg" style="width:134px;height:5px;left:calc(50% + 0.5px);bottom:9px;display:inline-block;overflow:visible;translate:-50%;position:absolute"><path d="M2.500 0.000C2.500 0.000 131.500 0.000 131.500 0.000C132.163 0.000 132.799 0.263 133.268 0.732C133.737 1.201 134.000 1.837 134.000 2.500C134.000 2.500 134.000 2.500 134.000 2.500C134.000 3.163 133.737 3.799 133.268 4.268C132.799 4.737 132.163 5.000 131.500 5.000C131.500 5.000 2.500 5.000 2.500 5.000C1.837 5.000 1.201 4.737 0.732 4.268C0.263 3.799 0.000 3.163 0.000 2.500C0.000 2.500 0.000 2.500 0.000 2.500C-0.000 1.119 1.119 0.000 2.500 0.000Z" fill-rule="evenodd" fill="#070707" /></svg></div>
   </div>
@@ -782,6 +843,12 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   <div class="dlg" id="dlg" hidden></div>
   <div class="loader" id="loader" hidden><div class="spin"></div>Проверяем оплату…</div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
+<aside class="scp" id="scp" hidden aria-label="Сценарии для показа">
+  <div class="scph"><div><b>Сценарии для показа</b><span>Шаг отмечается сам, когда вы его проходите. Нажмите на шаг, чтобы перейти к нему.</span></div><button id="scp-tg" class="scpt" aria-expanded="true" aria-label="Свернуть панель"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="m4 6 4 4 4-4"/></svg></button></div>
+  <div class="scpb" id="scp-body"></div>
+  <div class="scpf"><button id="scp-reset" class="scbtn">Сбросить отметки</button></div>
+</aside>
 </div>
 </div>
 
@@ -806,6 +873,7 @@ const STREETPTS=[{"t": "street", "n": "пр. Королёва", "full": "про�
 (function(){
 'use strict';
 const $=s=>document.querySelector(s);
+const SC={ev:()=>{}}; // режим «Сценарии»: хуки событий, заполняется ниже
 const $$=s=>[...document.querySelectorAll(s)];
 const items={}; DATA.items.forEach(i=>items[i.id]=i);
 const UNIQ=(()=>{const seen=new Set();return DATA.items.filter(i=>{const k=i.name.toLowerCase();if(seen.has(k))return false;seen.add(k);return true})})(); // «Все» без повторов между категориями
@@ -945,12 +1013,14 @@ function go(view,push=true,anim=push){
   cur=view; closeSheet(); render(view);
   const el=document.querySelector('.scr:not([hidden])'); if(el){el.scrollTop=view.scroll&&!push?view.scroll:0;CUR_ID=el.id}
   if(anim) slide(prev,1);
+  SC.ev('scr:'+view.s);
 }
 function back(){
   const prev=snap();
   const v=stack.pop(); if(!v){go({s:'home'},false);return}
   cur=v; closeSheet(); render(v); const el=document.querySelector('.scr:not([hidden])'); if(el){el.scrollTop=v.scroll||0;CUR_ID=el.id}
   slide(prev,-1);
+  SC.ev('scr:'+v.s);
 }
 function resetTo(view,dir){const prev=snap();stack.length=0;cur=null;go(view,false,false);if(dir)slide(prev,dir)}
 function curScr(){return CUR_ID}
@@ -1132,6 +1202,9 @@ function renderCtg(keep){
 }
 
 /* ---------- upsell sheet ---------- */
+function cartRecs(ids){ // как в макете 575:72760: популярные, без того, что уже в корзине
+  const r=POP8.filter(i=>!cart.has(i.id)).slice(0,7); return r.length>=5?r:r.concat(related(ids,7-r.length)).slice(0,7);
+}
 function related(ids,n){
   const have=new Set([...cart.keys(),...ids]); const out=[];
   ids.forEach(id=>{const c=cats[items[id].cat]; c.items.forEach(x=>{if(!have.has(x)&&out.length<n*3){out.push(items[x]);have.add(x)}})});
@@ -1140,6 +1213,7 @@ function related(ids,n){
   return out.slice(0,n);
 }
 function openUpsell(id){ // только при добавлении с детальки анализа (Figma 564:63433)
+  SC.ev('upsell');
   const i=items[id];
   openSheet(`<div class="sbody">
     <div class="csec upok" style="border-radius:0 0 24px 24px;padding-top:0">
@@ -1249,17 +1323,47 @@ const LABS=(function(){
       cov:idx===0?1:(r()<.45?1:.55+r()*.4), f:br.f*(.86+r()*.32), pts:r()<.65, hours:r()<.5?['7:30—12:00','8:00—12:00']:['7:00—19:00','8:00—14:00']};
   });
 })();
-function labHas(L,id){return L.cov>=1||rnd(L.id+'|'+id)<L.cov}
+function labHas(L,id){return L.cov>=1||(L.always&&L.always.has(id))||rnd(L.id+'|'+id)<L.cov}
 function labPrice(L,id){return L.w?r10(items[id].price*L.f):r10(items[id].price*L.f*(.92+rnd(id+L.id)*.16))}
 /* филиалы из карточек «Где сдать» на детальке: выбор филиала прямо оттуда (ТЗ 2.6) */
-function wlab(k){const w=WLABS[k];return {id:'w'+k,w:1,x:MC[0],y:MC[1],brand:BRANDS.find(b=>b.k===w.brand)||BRANDS[0],n:w.n,a:w.a,metro:w.metro,mc:w.mc,md:w.md,rate:'4,5',rev:36,cov:1,f:w.base/CLINIC_BASE,pts:true,hours:['7:30—19:00','8:00—14:00']}}
-function updWhere(){ // у выбранного филиала «В корзине», у остальных «Добавить в корзину»
+function wlab(k){const w=WLABS[k];return {id:'w'+k,w:1,x:MC[0],y:MC[1],brand:BRANDS.find(b=>b.k===w.brand)||BRANDS[0],n:w.n,a:w.a,metro:w.metro,mc:w.mc,md:w.md,rate:'4,5',rev:36,cov:w.brand==='gem'?.55:1,f:w.base/CLINIC_BASE,pts:true,hours:['7:30—19:00','8:00—14:00']}}
+const PIN_W='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M12 21s6.5-5.6 6.5-11a6.5 6.5 0 0 0-13 0c0 5.4 6.5 11 6.5 11Z"/><circle cx="12" cy="10" r="2.4"/></svg>';
+function updWhere(){ // вариант A: «В корзине» у выбранного филиала, «Сдать здесь» у остальных, пока анализ в корзине
   const id=cur&&cur.id; if(!id) return;
+  const inC=inCart(id), labW=LAB&&String(LAB.id).startsWith('w');
   document.querySelectorAll('#b-where [data-clinic-add]').forEach(b=>{
-    const on=!!(LAB&&LAB.id==='w'+b.dataset.wk&&inCart(id)); b.classList.toggle('inc',on);
-    const tx=b.lastElementChild; if(tx) tx.textContent=on?'В корзине':'Добавить в корзину';
-    b.setAttribute('role','button'); b.setAttribute('aria-label',on?'В корзине, перейти в корзину':'Добавить в корзину');
+    const wid='w'+b.dataset.wk, sel=!!(inC&&LAB&&LAB.id===wid), here=inC&&!sel;
+    const ico=b.firstElementChild, tx=b.lastElementChild, book=b.nextElementSibling;
+    if(ico&&!b.dataset.ico) b.dataset.ico=ico.innerHTML;
+    if(ico) ico.innerHTML=sel?ic('check',24):here?PIN_W:b.dataset.ico;
+    if(tx) tx.textContent=sel?'В корзине':here?'Сдать здесь':'Добавить в корзину';
+    b.classList.toggle('inc',sel); b.classList.toggle('here',here);
+    b.setAttribute('role','button'); b.setAttribute('aria-label',sel?'В корзине, убрать из корзины':here?'Сдать здесь':'Добавить в корзину');
+    if(book) book.hidden=inC;
+    // под ценой: разница с выбранным филиалом
+    const cp=b.closest('[data-clinic-add]').parentElement.previousElementSibling;
+    let dl=cp&&cp.nextElementSibling&&cp.nextElementSibling.classList.contains('wdelta')?cp.nextElementSibling:null;
+    const showD=LAB&&LAB.id!==wid&&(inC||cart.size>0);
+    if(showD&&cp&&cp.classList.contains('cp')){
+      const d=labPrice(wlab(+b.dataset.wk),id)-labPrice(LAB,id);
+      if(!dl){dl=document.createElement('small');dl.className='wdelta';cp.after(dl)}
+      dl.className='wdelta'+(d<0?' cheap':'');
+      dl.textContent=d?`На ${fmt(Math.abs(d))} ${d<0?'дешевле':'дороже'}, чем в ${LAB.n}`:`Как в ${LAB.n}`;
+    } else if(dl) dl.remove();
   });
+}
+/* ТЗ 2.6 в виде БШ: «Этот анализ уже добавлен для {филиал}. Заменить на {новый}?» */
+function replaceSheet(id,W,after){
+  const inC=inCart(id), miss=[...cart.keys()].filter(x=>x!==id&&!labHas(W,x));
+  const lead=inC?'Этот анализ уже добавлен':`Анализы в корзине (${cart.size}) уже добавлены`;
+  window.__rep=()=>{closeSheet();after();toast(`Филиал заменён на ${W.n}`);SC.ev('rep')};
+  openSheet(`<div class="sbody"><div class="csec" style="border-radius:0 0 24px 24px;padding-top:0;gap:12px">
+    <div class="chev-ctl" data-act="close" style="color:var(--ink)">${SV.grabDown}</div>
+    <div class="sh" style="font-size:22px;line-height:28px">Заменить филиал?</div>
+    <p class="rpl">${lead} для <b>${esc(LAB.n)}</b>. Заменить на <b>${esc(W.n)}</b>?</p>
+    ${miss.length?`<div class="warn">${SV.alert}<div>${miss.length>1?'Анализы не доступны':'Анализ не доступен'} для сдачи в ${esc(W.n)}:<p>${esc(miss.map(x=>shortName(items[x].name)).join(', '))}</p></div></div>`:''}
+  </div></div>
+  <div class="sfoot"><button class="big wide" data-act="rep-yes">Да, заменить</button><button class="lnk" data-act="close">Нет</button>${hi()}</div>`);
 }
 function labFor(L,ids){
   const avail=ids.filter(id=>labHas(L,id)), miss=ids.filter(id=>!labHas(L,id));
@@ -1309,7 +1413,7 @@ function renderCart(){
     <div class="ptsrow"><div class="tx"><b>Начислим баллы</b><span>после сдачи в лаборатории-партнёре</span></div><span class="ptp lg">+${fmt0(t.ids.length*PTS_PER)}${SV.coinY}</span></div>
   </div>
   <button class="csec pickrow" data-act="prep" style="flex-direction:row"><span class="illu" style="background-image:url(${ASSET.prep})"></span><span class="tx"><b>Подготовка к анализам</b><span>Чтобы результаты были точными</span></span><span>${SV.chevR}</span></button>
-  <div class="csec slist"><div class="sh" style="font-size:22px;line-height:28px">Часто добавляют к этим анализам</div><div class="rows3">${related(ids,6).map(i=>rowHTML(i,'mini')).join('')}</div></div>`;
+  <div class="csec slist"><div class="sh" style="font-size:22px;line-height:28px">Часто добавляют к этим анализам</div><div class="rows3">${cartRecs(ids).map(i=>rowHTML(i,'mini')).join('')}</div></div>`;
 }
 function renderPageFooter(id){
   const f=$('#f-page');
@@ -1325,7 +1429,7 @@ function renderPageFooter(id){
     f.innerHTML=`<div class="pts-row${pts?'':' dis'}"><button class="sw${PAY.usePts&&pts?' on':''}" data-act="pts" role="switch" aria-checked="${!!(PAY.usePts&&pts)}" aria-label="Списать баллы" ${pts?'':'disabled'}></button><div class="tx"><b>Списать ${fmt(PTS_FIX)} баллами</b><span>${pts?`У вас ${SV.coinY} ${bal} баллов`:BALANCE<PTS_FIX?`Нужно ${PTS_FIX} баллов, у вас ${SV.coinY} ${bal}`:`Доступно для заказа дороже ${fmt(PTS_FIX)}`}</span></div></div>
       <button class="big wide paybtn" data-act="pay" ${PAY.consent?'':'disabled'}><span>Оплатить ${fmt(pay)}</span><span class="sep"></span><span class="bn">${SV.coinY}+${fmt0(t.ids.length*PTS_PER)}</span></button>${hi()}`;
   } else if(id==='s-res'){
-    f.innerHTML=`<button class="lnk" data-act="resskip">Пропустить</button><button class="big wide" data-act="resok">Даю согласие</button>${hi()}`;
+    f.innerHTML=`<button class="big wide" data-act="resok">Даю согласие</button><button class="lnk" data-act="resskip">Пропустить</button>${hi()}`;
   } else if(id==='s-ok'){
     f.innerHTML=`<button class="big wide" data-act="home">Хорошо</button>${hi()}`;
   } else if(id==='s-fail'){
@@ -1373,8 +1477,7 @@ function renderPat(){
     <div class="pchips hscroll">${chips}</div>
     ${fld('f','Фамилия',1)}${fld('i','Имя',1)}${fld('o','Отчество',0)}${fld('b','Дата рождения',1,'inputmode="numeric" maxlength="10"')}
     <div class="glab">Пол</div><div class="gseg" role="radiogroup" aria-label="Пол"><button data-g="m" role="radio" aria-checked="${PF.g==='m'}" class="${PF.g==='m'?'on':''}">Мужчина</button><button data-g="f" role="radio" aria-checked="${PF.g==='f'}" class="${PF.g==='f'?'on':''}">Женщина</button></div>
-  </div>
-  <div class="csec pform"><div class="sh" style="font-size:22px;line-height:28px">Контакты</div>
+    <div class="sh" style="font-size:22px;line-height:28px;margin-top:16px">Контакты</div>
     ${fld('phone','Номер телефона',1,'inputmode="tel"')}${fld('email','Эл. почта',1,'inputmode="email"')}
     <div class="pinfo">${SV.infoC}Пришлём результаты анализов на эту почту</div>
   </div>`;
@@ -1435,13 +1538,13 @@ function renderOK(){
   const L=P.lab;
   $('#ok-body').innerHTML=`<div class="okbox"><div style="width:171px;height:120px;display:flex;align-items:center;justify-content:center">${SUCCESS}</div><h1>Заказ оплачен<br>${fmt(P.total)}</h1><div class="s">Вам будет начислено ${SV.coinY} ${fmt0(P.ids.length*PTS_PER)}</div></div>
   <div style="display:flex;flex-direction:column;gap:8px">
+  <button class="csec pickrow" data-act="prep-paid" style="flex-direction:row"><span class="illu" style="background-image:url(${ASSET.prep})"></span><span class="tx"><b>Подготовка к анализам</b><span>Чтобы результаты были точными</span></span><span>${SV.chevR}</span></button>
   <div class="csec" style="gap:24px">
     <div class="irow">${SV.cal}<div class="tx"><b>Сдать анализы нужно до ${P.until}</b><span class="k">Заказ действителен 14 дней</span></div></div>
     <div class="irow">${SV.pinO}<div class="tx"><b>${esc(L.n)}</b><span>${esc(L.a)}</span><span class="mt"><u style="background:${L.mc}"></u>${esc(L.metro)}, ${L.md}</span></div></div>
     <div class="irow">${SV.clock}<div class="tx"><b>Часы приёма биоматериала</b><span class="k">С понедельника по пятницу</span><span>${L.hours[0]}</span><span class="k">С субботы по воскресенье</span><span>${L.hours[1]}</span></div></div>
     <div class="pass"><span style="display:flex;gap:8px;align-items:center">${SV.infoC}Не забудьте взять с собой паспорт</span><span class="im" style="background-image:url(${ASSET.passport})"></span></div>
   </div>
-  <button class="csec pickrow" data-act="prep-paid" style="flex-direction:row"><span class="illu" style="background-image:url(${ASSET.prep})"></span><span class="tx"><b>Подготовка к анализам</b><span>Чтобы результаты были точными</span></span><span>${SV.chevR}</span></button>
   </div>`;
 }
 
@@ -1569,13 +1672,13 @@ function renderMap(fresh){
 }
 function selectLab(id,card=true){
   MV.sel=id; MV.searching=false; const L=LABS.find(x=>x.id===id);
-  if(card){MV.card=true;renderMSheet();}
+  if(card){MV.card=true;renderMSheet();SC.ev('pin');if(!labFor(L,mapIds()).full)SC.ev('pin-partial');}
   centerOn(L.x,L.y,Math.max(MV.s,0.8));
 }
 function zoomAt(f,cx,cy){
   const s0=MV.s, s1=Math.min(1.7,Math.max(0.36,s0*f)); if(s1===s0) return;
   cx=cx??vpW()/2; cy=cy??(HDR+visibleH())/2;
-  const wx=(cx-MV.x)/s0, wy=(cy-MV.y)/s0; MV.s=s1; MV.x=cx-wx*s1; MV.y=cy-wy*s1; clampView(); applyView();
+  const wx=(cx-MV.x)/s0, wy=(cy-MV.y)/s0; MV.s=s1; MV.x=cx-wx*s1; MV.y=cy-wy*s1; clampView(); applyView(); if(s1>s0)SC.ev('zoom');
 }
 /* place search */
 function renderSugg(){
@@ -1649,26 +1752,30 @@ $('#ph').addEventListener('click',e=>{
   if(d.place!==undefined){pickPlace(PLACES[+d.place]);return}
   if(d.me){const L=LABS[0];pickPlace({n:'Рядом со мной',x:L.x+60,y:L.y+90,me:true});return}
   if(d.brand){MV.brands.has(d.brand)?MV.brands.delete(d.brand):MV.brands.add(d.brand);t.querySelector('.cb').classList.toggle('on');return}
-  if(d.cart){e.stopPropagation();const id=d.cart;const was=inCart(id);toggleCart(id);refresh();
+  if(d.cart){e.stopPropagation();const id=d.cart;const was=inCart(id);toggleCart(id);refresh();if(!was)SC.ev('add@'+curScr());
     if(!$('#dim').hidden&&$('#up-go')){$('#up-go .t span').textContent=anW(cart.size);toast(was?'Убрали из корзины':'Добавили в корзину')}
     else{toast(was?'Убрали из корзины':'Добавили в корзину'); if(curScr()==='s-cart'){renderCart();updateFooters('s-cart')}}
     return}
-  if(d.clinicAdd!==undefined){ // ТЗ 2.6: добавление с карточки выбирает филиал; другой филиал — через «Заменить филиал?»
-    const id=t.dataset.cartId, W=wlab(+t.dataset.wk);
-    if(LAB&&LAB.id===W.id&&inCart(id)){go({s:'cart'});return}
-    const pick=()=>{const had=inCart(id);LAB=W;addCart(id);cart.get(id).on=true;[...cart.keys()].forEach(x=>{if(!labHas(W,x))cart.get(x).on=false});refresh();if(!had)openUpsell(id);return had};
-    if(LAB&&LAB.id!==W.id) dialog('Заменить филиал?',`В корзине выбран филиал «${esc(LAB.n)}». Заменим его на «${esc(W.n)}», цены в корзине пересчитаем.`,[['Заменить',()=>{pick();toast('Филиал заменён')}],['Отмена',()=>{}]]);
-    else pick();
+  if(d.clinicAdd!==undefined){ // вариант A (ТЗ 2.6): один филиал на корзину
+    const id=t.dataset.cartId, W=wlab(+t.dataset.wk); W.always=new Set([id]);
+    const setLab=()=>{LAB=W;[...cart.keys()].forEach(x=>{cart.get(x).on=labHas(W,x)})};
+    const nm=shortName(items[id].name);
+    if(inCart(id)&&LAB&&LAB.id===W.id){delCart(id);if(!cart.size)LAB=null;refresh();toast(`${nm} убран из корзины`);SC.ev('wrm');return}
+    if(inCart(id)){
+      if(!LAB){setLab();refresh();toast(`Сдаёте в ${W.n}`);SC.ev('here');return}
+      replaceSheet(id,W,()=>{setLab();refresh()});return}
+    const add=()=>{setLab();addCart(id);cart.get(id).on=true;refresh();openUpsell(id)};
+    if(LAB&&LAB.id!==W.id&&cart.size) replaceSheet(id,W,add); else add();
     return}
   if(d.rm){delCart(d.rm);renderCart();updateFooters('s-cart');toast('Убрали из корзины');return}
   if(d.ck){const v=cart.get(d.ck);v.on=!v.on;renderCart();updateFooters('s-cart');return}
   if(d.pat!==undefined){PATIENT=+d.pat;closeSheet();renderCart();return}
-  if(d.pm){PAY.method=d.pm;renderCO();return}
-  if(d.pk!==undefined){PATIENT=+d.pk;patFill(PATIENT);renderPat();return}
+  if(d.pm){PAY.method=d.pm;renderCO();SC.ev('pm:'+d.pm);return}
+  if(d.pk!==undefined){PATIENT=+d.pk;patFill(PATIENT);renderPat();if(PATIENT>=0)SC.ev('patfill');return}
   if(d.g){PF.g=d.g;delete PF.err.g;renderPat();return}
   if(d.open){if(!$('#dim').hidden)closeSheet();go({s:'detail',id:d.open});return}
   if(d.cat){go({s:'ctg',c:d.cat});return}
-  if(d.chip){const sc=$('#s-ctg'),y=sc.scrollTop;cur.c=d.chip;renderCtg(true);sc.scrollTop=y;return}
+  if(d.chip){const sc=$('#s-ctg'),y=sc.scrollTop;cur.c=d.chip;renderCtg(true);sc.scrollTop=y;SC.ev('chip');return}
   if(d.q){cur.q=d.q;renderGS(d.q);return}
   if(d.jump){window.__chipLock&&window.__chipLock();t.parentNode.scrollTo({left:t.offsetLeft-16,behavior:'smooth'});$$('#d-chips .chip').forEach(c=>c.classList.toggle('on',c===t));$('#'+d.jump).scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});return}
   const a=d.act;
@@ -1689,6 +1796,7 @@ $('#ph').addEventListener('click',e=>{
     case 'drm': delCart(cur.id);refresh();toast('Убрали из корзины'); break;
     case 'cart': closeSheet(); go({s:'cart'}); break;
     case 'close': closeSheet(); break;
+    case 'rep-yes': window.__rep&&window.__rep(); break;
     case 'tomap': if(!cart.size){toast('Добавьте анализы в корзину');break} if(!checkedIds().length){toast('Отметьте анализы, которые будете сдавать');break} go({s:'map'}); break;
     case 'map': if(!inCart(cur.id))addCart(cur.id); refresh(); go({s:'map'}); break;
     case 'patient': openPatient(); break;
@@ -1730,7 +1838,7 @@ $('#ph').addEventListener('click',e=>{
     case 'f-full': MV.full=!MV.full; renderMSheet(); renderMarkers(); break;
     case 'mpick': {
       const L=LABS.find(x=>x.id===MV.sel), r=labFor(L,mapIds());
-      const done=()=>{LAB=L; [...cart.keys()].forEach(id=>{if(!labHas(L,id))cart.get(id).on=false;}); back(); toast(`Выбрали ${L.n}`)};
+      const done=()=>{LAB=L; [...cart.keys()].forEach(id=>{if(!labHas(L,id))cart.get(id).on=false;}); back(); toast(`Выбрали ${L.n}`); SC.ev('labpick')};
       if(r.full) done();
       else dialog(`Сдать ${anW(r.k)} здесь?`,`В «${esc(L.n)}» нет: ${esc(r.miss.map(id=>shortName(items[id].name)).join(', '))}. Их можно сдать в другой лаборатории позже.`,[[`Сдать ${r.k} из ${r.N} здесь`,done],['Найти филиал со всеми анализами',()=>{MV.card=false;const best=sortedLabs(filtered().filter(x=>labFor(x,mapIds()).full),mapIds()).sort((a,b)=>Math.hypot(a.L.x-L.x,a.L.y-L.y)-Math.hypot(b.L.x-L.x,b.L.y-L.y))[0];if(best)selectLab(best.L.id);}]]);
       break;}
@@ -1746,7 +1854,7 @@ $('#q').addEventListener('input',e=>{cur.q=e.target.value;renderGS(e.target.valu
 $('#pat-body').addEventListener('input',e=>{const k=e.target.dataset.f;if(!k)return;let v=e.target.value;
   if(k==='b'){const dg=v.replace(/\D/g,'').slice(0,8);v=dg.replace(/^(\d{2})(\d)/,'$1.$2').replace(/^(\d{2}\.\d{2})(\d)/,'$1.$2');if(v!==e.target.value)e.target.value=v;}
   PF[k]=v;const l=e.target.closest('.fld');l.classList.toggle('has',!!v);if(PF.err[k]){delete PF.err[k];l.classList.remove('err');const n=l.nextElementSibling;if(n&&n.classList.contains('ferr'))n.remove();}});
-$('#cq').addEventListener('input',e=>{cur.q=e.target.value;renderCat();const i=$('#cq');i.focus()});
+$('#cq').addEventListener('input',e=>{cur.q=e.target.value;renderCat();const i=$('#cq');i.focus();if(cur.q.trim().length>1)SC.ev('q')});
 $('#m-sheet').addEventListener('input',e=>{if(e.target.id!=='mq')return;MV.q=e.target.value;$('#mq-wrap').classList.toggle('has',!!MV.q);if(!MV.searching){MV.searching=true;MV.sheet='full';const v=MV.q;renderMSheet();const i=$('#mq');i.focus();i.setSelectionRange(v.length,v.length);}else renderSugg();});
 $('#m-sheet').addEventListener('focusin',e=>{if(e.target.id==='mq'&&!MV.searching){MV.searching=true;MV.sheet='full';renderMSheet();const i=$('#mq');i.focus();}});
 document.addEventListener('keydown',e=>{
@@ -1789,6 +1897,113 @@ else if(start==='cart'){demo();go({s:'cart'});}
 else if(start==='map'){demo();go({s:'cart'});go({s:'map'});}
 else if(start==='lab'){demo();LAB=LABS[0];go({s:'cart'});}
 NOANIM=false;
+/* =================== РЕЖИМ «СЦЕНАРИИ ДЛЯ ПОКАЗА» (по CJM 439:109448, стрелки 604:13254) =================== */
+(function(){
+  const LS=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}};
+  const ferr=()=>(POP8.find(i=>/^Ферритин/.test(i.name))||POP8[0]).id;
+  function fresh(){cart.clear();LAB=null;PAID=null;PF=null;PATIENT=0;PAY.method='card';PAY.usePts=true;PAY.consent=true;PAY.brkOpen=true;MV.card=false;MV.sel=null;MV.searching=false;MV.place=null;MV.q='';$('#dlg').hidden=true;closeSheet();}
+  function nav(views){const was=NOANIM;NOANIM=true;stack.length=0;cur=null;views.forEach((v,k)=>go(v,k>0,false));NOANIM=was;}
+  const demo4=()=>['Пролактин','Билирубин общий','Глюкоза','Ферритин'].forEach(n=>{const i=DATA.items.find(x=>x.name===n||x.name.startsWith(n));if(i)addCart(i.id)});
+  const wW=k=>{const W=wlab(k);W.always=new Set([ferr()]);return W};
+  const scrollTo=(sel,scr)=>setTimeout(()=>{const e=$(sel),s=$(scr);if(e&&s)s.scrollTop+=e.getBoundingClientRect().top-s.getBoundingClientRect().top-(scr==='#s-detail'?380:140)},60);
+  const pay0=()=>{const t=cartTotals();const d=new Date();d.setDate(d.getDate()+14);PAID={lab:LAB,total:t.total-ptsOff(t.total),ids:t.ids.slice(),until:d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})};t.ids.forEach(id=>cart.delete(id));};
+  const A={s:'an',q:''}, CART={s:'cart'};
+  const S=[
+   {id:'catalog',t:'Каталог: с главной до корзины',d:'Плитка на главной, каталог, добавление и плашка мини-корзины',steps:[
+    {t:'Тап по плитке «Анализы» на главной',ev:'scr:an',hl:'#s-home [data-act=allan]',pre:()=>{fresh();nav([{s:'home'}])}},
+    {t:'Пролистать каталог',ev:'scroll-an',hint:'Прокрутите экран вниз',pre:()=>{fresh();nav([A])}},
+    {t:'Добавить анализ из «Популярных»',ev:'add@s-an',hl:'#an-body [data-cart]',pre:()=>{fresh();nav([A]);scrollTo('#an-body [data-cart]','#s-an')}},
+    {t:'Плашка мини-корзины: «Перейти в корзину»',ev:'scr:cart',hl:'#f-cart .gocart',pre:()=>{fresh();addCart(POP8[0].id);nav([A]);scrollTo('#an-body [data-cart]','#s-an')}}]},
+   {id:'search',t:'Поиск по анализам',d:'Поиск без чипсов, добавление из выдачи, «Отмена» возвращает назад',steps:[
+    {t:'Тап в поиск в каталоге',ev:'scr:cat',hl:'#s-an [data-act=catsearch]',pre:()=>{fresh();nav([A])}},
+    {t:'Ввести запрос, например «ферритин»',ev:'q',hl:'#cq-wrap',pre:()=>{fresh();nav([A,{s:'cat',c:'all',q:''}]);setTimeout(()=>$('#cq').focus(),80)}},
+    {t:'Добавить анализ в корзину из выдачи',ev:'add@s-cat',hl:'#cat-body [data-cart]',pre:()=>{fresh();nav([A,{s:'cat',c:'all',q:'ферр'}]);$('#cq').value='ферр';renderCat()}},
+    {t:'Перейти в корзину',ev:'scr:cart',hl:'#f-cart .gocart',pre:()=>{fresh();addCart(ferr());nav([A,{s:'cat',c:'all',q:'ферр'}]);$('#cq').value='ферр';renderCat()}}]},
+   {id:'detail',t:'Категория и деталька анализа',d:'Категорийные экраны, поп-ап допродажи, выбор филиала (вариант A)',steps:[
+    {t:'Открыть категорию плиткой',ev:'scr:ctg',hl:'#an-body [data-cat]',pre:()=>{fresh();nav([A])}},
+    {t:'Переключить категорию чипсой',ev:'chip',hl:'#ctg-chips .chip:not(.on)',pre:()=>{fresh();nav([A,{s:'ctg',c:'vitamins'}])}},
+    {t:'Открыть детальку анализа',ev:'scr:detail',hl:'#ctg-body [data-open]',pre:()=>{fresh();nav([A,{s:'ctg',c:'vitamins'}])}},
+    {t:'Добавить с детальки: поп-ап допродажи',ev:'upsell',hl:'#d-add',pre:()=>{fresh();nav([A,{s:'detail',id:ferr()}])}},
+    {t:'«Где сдать»: «Сдать здесь» у филиала',ev:'here',hl:'#b-where [data-clinic-add].here',pre:()=>{fresh();addCart(ferr());nav([A,{s:'detail',id:ferr()}]);scrollTo('#b-where [data-clinic-add]','#s-detail')}},
+    {t:'Сменить филиал: БШ «Заменить филиал?»',ev:'rep',hl:'#b-where [data-clinic-add].here',pre:()=>{fresh();addCart(ferr());LAB=wW(1);nav([A,{s:'detail',id:ferr()}]);scrollTo('#b-where [data-clinic-add]','#s-detail')}},
+    {t:'«В корзине» убирает анализ из корзины',ev:'wrm',hl:'#b-where [data-clinic-add].inc',pre:()=>{fresh();addCart(ferr());LAB=wW(1);nav([A,{s:'detail',id:ferr()}]);scrollTo('#b-where [data-clinic-add].inc','#s-detail')}}]},
+   {id:'map',t:'Выбор клиники на карте',d:'Карта без поиска, пины с ценой, филиал без части анализов',steps:[
+    {t:'Корзина: «Выбрать клинику»',ev:'scr:map',hl:'#cart-body [data-act=tomap]',pre:()=>{fresh();demo4();nav([CART])}},
+    {t:'Приблизить карту',ev:'zoom',hl:'#s-map [data-act=zin]',pre:()=>{fresh();demo4();nav([CART,{s:'map'}])}},
+    {t:'Тап по пину лаборатории',ev:'pin',hl:'#m-layer [data-mk]',pre:()=>{fresh();demo4();nav([CART,{s:'map'}])}},
+    {t:'Пин, где есть не все анализы',ev:'pin-partial',hl:'#m-layer .mk.p[data-mk]',hint:'Светлые пины: «N из M анализов»',pre:()=>{fresh();demo4();nav([CART,{s:'map'}]);setTimeout(()=>{const L=LABS.find(x=>!labFor(x,mapIds()).full);if(L)centerOn(L.x,L.y,MV.s)},120)}},
+    {t:'«Выбрать» филиал и вернуться в корзину',ev:'labpick',hl:'[data-act=mpick]',pre:()=>{fresh();demo4();nav([CART,{s:'map'}]);setTimeout(()=>selectLab(LABS[0].id),120)}}]},
+   {id:'checkout',t:'Оформление и оплата',d:'Данные пациента, 500 баллов, согласие на результаты, успех',steps:[
+    {t:'«Перейти к оформлению» из корзины',ev:'scr:pat',hl:'#f-page [data-act=checkout]',pre:()=>{fresh();demo4();LAB=LABS[0];nav([CART])}},
+    {t:'Подставить данные чипсой пациента',ev:'patfill',hl:'#pat-body [data-pk="0"]',pre:()=>{fresh();demo4();LAB=LABS[0];nav([CART,{s:'pat'}])}},
+    {t:'«Продолжить» к оплате',ev:'scr:co',hl:'#f-page [data-act=patnext]',pre:()=>{fresh();demo4();LAB=LABS[0];PATIENT=0;patFill(0);nav([CART,{s:'pat'}])}},
+    {t:'Списать 500 баллов и оплатить',ev:'scr:res',hl:'#f-page [data-act=pay]',pre:()=>{fresh();demo4();LAB=LABS[0];PATIENT=0;patFill(0);nav([CART,{s:'pat'},{s:'co'}])}},
+    {t:'Согласие на результаты: «Даю согласие» или «Пропустить»',ev:'scr:ok',hl:'#f-page [data-act=resok]',pre:()=>{fresh();demo4();LAB=LABS[0];pay0();nav([{s:'res'}])}}]},
+   {id:'fail',t:'Платёж не прошёл',d:'Ошибка оплаты и повторная попытка',steps:[
+    {t:'Выбрать «Карта банка другой страны»',ev:'pm:foreign',hl:'#co-body [data-pm=foreign]',pre:()=>{fresh();demo4();LAB=LABS[0];PATIENT=0;patFill(0);nav([CART,{s:'pat'},{s:'co'}])}},
+    {t:'Оплатить',ev:'scr:fail',hl:'#f-page [data-act=pay]',pre:()=>{fresh();demo4();LAB=LABS[0];PATIENT=0;patFill(0);PAY.method='foreign';nav([CART,{s:'pat'},{s:'co'}])}},
+    {t:'«Попробовать ещё раз»',ev:'scr:co',hl:'#f-page [data-act=retry]',pre:()=>{fresh();demo4();LAB=LABS[0];PATIENT=0;patFill(0);PAY.method='foreign';nav([CART,{s:'pat'},{s:'co'},{s:'fail'}])}}]}
+  ];
+  let st={}; try{st=JSON.parse(LS('vitrina-sc')||'{}')||{}}catch(e){st={}}
+  S.forEach(s=>{if(!Array.isArray(st[s.id])||st[s.id].length!==s.steps.length)st[s.id]=s.steps.map(()=>false)});
+  let active=LS('vitrina-sc-active')||null; if(!S.some(s=>s.id===active))active=null;
+  let mode=LS('vitrina-mode')==='sc'?'sc':'free';
+  const save=()=>{LS('vitrina-sc',JSON.stringify(st));LS('vitrina-sc-active',active||'')};
+  const P=$('#scp'), body=$('#scp-body');
+  const nextIdx=s=>{const a=st[s.id];let k=a.lastIndexOf(true)+1;if(k>=a.length)k=a.indexOf(false);return k};
+  const CK='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 8.2 2.9 2.9 6.1-6.3"/></svg>';
+  const GO='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5 10.5 8 6 12.5"/></svg>';
+  function draw(){
+    body.innerHTML=S.map((s,si)=>{const a=st[s.id],n=a.filter(Boolean).length,on=s.id===active,nx=on?nextIdx(s):-1;
+      return `<section class="scc${on?' on':''}${n===a.length?' done':''}">
+        <button class="sch" data-sc-open="${s.id}" aria-expanded="${on}"><span class="scn">${si+1}</span><span class="sct"><b>${s.t}</b><span>${s.d}</span></span><span class="scq">${n}/${a.length}</span></button>
+        ${on?`<ol class="scs">${s.steps.map((p,k)=>`<li class="${a[k]?'ok':''}${k===nx?' nx':''}"><button class="scb" data-sc-ck="${k}" role="checkbox" aria-checked="${a[k]}" aria-label="Шаг ${k+1} пройден">${CK}</button><button class="scl" data-sc-go="${k}"><span>${p.t}${k===nx&&p.hint?`<i>${p.hint}</i>`:''}</span>${GO}</button></li>`).join('')}</ol>
+        <div class="scf">${n===a.length?`<span class="scok">${CK}Сценарий пройден</span>`:''}<button data-sc-go="0" class="scbtn">${n?'Пройти заново':'Начать'}</button>${n===a.length&&S[si+1]?`<button class="scbtn pri" data-sc-open="${S[si+1].id}" data-sc-start="1">Следующий сценарий</button>`:''}</div>`:''}
+      </section>`}).join('');
+  }
+  function hl(){
+    $$('.sc-hl').forEach(e=>e.classList.remove('sc-hl'));
+    if(mode!=='sc'||!active) return;
+    const s=S.find(x=>x.id===active), k=nextIdx(s); if(k<0) return; const p=s.steps[k];
+    if(!$('#dlg').hidden){const b=$('#dlg [data-dlg="0"]'); if(b) b.classList.add('sc-hl'); return}
+    if(!p.hl) return;
+    if(!$('#dim').hidden&&!$('#sheet').contains($(p.hl))) return;
+    const R=$('#ph').getBoundingClientRect(), vis=x=>{const r=x.getBoundingClientRect();return r.width&&r.top>=R.top+90&&r.bottom<=R.bottom-60&&r.left>=R.left+4&&r.right<=R.right-4};
+    const all=[...document.querySelectorAll(p.hl)].filter(x=>x.offsetParent&&$('#ph').contains(x)); const e=all.find(vis)||all[0]; if(e) e.classList.add('sc-hl');
+  }
+  function jump(k){
+    const s=S.find(x=>x.id===active); if(!s) return;
+    st[s.id]=st[s.id].map((v,i)=>i<k); save();
+    muted=true; try{s.steps[k].pre()}finally{setTimeout(()=>{muted=false},250)} draw(); setTimeout(hl,150);
+    if(matchMedia('(max-width:440px)').matches){P.classList.add('min');$('#scp-tg').setAttribute('aria-expanded','false')}
+  }
+  let muted=false;
+  SC.ev=name=>{
+    if(muted||mode!=='sc'||!active) return;
+    const s=S.find(x=>x.id===active), a=st[s.id]; const from=Math.max(0,a.lastIndexOf(true)+1);
+    let hit=-1; for(let k=from;k<a.length;k++) if(s.steps[k].ev===name){hit=k;break}
+    if(hit<0){ const n=nextIdx(s); if(n>=0&&s.steps[n].ev===name) hit=n; }
+    if(hit<0) return; a[hit]=true; save(); draw(); setTimeout(hl,60);
+  };
+  function setMode(m){
+    mode=m; LS('vitrina-mode',m);
+    $$('[data-mode-set]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.modeSet===m)));
+    P.hidden=m!=='sc'; document.body.classList.toggle('scmode',m==='sc'); draw(); hl();
+  }
+  $$('[data-mode-set]').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.modeSet)));
+  $('#scp-tg').addEventListener('click',()=>{const o=P.classList.toggle('min');$('#scp-tg').setAttribute('aria-expanded',String(!o))});
+  $('#scp-reset').addEventListener('click',()=>{S.forEach(s=>st[s.id]=s.steps.map(()=>false));save();draw();hl()});
+  body.addEventListener('click',e=>{
+    const o=e.target.closest('[data-sc-open]'),c=e.target.closest('[data-sc-ck]'),g=e.target.closest('[data-sc-go]');
+    if(o){const id=o.dataset.scOpen; if(o.dataset.scStart){active=id;save();jump(0);return} active=active===id?null:id; save(); draw(); hl(); return}
+    if(c){const s=S.find(x=>x.id===active),k=+c.dataset.scCk; st[s.id][k]=!st[s.id][k]; save(); draw(); hl(); return}
+    if(g){jump(+g.dataset.scGo); return}
+  });
+  $('#s-an').addEventListener('scroll',e=>{if(e.target.scrollTop>280)SC.ev('scroll-an')},{passive:true});
+  document.addEventListener('click',()=>setTimeout(hl,80),true);
+  setInterval(()=>{if(mode==='sc'&&active&&!document.querySelector('.sc-hl'))hl()},400);
+  setMode(mode);
+})();
 })();
 
 </script>
