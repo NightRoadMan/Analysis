@@ -61,6 +61,8 @@ syncSeg();
 /* ---------- state ---------- */
 const cart=new Map(); // id -> {on:bool}
 let LAB=null;          // выбранная лаборатория
+let ONE=null;          // «Записаться на 1 анализ» (ТЗ 2.6, 2.12.3): {id,L} — оформление мимо корзины
+const curLab=()=>ONE?ONE.L:LAB;
 let PATIENT=0;
 const PATIENTS=[
   {n:'Смирнова Ксения Алексеевна',d:'06.08.1989 (37 лет)',img:ASSET.woman},
@@ -84,13 +86,18 @@ const CONTACT={phone:'+7 911 167 45 67',email:'analysis@napopravku.ru'};
 /* ---------- navigation ---------- */
 const stack=[]; let cur=null;
 const VITRINA=new Set(['s-cat','s-ctg','s-detail']); // экраны, где плавает мини-корзина
+const TABS={'s-home':'home','s-orders':'orders'}; // экраны с таббаром: главная и «Мои записи»
 function show(id){CUR_ID=id;
   $$('.scr').forEach(s=>s.hidden=s.id!==id);
-  $('#tabbar').hidden=id!=='s-home';
+  const tb=TABS[id]; $('#tabbar').hidden=!tb; if(tb)$$('#tabbar .tbi').forEach(b=>{const on=b.dataset.tab===tb;b.classList.toggle('on',on);b.setAttribute('aria-current',on?'page':'false')});
   updateFooters(id);
 }
 function render(view){
+  if(ONE&&!['pat','co','res','ok','fail'].includes(view.s)) ONE=null; // запись на 1 анализ живёт только в оформлении
   if(view.s==='home') show('s-home');
+  else if(view.s==='clinic'){CL.src=view.src;CL.ctx=view.ctx||null;CL.tab=view.tab||'info';show('s-clinic');renderClinic();}
+  else if(view.s==='orders'){show('s-orders');renderOrders();}
+  else if(view.s==='order'){show('s-order');renderOrder();}
   else if(view.s==='gs'){renderGS(view.q||'');show('s-gs');}
   else if(view.s==='an'){renderAn();show('s-an');}
   else if(view.s==='cat'){renderCat();show('s-cat');}
@@ -106,7 +113,7 @@ function render(view){
 }
 let CUR_ID='s-home', NOANIM=true;
 /* iOS push/pop: новый экран въезжает справа, старый уходит на 30% влево; назад наоборот */
-const CHROME=['#tabbar','#f-cart','#f-detail','#f-page'];
+const CHROME=['#tabbar','#f-cart','#f-detail','#f-page','#f-clinic'];
 const visScr=()=>{const e=document.getElementById(CUR_ID);return e&&!e.hidden?e:document.querySelector('.scr:not([hidden])')};
 const visChrome=()=>CHROME.map(q=>$(q)).filter(e=>!e.hidden);
 function snap(){const el=visScr();return el?{el,top:el.scrollTop,chrome:visChrome()}:null}
@@ -161,6 +168,7 @@ function toggleCart(id){inCart(id)?delCart(id):addCart(id)}
 function refresh(){
   $$('[data-cart]').forEach(b=>{b.outerHTML=b.dataset.k?rowBtn(b.dataset.cart,b.dataset.k):btnHTML(b.dataset.cart,b.dataset.up)});
   if(cur&&cur.s==='detail'){setDetailAdd(cur.id);updWhere();}
+  if(cur&&cur.s==='clinic') clRefreshList();
   updateFooters(curScr());
 }
 function btnHTML(id,up){
@@ -177,6 +185,7 @@ function updateFooters(id){
   const c=$('#d-cnt'); c.hidden=!n; c.textContent=n;
   $('#f-page').hidden=!['s-cart','s-pat','s-co','s-res','s-ok','s-fail'].includes(id);
   if(!$('#f-page').hidden) renderPageFooter(id);
+  if(id==='s-clinic') renderClinicFooter(); else $('#f-clinic').hidden=true;
 }
 
 /* ---------- analysis card (catalog) ---------- */
@@ -452,7 +461,7 @@ const LABS=(function(){
   });
 })();
 function labHas(L,id){return L.cov>=1||(L.always&&L.always.has(id))||rnd(L.id+'|'+id)<L.cov}
-function labPrice(L,id){return L.w?r10(items[id].price*L.f):r10(items[id].price*L.f*(.92+rnd(id+L.id)*.16))}
+function labPrice(L,id){if(L.px){const p=pxOf(L,id);if(p!=null)return p} return L.w?r10(items[id].price*L.f):r10(items[id].price*L.f*(.92+rnd(id+L.id)*.16))}
 /* филиалы из карточек «Где сдать» на детальке: выбор филиала прямо оттуда (ТЗ 2.6) */
 function wlab(k){const w=WLABS[k];return {id:'w'+k,w:1,x:MC[0],y:MC[1],brand:BRANDS.find(b=>b.k===w.brand)||BRANDS[0],n:w.n,a:w.a,metro:w.metro,mc:w.mc,md:w.md,rate:'4,5',rev:36,cov:w.brand==='gem'?.55:1,f:w.base/CLINIC_BASE,pts:true,hours:['7:30—19:00','8:00—14:00']}}
 const PIN_W='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M12 21s6.5-5.6 6.5-11a6.5 6.5 0 0 0-13 0c0 5.4 6.5 11 6.5 11Z"/><circle cx="12" cy="10" r="2.4"/></svg>';
@@ -503,6 +512,7 @@ const fullCount=ids=>LABS.filter(L=>ids.every(id=>labHas(L,id))).length;
 /* ---------- cart screen ---------- */
 const checkedIds=()=>[...cart.entries()].filter(([id,v])=>v.on).map(([id])=>id);
 function cartTotals(){
+  if(ONE){const id=ONE.id,sum=labPrice(ONE.L,id),blood=isBlood(items[id])?380:0;return {ids:[id],sum,blood,total:sum+blood}}
   const ids=checkedIds().filter(id=>!LAB||labHas(LAB,id));
   const sum=ids.reduce((a,id)=>a+(LAB?labPrice(LAB,id):items[id].price),0);
   const blood=ids.some(id=>isBlood(items[id]))?380:0;
@@ -523,12 +533,12 @@ function renderCart(){
   const ids=[...cart.keys()], allOn=ids.every(id=>cart.get(id).on||(LAB&&!labHas(LAB,id)));
   const elig=ids.filter(id=>!LAB||labHas(LAB,id)), onN=elig.filter(id=>cart.get(id).on).length, ckCls=onN&&onN===elig.length?' on':(onN?' mid':'');
   const t=cartTotals(), P=PATIENTS[PATIENT];
-  const place=LAB?`<div class="csec">${labHead(LAB,'<button class="sbtn" data-act="tomap">Изменить</button>')}<div class="infobar"><span style="color:var(--ink)">${SV.info}</span>Срок сдачи 14 дней после оплаты</div></div>`
+  const place=LAB?`<div class="csec"><div class="tapl" data-clplace="${LAB.id}">${labHead(LAB,'<button class="sbtn" data-act="tomap">Изменить</button>')}</div><div class="infobar"><span style="color:var(--ink)">${SV.info}</span>Срок сдачи 14 дней после оплаты</div></div>`
     :`<button class="csec pickrow" data-act="tomap" style="flex-direction:row"><span class="illu" style="background-image:url(${ASSET.pin})"></span><span class="tx"><b>Выбрать клинику</b><span>Доступно в ${fullCount(checkedIds().length?checkedIds():ids)} ${plural(fullCount(ids),'клинике','клиниках','клиниках')}</span></span><span>${SV.chevR}</span></button>`;
   const row=id=>{const i=items[id],v=cart.get(id),miss=LAB&&!labHas(LAB,id);
     return `<div class="citem${(!v.on||miss)?' off':''}"><button class="cb${v.on&&!miss?' on':''}" data-ck="${id}" ${miss?'disabled':''} aria-label="Отметить"><i>${SV.tick}</i></button>
       <div class="b"><div class="n tap" data-open="${id}">${esc(i.name)}</div>${miss?`<div class="miss">Нет в этой лаборатории</div>`:`<span class="pr">${LAB?'':'<i>от</i>'}<b>${fmt(LAB?labPrice(LAB,id):i.price)}</b></span>`}<div class="m">Готовность за ${esc(i.days||'1 день')}</div></div>
-      <div class="rc"><button class="sbtn sq" data-rm="${id}" aria-label="Удалить">${SV.trash}</button>${miss?'':`<span class="ptp">${SV.coinY}+${PTS_PER}</span>`}</div></div>`};
+      <div class="rc"><button class="sbtn sq" data-rm="${id}" aria-label="Удалить">${SV.trash}</button></div></div>`};
   const missN=LAB?ids.filter(id=>!labHas(LAB,id)).length:0;
   // один островок: «Выбрать всё», анализы, забор, итого и баллы (Figma 439:109975)
   b.innerHTML=`${place}
@@ -629,7 +639,7 @@ function renderCO(){
     ['foreign','Карта банка другой страны',`<svg width="34" height="26" viewBox="0 0 34 26"><rect x="1" y="2" width="28" height="19" rx="3" fill="#D7D9DE"/><rect x="1" y="6" width="28" height="3.5" fill="#B5B9C2"/><rect x="4" y="13" width="9" height="3" rx="1" fill="#fff"/><circle cx="27" cy="20" r="6" fill="#4F9FE8"/><path d="M21.5 20h11M27 14.5c2 2 2 9 0 11M27 14.5c-2 2-2 9 0 11" stroke="#fff" stroke-width="1.1" fill="none"/></svg>`]];
   $('#co-body').innerHTML=`
   <div class="csec"><button class="ttl${PAY.brkOpen?' open':''}" data-act="brk"><span>Итого</span><span class="v">${fmt(t.total)}${SV.chevUp}</span></button>
-    ${PAY.brkOpen?`<div class="brk">${t.ids.map(id=>`<div><span>${esc(shortName(items[id].name))}</span><b>${fmt(labPrice(LAB,id))}</b></div>`).join('')}${t.blood?`<div><span>Взятие крови из вены</span><b>${fmt(380)}</b></div>`:''}${PAY.usePts&&ptsOff(t.total)?`<div class="ptsl"><span>Оплата баллами</span><b>−${fmt(ptsOff(t.total))}</b></div>`:''}</div>`:''}
+    ${PAY.brkOpen?`<div class="brk">${t.ids.map(id=>`<div><span>${esc(shortName(items[id].name))}</span><b>${fmt(labPrice(curLab(),id))}</b></div>`).join('')}${t.blood?`<div><span>Взятие крови из вены</span><b>${fmt(380)}</b></div>`:''}${PAY.usePts&&ptsOff(t.total)?`<div class="ptsl"><span>Оплата баллами</span><b>−${fmt(ptsOff(t.total))}</b></div>`:''}</div>`:''}
   </div>
   <div class="csec"><div class="sh" style="font-size:22px;line-height:28px">Способы оплаты</div>
     <div>${pm.map(([k,n,svg])=>`<button class="pay" data-pm="${k}"><span class="pi">${svg}</span><span class="pn">${n}</span><span class="radio${PAY.method===k?' on':''}"></span></button>`).join('')}</div>
@@ -644,8 +654,9 @@ function pay(){
     $('#loader').hidden=true;
     if(PAY.method==='foreign'){go({s:'fail'});return}
     const d=new Date(); d.setDate(d.getDate()+14);
-    PAID={lab:LAB,total,ids:t.ids.slice(),until:d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})};
-    t.ids.forEach(id=>cart.delete(id));
+    PAID={lab:curLab(),total,ids:t.ids.slice(),until:d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'}),untilD:d,pts:PAY.usePts?ptsOff(t.total):0};
+    PAID.order=addOrder(PAID); // заказ сразу в «Моих записях» со статусом «Оформляем заказ»
+    if(!ONE) t.ids.forEach(id=>cart.delete(id));
     resetTo({s:'res'});
   },1300);
 }
@@ -769,7 +780,7 @@ function renderMSheet(){
     const L=LABS.find(x=>x.id===MV.sel), r=labFor(L,ids);
     s.style.height='auto';
     s.innerHTML=`<div class="chev-ctl" data-act="mclose" style="color:var(--ink)">${SV.grabDown}</div><div class="mcardwrap">
-      ${labHead(L)}
+      <div class="tapl" data-clplace="${L.id}" role="button" tabindex="0" aria-label="Открыть страницу лаборатории">${labHead(L)}</div>
       <div class="lcard" style="margin:0;padding:0;border:0;gap:12px;background:none"><div class="pr2"><b>${fmt(r.p)}</b><span class="mcnt${r.full?'':' p'}">за ${r.full?r.N:`${r.k} из ${r.N}`}${SV.flask(r.full?'var(--light)':'var(--warn-fg)')}</span></div>
       ${r.full?'':`<div class="warn">${SV.alert}<div>${r.miss.length>1?'Анализы недоступны для сдачи:':'Анализ недоступен для сдачи:'}<p>${esc(r.miss.map(id=>shortName(items[id].name)).join(', '))}</p></div></div>`}</div>
       <button class="big" data-act="mpick">Выбрать</button></div>${hi()}`;
@@ -868,6 +879,18 @@ function openBrandSheet(){
     const opts=[['peek',PEEK],['half',H*.5],['full',H-HDR]];opts.sort((a,b)=>Math.abs(a[1]-h)-Math.abs(b[1]-h));sd=null;MV.searching=false;setSheet(opts[0][0]);});
 })();
 
+/* ---------- запись на 1 анализ: сразу к данным пациента, корзина не меняется ---------- */
+function startOne(id,L){ONE={id,L};PF=null;go({s:'pat'});SC.ev('one');toast(`Запись на 1 анализ в ${L.n}`)}
+
+/*@@MODULES@@*/
+
+/* таббар: «Главная» и «Мои записи» работают, остальные вкладки — заглушки */
+$('#tabbar').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(!b)return;const t=b.dataset.tab;
+  if(t==='home'){if(CUR_ID!=='s-home')resetTo({s:'home'})}
+  else if(t==='orders'){if(CUR_ID!=='s-orders'){MO.tab='rec';resetTo({s:'orders'})}SC.ev('tab:orders')}
+  else toast('В этом прототипе раздел не подключён')});
+$('#tabbar').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.dataset.tab){e.preventDefault();e.target.click()}});
+
 /* ---------- events ---------- */
 $('#ph').addEventListener('click',e=>{
   const t=e.target.closest('[data-mk],[data-cl],[data-lab],[data-place],[data-me],[data-brand],[data-cart],[data-open],[data-cat],[data-chip],[data-q],[data-jump],[data-rm],[data-ck],[data-pat],[data-pm],[data-pk],[data-g],[data-act],[data-clinic-add]');
@@ -909,8 +932,8 @@ $('#ph').addEventListener('click',e=>{
   const a=d.act;
   switch(a){
     case 'back': if(curScr()==='s-res'){resetTo({s:'ok'});break} back(); break;
-    case 'resok': if(PAID)PAID.res=true; resetTo({s:'ok'}); toast('Результаты придут в «Мои записи»'); break;
-    case 'resskip': resetTo({s:'ok'}); break;
+    case 'resok': if(PAID){PAID.res=true;if(PAID.order)PAID.order.consent=true} resetTo({s:'ok'}); toast('Результаты придут в «Мои записи»'); break;
+    case 'resskip': if(PAID&&PAID.order)PAID.order.consent=false; resetTo({s:'ok'}); break;
     case 'hours': openHours(); break;
     case 'search': go({s:'gs',q:''}); setTimeout(()=>$('#q').focus(),50); break;
     case 'catsearch': go({s:'cat',c:'all',q:''}); setTimeout(()=>$('#cq').focus(),50); break;
@@ -944,7 +967,7 @@ $('#ph').addEventListener('click',e=>{
     case 'retry': back(); break;
     case 'closefail': stack.pop(); back(); break;
     case 'support': e.preventDefault(); toast('Откроем чат поддержки'); break;
-    case 'records': toast('Раздел «Мои записи» в прототипе не подключён'); break;
+    case 'records': MO.tab='rec'; resetTo({s:'orders'},1); break;
     case 'home': resetTo({s:'home'},-1); break;
     /* map */
     case 'zin': zoomAt(1.3); break;
@@ -1009,7 +1032,8 @@ window.addEventListener('resize',()=>{if(curScr()==='s-map'){renderMSheet();appl
   window.__chipLock=()=>{lock=Date.now()+700};
 })();
 
-/* start: #analyses, #cat-<id> (категория), #all/#find (поиск по анализам), #search (общий поиск), #cart, #map, #lab, #pat, #res, #ok */
+/* start: #analyses, #cat-<id> (категория), #all/#find (поиск по анализам), #search (общий поиск), #cart, #map, #lab, #pat, #res, #ok,
+   #clinic (клиника с анализом), #clinic-lab (лаборатория), #free (поликлиника ОМС), #orders (Мои записи), #order (детали заказа) */
 const start=(location.hash||'').slice(1);
 cur={s:'home'}; show('s-home');
 const demo=()=>['Пролактин','Билирубин общий','Глюкоза','Ферритин'].forEach(n=>{const i=DATA.items.find(x=>x.name===n||x.name.startsWith(n));if(i)addCart(i.id)});
@@ -1024,14 +1048,20 @@ else if(start==='search') go({s:'gs',q:''});
 else if(start==='cart'){demo();go({s:'cart'});}
 else if(start==='map'){demo();go({s:'cart'});go({s:'map'});}
 else if(start==='lab'){demo();LAB=LABS[0];go({s:'cart'});}
+else if(/^clinic(-lab)?$/.test(start)||start==='free'){ // деталька клиники с анализом (Рэмси), лаборатории (Инвитро) или поликлиника ОМС
+  const fe=(POP8.find(i=>/^Ферритин/.test(i.name))||POP8[0]).id, wk=WLABS.findIndex(w=>w.brand===(start==='clinic'?'rem':'inv'));
+  go({s:'an',q:''});go({s:'detail',id:fe});go(start==='free'?clView('poly',null):clView('w'+wk,fe));}
+else if(start==='orders') resetTo({s:'orders'});
+else if(start==='order'){resetTo({s:'orders'});go({s:'order',i:0});}
 NOANIM=false;
 /* =================== РЕЖИМ «СЦЕНАРИИ ДЛЯ ПОКАЗА» (по CJM 439:109448, стрелки 604:13254) =================== */
 (function(){
   const LS=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}};
   const ferr=()=>(POP8.find(i=>/^Ферритин/.test(i.name))||POP8[0]).id;
-  function fresh(){cart.clear();LAB=null;PAID=null;PF=null;PATIENT=0;PAY.method='card';PAY.usePts=true;PAY.consent=true;PAY.brkOpen=true;MV.card=false;MV.sel=null;MV.searching=false;MV.place=null;MV.q='';$('#dlg').hidden=true;closeSheet();}
+  function fresh(){cart.clear();LAB=null;ONE=null;ORDERS.length=0;ORDERS.push(ORD_DEMO);ORD_DEMO.st='wait';MO.tab='rec';MO.more={};PAID=null;PF=null;PATIENT=0;PAY.method='card';PAY.usePts=true;PAY.consent=true;PAY.brkOpen=true;MV.card=false;MV.sel=null;MV.searching=false;MV.place=null;MV.q='';$('#dlg').hidden=true;closeSheet();}
   function nav(views){const was=NOANIM;NOANIM=true;stack.length=0;cur=null;views.forEach((v,k)=>go(v,k>0,false));NOANIM=was;}
   const demo4=()=>['Пролактин','Билирубин общий','Глюкоза','Ферритин'].forEach(n=>{const i=DATA.items.find(x=>x.name===n||x.name.startsWith(n));if(i)addCart(i.id)});
+  const REM=()=>WLABS.findIndex(w=>w.brand==='rem'), INV=()=>WLABS.findIndex(w=>w.brand==='inv');
   const wW=k=>{const W=wlab(k);W.always=new Set([ferr()]);return W};
   const scrollTo=(sel,scr)=>setTimeout(()=>{const e=$(sel),s=$(scr);if(e&&s)s.scrollTop+=e.getBoundingClientRect().top-s.getBoundingClientRect().top-(scr==='#s-detail'?380:140)},60);
   const pay0=()=>{const t=cartTotals();const d=new Date();d.setDate(d.getDate()+14);PAID={lab:LAB,total:t.total-ptsOff(t.total),ids:t.ids.slice(),until:d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})};t.ids.forEach(id=>cart.delete(id));};
@@ -1067,6 +1097,19 @@ NOANIM=false;
     {t:'«Продолжить» к оплате',ev:'scr:co',hl:'#f-page [data-act=patnext]',pre:()=>{fresh();demo4();LAB=LABS[0];PATIENT=0;patFill(0);nav([CART,{s:'pat'}])}},
     {t:'Списать 500 баллов и оплатить',ev:'scr:res',hl:'#f-page [data-act=pay]',pre:()=>{fresh();demo4();LAB=LABS[0];PATIENT=0;patFill(0);nav([CART,{s:'pat'},{s:'co'}])}},
     {t:'Согласие на результаты: «Даю согласие» или «Пропустить»',ev:'scr:ok',hl:'#f-page [data-act=resok]',pre:()=>{fresh();demo4();LAB=LABS[0];pay0();nav([{s:'res'}])}}]},
+   {id:'clinic',t:'Деталька клиники и лаборатории',d:'Из «Где сдать» в карточку клиники: цены, корзина, отзывы, запись на 1 анализ',steps:[
+    {t:'Тап по названию клиники в «Где сдать»',ev:'clinic-ctx',hl:'#b-where [data-wcl]:not([data-wcl=free])',pre:()=>{fresh();nav([A,{s:'detail',id:ferr()}]);scrollTo('#b-where [data-wcl]','#s-detail')}},
+    {t:'«Добавить в корзину» в нижней панели',ev:'cl-add',hl:'#f-clinic [data-cla=add]',pre:()=>{fresh();nav([A,{s:'detail',id:ferr()},clView('w'+REM(),ferr())])}},
+    {t:'Вкладка «Отзывы»: сначала про этот анализ',ev:'cltab:reviews',hl:'#cl-tabs [data-cltab=reviews]',pre:()=>{fresh();nav([A,{s:'detail',id:ferr()},clView('w'+REM(),ferr())])}},
+    {t:'Лаборатория: «Записаться» на 1 анализ',ev:'scr:pat',hl:'#cl-list [data-cla=one]',pre:()=>{fresh();nav([A,{s:'detail',id:ferr()},clView('w'+INV(),ferr())])}},
+    {t:'Поликлиника по ОМС из «Где сдать»',ev:'clinic',hl:'#b-where [data-wcl=free]',pre:()=>{fresh();nav([A,{s:'detail',id:ferr()}]);scrollTo('#b-where [data-wcl=free]','#s-detail')}}]},
+   {id:'orders',t:'Мои записи: заказ анализов',d:'Вкладка таббара, карточка заказа, детали, поддержка, «Записаться еще раз»',steps:[
+    {t:'Таб «Мои записи»',ev:'tab:orders',hl:'#tabbar [data-tab=orders]',pre:()=>{fresh();nav([{s:'home'}])}},
+    {t:'Раскрыть список анализов «Ещё 1 анализ»',ev:'mo-more',hl:'#mo-body [data-momore]',pre:()=>{fresh();nav([{s:'orders'}])}},
+    {t:'Открыть детали заказа',ev:'mo-detail',hl:'#mo-body .mo-chev',pre:()=>{fresh();nav([{s:'orders'}])}},
+    {t:'Сменить статус над телефоном, например «Часть результатов готова»',ev:'mo-st',hint:'Список «Статус заказа» над телефоном',pre:()=>{fresh();nav([{s:'orders'},{s:'order',i:0}])}},
+    {t:'«Обратиться в поддержку»',ev:'mo-support',hl:'#mo-dbody [data-act=mo-support]',pre:()=>{fresh();nav([{s:'orders'},{s:'order',i:0}]);scrollTo('#mo-dbody [data-act=mo-support]','#s-order')}},
+    {t:'«Записаться еще раз»: набор заказа в корзине',ev:'mo-repeat',hl:'#mo-dbody [data-morepeat]',pre:()=>{fresh();nav([{s:'orders'},{s:'order',i:0}]);scrollTo('#mo-dbody [data-morepeat]','#s-order')}}]},
    {id:'fail',t:'Платёж не прошёл',d:'Ошибка оплаты и повторная попытка',steps:[
     {t:'Выбрать «Карта банка другой страны»',ev:'pm:foreign',hl:'#co-body [data-pm=foreign]',pre:()=>{fresh();demo4();LAB=LABS[0];PATIENT=0;patFill(0);nav([CART,{s:'pat'},{s:'co'}])}},
     {t:'Оплатить',ev:'scr:fail',hl:'#f-page [data-act=pay]',pre:()=>{fresh();demo4();LAB=LABS[0];PATIENT=0;patFill(0);PAY.method='foreign';nav([CART,{s:'pat'},{s:'co'}])}},
