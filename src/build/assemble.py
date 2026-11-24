@@ -119,6 +119,55 @@ _sort = re.sub(r"<div style='[^']*'>Популярные</div>", '', _ch[0]).rep
 WHERE = WHERE[:_pos[0]] + _sort + _ch[2] + _ch[1] + WHERE[_pos[2] + len(_ch[2]):]
 
 
+# ---- таббар: вкладки кликабельные, активная подсвечивается (Главная / Мои записи)
+TB = p['TABBAR']
+_row = TB.find('" data-act="soon"><div style="box-sizing:border-box;flex-shrink:0;height:54px;position:relative;width:72px">')
+assert _row > 0
+TB = TB[:_row] + '" class="tbrow">' + TB[_row + len('" data-act="soon">'):]
+TB = TB.replace('<div style="background-color:#EDEDED;border-radius:100px;bottom:0px;box-sizing:border-box;left:0px;position:absolute;right:0px;top:0px"></div>', '', 1)
+TB = TB.replace('#F3AA00', '#070707')
+_rs = TB.find('class="tbrow">') + len('class="tbrow">')
+_tabs, _i = [], _rs
+for _k in range(5):
+    _e = _elem(TB, _i); _tabs.append(_e); _i += len(_e)
+_keys = [('home', 'Главная'), ('orders', 'Мои записи'), ('tm', 'Онлайн-консультации'), ('tracker', 'Трекер здоровья'), ('profile', 'Профиль')]
+_new = ''.join(e.replace('<div ', f'<div class="tbi" data-tab="{k}" role="button" tabindex="0" aria-label="{n}" ', 1).replace('>', '><i class="tbon"></i>', 1) for e, (k, n) in zip(_tabs, _keys))
+TB = TB[:_rs] + _new + TB[_i:]
+p['TABBAR'] = TB
+
+# ---- «Где сдать»: шапка карточки открывает детальку клиники, «Записаться на 1 анализ» работает (ТЗ 2.6)
+_cards = list(re.finditer(r'(border-radius:32px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px;outline:1px solid #EAEBED;outline-offset:-1px;overflow:clip;padding:24px;width:343px"><div style="align-items:start;box-sizing:border-box;display:flex;gap:16px")', WHERE))
+assert len(_cards) == 10, len(_cards)
+for _k, _m in reversed(list(enumerate(_cards))):
+    WHERE = WHERE[:_m.end()] + f' class="wcl" data-wcl="{_k}" role="button" tabindex="0"' + WHERE[_m.end():]
+_n = WHERE.count('data-act="soon"><div style=\'align-content:center;box-sizing:border-box;color:#31858C;flex-shrink:0;font-family:"Montserrat", system-ui, sans-serif;font-feature-settings:"liga" 0;font-size:16px;font-weight:600;line-height:16px;text-align:center;width:max-content\'>Записаться на 1 анализ')
+WHERE = WHERE.replace('data-act="soon"><div style=\'align-content:center;box-sizing:border-box;color:#31858C;flex-shrink:0;font-family:"Montserrat", system-ui, sans-serif;font-feature-settings:"liga" 0;font-size:16px;font-weight:600;line-height:16px;text-align:center;width:max-content\'>Записаться на 1 анализ', 'data-act="one1"><div style=\'align-content:center;box-sizing:border-box;color:#31858C;flex-shrink:0;font-family:"Montserrat", system-ui, sans-serif;font-feature-settings:"liga" 0;font-size:16px;font-weight:600;line-height:16px;text-align:center;width:max-content\'>Записаться на 1 анализ')
+assert _n == 10, _n
+# Рэмси: реальный филиал на пл. Конституции, как на детальке клиники (Figma 619:20514)
+_ri = WHERE.find('Рэмси Диагностика на Московском')
+_rc = WHERE.rfind('<div style="align-items:start;background-color:#FFFFFF;border-radius:32px', 0, _ri)
+_rcard = _elem(WHERE, _rc)
+_rnew = _rcard.replace('Рэмси Диагностика на Московском', 'Рэмси Диагностика на Конституции')
+_rnew = re.sub(r'г\. Санкт-Петербург, [^<]+', 'г. Санкт-Петербург, пл. Конституции, д. 7', _rnew, count=1)
+_rnew = _rnew.replace('Обводный канал, 500 м', 'Московская, 1 км').replace('Лиговский проспект, 900 м', 'Парк Победы, 1,6 км').replace('#702785', '#0078C9')
+WHERE = WHERE[:_rc] + _rnew + WHERE[_rc + len(_rcard):]
+# бесплатная клиника в конце списка (ТЗ 2.5: бесплатные карточки в конце, без кнопок)
+_fc = _rnew.replace('Рэмси Диагностика на Конституции', 'Городская поликлиника № 51').replace('пл. Конституции, д. 7', 'пр. Космонавтов, д. 33–35').replace('Московская, 1 км', 'Московская, 1,8 км')
+_fc = re.sub(r'<div[^>]*>Парк Победы, 1,6 км</div>', '', _fc)
+_fc = _fc.replace('data-wcl="9"', 'data-wcl="free"')
+_b = _fc.find('<div style="align-items:start;align-self:stretch;box-sizing:border-box;display:flex;flex-direction:column;gap:8px"><div style="align-items:center;align-self:stretch;background-color:#61B7C6')
+assert _b > 0
+_fc = _fc[:_b] + _fc[_b + len(_elem(_fc, _b)):]
+_fc = re.sub(r'<div style=\'[^\']*\' class="cp" data-base="\d+">[^<]*</div>', '<div class="cpfree">Бесплатно по ОМС</div>', _fc)
+_fc = re.sub(r'<button class="lhrs".*?</button>', '', _fc, flags=re.S)
+_fc = re.sub(r'background-image:url\(data:[^)]*\)(, url\(data:[^)]*\))?', 'background-image:url(@@FREELOGO@@)', _fc, count=1)
+_fc = _fc.replace('data-clinic-add=""', '')
+WHERE = WHERE[:_rc] + _rnew + _fc + WHERE[_rc + len(_rnew):]
+for _w in WLABS:
+    if _w['brand'] == 'rem':
+        _w.update({'n': 'Рэмси Диагностика на Конституции', 'a': 'г. Санкт-Петербург, пл. Конституции, д. 7', 'metro': 'Московская', 'mc': '#0078C9', 'md': '1 км'})
+
+
 # ---- мок-данные приведены к макетам (Figma 562:61332, 562:46676, 466:134038): число клиник и цены
 FIGMA_MOCK = {  # имя (начало) -> (клиник, цена или None)
     '25-ОН витамин D': (96, None), 'Витамин В12 (цианокобаламин)': (88, None), 'Витамин B9 (Фолиевая кислота)': (81, None),
@@ -145,6 +194,9 @@ def b64(path, mime='image/png'):
 
 A = f'{S}/assets'
 ASSET = {k: b64(f'{A}/{k}.png') for k in ['woman', 'man', 'child', 'basket', 'pin', 'gift', 'prep', 'passport', 'res1', 'res2', 'res3']}
+CLIMG = {k: b64(f'{A}/clinic/{k}.jpg', 'image/jpeg') for k in ['h-ramsay', 'm-ramsay', 'h-invitro', 'm-invitro', 'h-poly', 'm-poly', 'a1', 'a2', 'a3', 'thumb', 'doc']}
+FREELOGO = 'data:image/svg+xml,' + urllib.parse.quote("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><rect width='48' height='48' fill='#E6F4F6'/><path d='M16 34V16h16v18M21 34v-5h6v5M24 19v6M21 22h6' fill='none' stroke='#31858C' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'/></svg>", safe="/:=' ")
+WHERE = WHERE.replace('@@FREELOGO@@', FREELOGO)
 SUCCESS = open(f'{A}/success.svg').read().strip()
 FAIL = open(f'{A}/failed.svg').read().strip()
 
@@ -190,6 +242,7 @@ consts = '\n'.join([
     'const ASSET=' + js(ASSET) + ';',
     'const CATIMG=' + js(CATIMG) + ';',
     'const SUCCESS=' + js(SUCCESS) + ';',
+    'const CLIMG=' + js(CLIMG) + ';',
     'const CHEVW=' + js(p['CHEVW']) + ';',
     'const SEARCHIC=' + js(p['SEARCHIC']) + ';',
     'const CLEARIC=' + js(p['CLEARIC']) + ';',
@@ -206,7 +259,7 @@ rep = {
     '@@CSS@@': css, '@@HOME@@': h, '@@SB@@': theme(p['SB']), '@@BACK@@': theme(p['BACK']),
     '@@SEARCHIC@@': p['SEARCHIC'], '@@CLEARIC@@': p['CLEARIC'], '@@TABBAR@@': theme(p['TABBAR']).replace('#F4F5F6 0%, #F4F5F600 82%', 'var(--fgrad) 0%, var(--fgrad0) 82%').replace('background-color:#EDEDED','background-color:var(--tab-on)').replace('inset 0 1px 0 #FFFFFF, inset 0 -1.5px 0 #FFFFFF','inset 0 1px 0 var(--tab-hl), inset 0 -1.5px 0 var(--tab-hl)').replace('#E6E6E6 0px 40px 30px -40px inset','var(--tab-hl2) 0px 40px 30px -40px inset'),
     '@@CHEVW@@': p['CHEVW'], '@@BASKET@@': p['BASKET'], '@@HOMEIND@@': p['IC']['homeind'],
-    '@@FAILSVG@@': FAIL, '@@CONSTS@@': consts, '@@JS@@': open(f'{B}/app.js').read(),
+    '@@FAILSVG@@': FAIL, '@@CONSTS@@': consts, '@@JS@@': open(f'{B}/app.js').read().replace('/*@@MODULES@@*/', open(f'{B}/clinic.js').read() + '\n' + open(f'{B}/orders.js').read()),
 }
 out = shell
 for k in ['@@CSS@@', '@@HOME@@', '@@SB@@', '@@BACK@@', '@@SEARCHIC@@', '@@CLEARIC@@', '@@TABBAR@@', '@@CHEVW@@',
