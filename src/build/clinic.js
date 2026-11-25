@@ -22,7 +22,7 @@ const CLP={
 const CLSTAR=c=>`<svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z" fill="${c}"/></svg>`;
 /* шаблоны сетей: тексты и контакты из Figma 619:20514 и реальных данных (см. память vitrina-ramsay-real-data) */
 const CLBRAND={
-  inv:{kind:'lab',about:'ИНВИТРО — федеральная сеть медицинских лабораторий. В этом офисе можно сдать анализы, подготовиться к беременности, пройти генетическое обследование и оформить медицинскую справку, в том числе в бассейн. Администратор подскажет, как подготовиться к анализу.',
+  inv:{kind:'lab',about:'ИНВИТРО — федеральная сеть медицинских лабораторий. В офисе @@ST@@ можно сдать анализы, подготовиться к беременности, пройти генетическое обследование и оформить медицинскую справку, в том числе в бассейн. Администратор подскажет, как подготовиться к анализу.',
     phone:'+7 (800) 200-87-69',sched:'Пн – пт 7:30–17:00, сб – вс 8:00–14:00',today:'07:30 – 17:00',wd:'07:30 – 17:00',we:'08:00 – 14:00',hero:'h-invitro',map:'m-invitro',rate:'5.0',rcount:'1 оценка',
     ach:[['thumb','Нет отрицательных отзывов']],svc:[['Справка в бассейн',750,'завтра, 07:30'],['Медицинская справка (форма 086/у)',1500,'сегодня, 14:30']],doctors:null,promo:['Скидка 15% на гормоны щитовидной железы','До 15 декабря']},
   kdl:{kind:'lab',about:'KDL — федеральная сеть клинико-диагностических лабораторий. Здесь сдают анализы крови и мочи, ПЦР-тесты, гормоны и чекапы. Результаты приходят на почту и в приложение.',
@@ -42,10 +42,10 @@ const CLPOLY={kind:'free',name:'Городская поликлиника № 51
   about:'Городская поликлиника № 51 Московского района — государственная поликлиника для взрослых. Приём бесплатно по полису ОМС, есть и платные услуги. Больше 200 врачей, в том числе травматолог-ортопед, невролог, врач УЗИ и функциональной диагностики.',
   phone:'+7 (812) 241-28-33',sched:'Пн – пт, с 8:00 до 20:00',today:'08:00 – 20:00',wd:'08:00 – 20:00',we:'Уточняйте',hero:'h-poly',map:'m-poly',
   svc:[['Приём участкового терапевта',null],['Приём невролога',1800],['Приём травматолога-ортопеда',null],['УЗИ органов брюшной полости',1600],['ЭКГ',null]],
-  an:[['Клинический анализ крови',null],['Креатинин',290],['Общий анализ крови (без лейкоцитарной формулы и СОЭ)',560],['Пролактин',310],['Глюкоза',null]],
+  an:[['Пролактин',310,'hormones-03'],['Клинический анализ крови',null,'general-01'],['Креатинин',290,'x-creat'],['Общий анализ крови с лейкоцитарной формулой',560,'hematology-02'],['Общий анализ крови без лейкоформулы + СОЭ',null,'general-02']],
   doctors:[['Козлова Марина Андреевна','Терапевт участковый'],['Орлов Дмитрий Сергеевич','Травматолог-ортопед']],promo:null};
 /* филиал из «Моих записей» (Figma 676:27687): Инвитро на Кушелевской, цены с zoon и Яндекс Карт */
-const KUSH={id:'kush',w:1,x:MC[0]+40,y:MC[1]-60,brand:BRANDS[0],n:'Инвитро на Кушелевской дороге',a:'Кушелевская дорога, д. 6, к. 1, стр. 1',metro:'Лесная',mc:'#D6083B',md:'1,3 км',rate:'5,0',rev:1,cov:1,f:1.05,pts:true,hours:['7:30—17:00','8:00—14:00'],
+const KUSH={blood:250,id:'kush',w:1,x:MC[0]+40,y:MC[1]-60,brand:BRANDS[0],n:'Инвитро на Кушелевской дороге',a:'Кушелевская дорога, д. 6, к. 1, стр. 1',metro:'Лесная',mc:'#D6083B',md:'1,3 км',rate:'5,0',rev:1,cov:1,f:1.05,pts:true,hours:['7:30—17:00','8:00—14:00'],
   px:{'Клинический анализ крови':835,'Ферритин':955,'Тиреотропный гормон':570,'25-ОН витамин D':2175,'Глюкоза':290,'Гликированный гемоглобин':975,'Креатинин':310,'Пролактин':750,'Холестерин общий':350}};
 const pxOf=(L,id)=>{if(!L.px)return null;const n=items[id].name;const k=Object.keys(L.px).find(x=>n.startsWith(x));return k?L.px[k]:null};
 const CLW={}; const clW=k=>CLW[k]||(CLW[k]=wlab(k));
@@ -60,22 +60,29 @@ function clPlace(src){
   if(src==='poly') return Object.assign({key:'poly',L:null},CLPOLY);
   const L=src==='kush'?KUSH:(typeof src==='string'&&src.startsWith('w')?clW(+src.slice(1)):LABS.find(x=>x.id===src));
   const B=CLBRAND[L.brand.k];
-  const kushB=L===KUSH?{}:{rate:L.rate?String(L.rate).replace(',','.'):B.rate,rcount:L.rev?`${L.rev} ${plural(L.rev,'отзыв','отзыва','отзывов')}`:B.rcount};
+  const kushB=L===KUSH?{rate:'5.0',rcount:'1 оценка'}:L.brand.k==='rem'?{}:{ /* Рэмси — рейтинг из макета 620:22245 */rate:L.rate?String(L.rate).replace(',','.'):B.rate,rcount:L.rev?`${L.rev} ${plural(L.rev,'отзыв','отзыва','отзывов')}`:B.rcount};
   const a=String(L.a).replace(/^г\. Санкт-Петербург, /,'');
-  return Object.assign({key:src,L,name:L.n,addr:a,metro:L.metro,mc:L.mc,md:L.md},B,kushB);
+  const st=L.n.replace(/^\S+\s+/,''); // «на Кушелевской дороге»
+  return Object.assign({key:src,L,name:L.n,addr:a,metro:L.metro,mc:L.mc,md:L.md},B,kushB,{about:B.about.replace('@@ST@@',st)});
 }
 const CL={src:null,ctx:null,tab:'info',only:false,q:'',more:false};
 function clLab(){return CL.src==='poly'?null:clPlace(CL.src).L}
+/* креатинина нет в моках каталога: строка только для деталек клиник, как в макете */
+items['x-creat']=Object.assign({},items['biochemistry-05'],{id:'x-creat',name:'Креатинин',price:300,fast:true});
+/* названия и порядок анализов в «Ценах» — как в макетах; ключи — id моков */
+const CLNM={lab:{'biochemistry-08':'Гликированный гемоглобин (HbA1c)','general-01':'Клинический анализ крови: общий анализ, лейкоформула, СОЭ','hormones-01':'ТТГ (тиреотропный гормон)','vitamins-01':'25-OH витамин D общий','biochemistry-06':'Холестерин общий'},
+  clinic:{'general-01':'Клинический анализ крови с лейкоформулой и СОЭ','hematology-02':'Общий анализ крови с лейкоцитарной формулой','general-02':'Общий анализ крови без лейкоформулы + СОЭ'}};
+CLNM.free=CLNM.clinic;
+const clNm=(P,id)=>(CLNM[P.kind]||{})[id]||items[id].name;
+const CLORD={lab:['biochemistry-08','x-creat','general-01','biochemistry-05','hormones-01','biochemistry-01','vitamins-01','biochemistry-06'],
+  clinic:['s0','s1','s2','general-01','s3','s4','x-creat','hematology-02','general-02']}; // у клиники услуги и анализы вперемешку (620:24746)
 function clAnalyses(P){
   if(P.kind==='free') return [];
-  const L=P.L, seen=new Set(), out=[];
-  const push=id=>{if(!id||!items[id])return;const nm=items[id].name;if(seen.has(nm)||!labHas(L,id))return;seen.add(nm);out.push(id)};
+  const L=P.L, out=[];
+  const push=id=>{if(!id||!items[id]||out.includes(id)||!labHas(L,id))return;out.push(id)};
   if(CL.ctx) push(CL.ctx);
-  if(L.px) Object.keys(L.px).forEach(k=>{const i=UNIQ.find(x=>x.name.startsWith(k));if(i)push(i.id)});
-  [...cart.keys()].forEach(push);
-  POP8.forEach(i=>push(i.id));
-  ['general','biochemistry','hormones','hematology'].forEach(c=>cats[c].items.slice(0,4).forEach(push));
-  return out.slice(0,16);
+  CLORD[P.kind].filter(k=>k[0]!=='s').forEach(push);
+  return out;
 }
 const clPrice=(L,id)=>pxOf(L,id)??labPrice(L,id);
 function clTags(i){
@@ -87,9 +94,9 @@ function clState(L,id){if(!inCart(id))return 'add';return LAB&&LAB.id===L.id?'in
 function clRow(P,id){
   const i=items[id], L=P.L, st=clState(L,id);
   const acts=st==='in'?`<button class="btn cl-in" data-cla="rm" data-id="${id}">${ic('check',16)}В корзине</button>`
-    :st==='here'?`<button class="btn" data-cla="here" data-id="${id}">${PIN_W.replace(/width="24" height="24"/,'width="16" height="16"')}Сдать здесь</button>`
     :`<button class="btn" data-cla="add" data-id="${id}">${ic('basketW',16)}В корзину</button><button class="btn t" data-cla="one" data-id="${id}">Записаться</button>`;
-  return `<article class="cl-pc"><div class="n tap" data-open="${id}">${esc(i.name)}</div>${clTags(i)}<div class="cl-pp"><b>${fmt(clPrice(L,id))}</b>${isBlood(i)?'<span>+ взятие крови 380 ₽</span>':''}</div><div class="cl-acts">${acts}</div></article>`;
+  const tap=id.startsWith('x-')?'':` tap" data-open="${id}`;
+  return `<article class="cl-pc"><div class="n${tap}">${esc(clNm(P,id))}</div>${clTags(i)}<div class="cl-pp"><b>${fmt(clPrice(L,id))}</b>${isBlood(i)?`<span>+ взятие крови ${fmt(bloodOf(L))}</span>`:''}</div><div class="cl-acts">${acts}</div></article>`;
 }
 function clSvc(P,r){
   if(P.kind==='free') return `<article class="cl-pc"><div class="n">${esc(r[0])}</div><div class="cl-pp"><b${r[1]==null?' class="sm"':''}>${r[1]==null?'Уточняйте по телефону':fmt(r[1])}</b></div></article>`;
@@ -116,9 +123,15 @@ function clPrices(P){
   const svc=(P.svc||[]).filter(r=>!nq||norm(r[0]).includes(nq));
   const fan=(P.an||[]).filter(r=>!nq||norm(r[0]).includes(nq));
   let body='';
-  if(P.kind==='free'){const an=fan.map(r=>{const i=UNIQ.find(x=>x.name.startsWith(r[0]));return `<article class="cl-pc"><div class="n">${esc(i?i.name:r[0])}</div>${i?clTags(i):''}<div class="cl-pp"><b${r[1]==null?' class="sm"':''}>${r[1]==null?'Уточняйте по телефону':fmt(r[1])}</b></div></article>`}).join('');
+  if(P.kind==='free'){const an=fan.filter(r=>r[2]!=='hormones-03'||CL.ctx==='hormones-03').map(r=>{const i=items[r[2]];return `<article class="cl-pc"><div class="n">${esc(i?clNm(P,r[2]):r[0])}</div>${i?clTags(i):''}<div class="cl-pp"><b${r[1]==null?' class="sm"':''}>${r[1]==null?'Уточняйте по телефону':fmt(r[1])}</b></div></article>`}).join('');
     body=CL.only?an:svc.map(r=>clSvc(P,r)).join('')+an;}
-  else body=ids.map(id=>clRow(P,id)).join('')+(CL.only?'':svc.map(r=>clSvc(P,r)).join(''));
+  else if(P.kind==='clinic'&&!CL.only){
+    const rows=[]; if(CL.ctx&&ids.includes(CL.ctx)) rows.push(clRow(P,CL.ctx));
+    CLORD.clinic.forEach(k=>{if(k[0]==='s'){const r=(P.svc||[])[+k.slice(1)];if(r&&svc.includes(r))rows.push(clSvc(P,r))}else if(ids.includes(k)&&k!==CL.ctx)rows.push(clRow(P,k))});
+    ids.filter(id=>!CLORD.clinic.includes(id)&&id!==CL.ctx).forEach(id=>rows.push(clRow(P,id)));
+    body=rows.join('');
+  }
+  else body=(CL.only?'':svc.map(r=>clSvc(P,r)).join(''))+ids.map(id=>clRow(P,id)).join('');
   if(!body) body=`<div class="empty"><b>${CL.only?'Анализов не нашли':'Ничего не нашли'}</b><span>${CL.only?`По запросу «${esc(CL.q)}» анализов здесь нет.`:'Попробуйте изменить запрос.'}</span><button class="btn t" data-act="${CL.only?'cl-allsvc':'cl-clearq'}">${CL.only?'Искать во всех услугах':'Сбросить поиск'}</button></div>`;
   return `<div class="cl-pane">
    <label class="inp cl-inp">${SEARCHIC}<input id="cl-q" type="text" placeholder="Поиск по услуге и анализам" value="${esc(CL.q)}" autocomplete="off" aria-label="Поиск по услуге и анализам"></label>
@@ -218,7 +231,7 @@ $('#ph').addEventListener('click',e=>{
   if(d.clplace){if(e.target.closest('[data-act]'))return;openClinic(d.clplace,null);return}
   if(d.cla){e.stopPropagation();clAct(d.cla,d.id);return}
   if(d.cltab){CL.tab=d.cltab;cur.tab=CL.tab;renderClinic(true);const s=$('#s-clinic'),tb=$('#cl-tabs');const pin=tb.offsetTop-s.querySelector('.hdr').offsetHeight;if(s.scrollTop>pin||d.cltab!=='info')s.scrollTop=pin;SC.ev('cltab:'+d.cltab);return}
-  if(d.wcl!==undefined){if(e.target.closest('[data-act],[data-clinic-add]'))return;openClinic(d.wcl==='free'?'poly':'w'+d.wcl,d.wcl==='free'?null:cur.id);return}
+  if(d.wcl!==undefined){if(e.target.closest('[data-act],[data-clinic-add]'))return;openClinic(d.wcl==='free'?'poly':'w'+d.wcl,cur.id);return}
 });
 $('#ph').addEventListener('click',e=>{
   const t=e.target.closest('[data-act]'); if(!t||t.closest('#dlg')) return;

@@ -899,6 +899,47 @@ button.mo-ln{text-decoration:underline;text-decoration-color:var(--border);text-
 .ordctl{align-items:center;gap:8px;padding:3px 3px 3px 12px;font:600 13px/16px var(--font);color:var(--stage-fg)}
 .ordctl select{font:600 13px/16px var(--font);border:0;border-radius:9px;padding:7px 10px;background:var(--stage-ctl-on);color:var(--stage-ctl-on-fg);cursor:pointer}
 .mo-ar .ico.off{background:var(--mo-red);color:var(--mo-red-fg)}
+/* шапка детальки клиники: белая, иконки без стеклянных кругов (Figma 620:26281) */
+.cl-hdr .gb{background:none;box-shadow:none}
+/* нижний блок без анализа: белая подложка, как футер 620:26674 */
+.cl-ftr.nb{background:var(--raised);box-shadow:0 -6px 24px rgba(13,13,13,.08);padding-top:16px}
+.cl-ftr.nb .cl-fcart{position:absolute;right:16px;top:-72px}
+/* «Мои записи», правки макетов 25.11 */
+#s-orders .hdr{padding-bottom:0;border-radius:0}
+.mo-tabs{display:flex;border-bottom:1px solid var(--border)}
+.mo-tabs button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:40px;font-size:15px;font-weight:600;color:var(--light);border-bottom:2px solid transparent;margin-bottom:-1px}
+.mo-tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);background:none;box-shadow:none}
+.mo-tabs .mo-n{background:var(--yellow);color:#fff}
+.mo-tp{flex-direction:row;justify-content:space-between;align-items:flex-start;gap:12px}
+.mo-tp .mo-price{flex-direction:column;align-items:flex-end;gap:0;flex-shrink:0}
+.mo-tp .mo-price .paid{font-size:15px;line-height:20px}
+.mo-tp .mo-price s{font-size:14px;line-height:18px}
+.mo-chip{font-size:13px;line-height:16px;border-radius:12px}
+.mo-chip.c-greenf{background:#81D37F;color:#fff}
+.mo-chip.c-red{background:#FF7777;color:#fff}
+.mo-sub.sm{font-size:13px;line-height:18px;margin-top:-8px}
+.mo-plq.p-gray{background:var(--tint);color:var(--ink)}
+.mo-plq.p-gray span{color:var(--ink);font-size:13px;line-height:18px}
+.mo-plq.p-gray.info b{display:block}
+.mo-howres{display:flex;align-items:center;gap:2px;margin-top:8px;font-size:14px;font-weight:600;color:var(--ink)}
+.mo-ul{gap:0;padding-left:18px}
+.mo-ln{font-weight:500}
+button.mo-ln{text-decoration:none}
+.mo-ic{background:none;width:32px;height:32px;color:var(--soft)}
+.mo-ph{justify-content:space-between;font-weight:500}
+.mo-hrs svg:last-child{color:var(--ink)}
+.mo-prep svg{color:var(--ink)}
+#s-order{background:var(--base)}
+#mo-dbody{padding:0 0 60px}
+.mo-d{border-radius:0;padding:8px 16px 16px}
+.mo-ars{gap:0}
+.mo-ar{padding:12px 0;border-bottom:1px solid var(--border)}
+.mo-ar .ico{background:var(--tint);color:var(--light)}
+.mo-ar .ico.ok{background:var(--mo-green);color:var(--mo-green-fg)}
+.mo-ar .ico.off{background:var(--mo-red);color:var(--mo-red-fg)}
+.mo-ar .tx span.x{color:var(--mo-red-fg)}
+.mo-route{background:none;height:36px}
+.mo-cancel{height:44px;font-size:16px;font-weight:600;color:#E66161;text-align:center;width:100%}
 
 </style>
 </head>
@@ -1081,8 +1122,7 @@ button.mo-ln{text-decoration:underline;text-decoration-color:var(--border);text-
   <section class="scr" id="s-orders" hidden>
     <header class="hdr">
       <div class="sb"><div style="align-self:stretch;box-sizing:border-box;flex-shrink:0;height:44px;overflow:clip;position:relative"><div style="box-sizing:border-box;height:30px;left:78px;position:absolute;top:0px;width:219px"></div><svg viewbox="0 0 66.66 11.34" preserveaspectratio="none" width="66.66" height="11.34" xmlns="http://www.w3.org/2000/svg" style="left:293.667px;top:19.3306px;width:66.66px;height:11.34px;display:inline-block;overflow:visible;position:absolute"><g transform="matrix(1 0 0 1 42.333 0.002)"><path d="M2.667 0L2.667 1L19.333 1L19.333 0L19.333 -1L2.667 -1L2.667 0ZM22 2.667L21 2.667L21 8.667L22 8.667L23 8.667L23 2.667L22 2.667ZM19.333 11.333L19.333 10.333L2.667 10.333L2.667 11.333L2.667 12.333L19.333 12.333L19.333 11.333ZM0 8.667L1 8.667L1 2.667L0 2.667L-1 2.667L-1 8.667L0 8.667ZM2.667 11.333L2.667 10.333C1.746 10.333 1 9.587 1 8.667L0 8.667L-1 8.667C-1 10.692 0.642 12.333 2.667 12.333L2.667 11.333ZM22 8.667L21 8.667C21 9.587 20.254 10.333 19.333 10.333L19.333 11.333L19.333 12.333C21.358 12.333 23 10.692 23 8.667L22 8.667ZM19.333 0L19.333 1C20.254 1 21 1.746 21 2.667L22 2.667L23 2.667C23 0.642 21.358 -1 19.333 -1L19.333 0ZM2.667 0L2.667 -1C0.642 -1 -1 0.642 -1 2.667L0 2.667L1 2.667C1 1.746 1.746 1 2.667 1L2.667 0Z" fill-rule="nonzero" fill="#070707" style="opacity:0.35"></path><path transform="matrix(1 0 0 1 23 3.667)" d="M0.000 0.000C0.000 0.000 0.000 4.000 0.000 4.000C0.805 3.661 1.328 2.873 1.328 2.000C1.328 1.127 0.805 0.339 0.000 0.000Z" fill-rule="nonzero" fill="#070707" style="opacity:0.4"></path><path transform="matrix(1 0 0 1 2 2)" d="M1.333 0.000C1.333 0.000 16.667 0.000 16.667 0.000C17.020 0.000 17.359 0.140 17.609 0.391C17.860 0.641 18.000 0.980 18.000 1.333C18.000 1.333 18.000 6.000 18.000 6.000C18.000 6.736 17.403 7.333 16.667 7.333C16.667 7.333 1.333 7.333 1.333 7.333C0.597 7.333 0.000 6.736 0.000 6.000C0.000 6.000 0.000 1.333 0.000 1.333C-0.000 0.597 0.597 0.000 1.333 0.000Z" fill-rule="nonzero" fill="#070707"></path></g><path transform="matrix(1 0 0 1 22.027 0)" d="M5.427 8.401C6.702 7.322 8.571 7.322 9.847 8.401C9.911 8.459 9.947 8.541 9.949 8.627C9.951 8.714 9.917 8.797 9.855 8.858L7.858 10.873C7.800 10.932 7.720 10.966 7.637 10.966C7.553 10.966 7.474 10.932 7.415 10.873L5.417 8.858C5.355 8.797 5.321 8.714 5.323 8.627C5.325 8.541 5.363 8.459 5.427 8.401ZM2.762 5.711C5.510 3.155 9.766 3.155 12.514 5.711C12.576 5.771 12.611 5.854 12.612 5.940C12.613 6.026 12.579 6.109 12.519 6.170L11.364 7.337C11.245 7.456 11.053 7.459 10.931 7.343C10.028 6.526 8.854 6.073 7.637 6.073C6.420 6.074 5.247 6.526 4.345 7.343C4.223 7.459 4.030 7.456 3.911 7.337L2.757 6.170C2.696 6.109 2.662 6.026 2.663 5.940C2.664 5.854 2.700 5.771 2.762 5.711ZM0.097 3.029C4.312 -1.010 10.962 -1.010 15.177 3.029C15.238 3.089 15.272 3.172 15.272 3.257C15.273 3.343 15.239 3.425 15.179 3.486L14.022 4.653C13.903 4.772 13.711 4.773 13.590 4.655C11.984 3.129 9.853 2.278 7.637 2.278C5.421 2.278 3.289 3.129 1.683 4.655C1.562 4.773 1.369 4.772 1.250 4.653L0.094 3.486C0.033 3.425 -0.001 3.343 0.000 3.257C0.001 3.172 0.036 3.089 0.097 3.029Z" fill-rule="nonzero" fill="#070707"></path><path transform="matrix(1 0 0 1 0 0.336)" d="M2.000 6.667C2.552 6.667 3.000 7.115 3.000 7.667L3.000 9.667C3.000 10.219 2.552 10.667 2.000 10.667L1.000 10.667C0.448 10.667 0.000 10.219 0.000 9.667L0.000 7.667C0.000 7.115 0.448 6.667 1.000 6.667L2.000 6.667ZM6.667 4.667C7.219 4.667 7.667 5.115 7.667 5.667L7.667 9.667C7.667 10.219 7.219 10.667 6.667 10.667L5.667 10.667C5.115 10.667 4.667 10.219 4.667 9.667L4.667 5.667C4.667 5.115 5.115 4.667 5.667 4.667L6.667 4.667ZM11.333 2.333C11.885 2.333 12.333 2.781 12.333 3.333L12.333 9.667C12.333 10.219 11.885 10.667 11.333 10.667L10.333 10.667C9.781 10.667 9.333 10.219 9.333 9.667L9.333 3.333C9.333 2.781 9.781 2.333 10.333 2.333L11.333 2.333ZM16.000 0.000C16.552 -0.000 17.000 0.448 17.000 1.000L17.000 9.667C17.000 10.219 16.552 10.667 16.000 10.667L15.000 10.667C14.448 10.667 14.000 10.219 14.000 9.667L14.000 1.000C14.000 0.448 14.448 0.000 15.000 0.000L16.000 0.000Z" fill-rule="nonzero" fill="#070707"></path></svg><div style="box-sizing:border-box;height:21px;left:21px;position:absolute;top:14px;width:54px"><div style="border-radius:32px;box-sizing:border-box;height:21px;left:0px;position:absolute;top:0px;width:54px"><div style="box-sizing:border-box;color:var(--ink);font-family:system-ui, sans-serif;font-size:15px;font-weight:600;left:8px;letter-spacing:0.374px;line-height:18px;position:absolute;top:2px;width:max-content">10:10</div></div></div></div></div>
-      <div class="tb"><div class="tt">Мои записи</div></div>
-      <div class="hs"><div class="tabs2 mo-tabs" role="tablist"><button type="button" role="tab" data-motab="rec">Записи</button><button type="button" role="tab" data-motab="req">Заявки <i class="mo-n">4</i></button></div></div>
+      <div class="mo-tabs" role="tablist" aria-label="Мои записи"><button type="button" role="tab" data-motab="rec">Записи</button><button type="button" role="tab" data-motab="req">Заявки <i class="mo-n">4</i></button></div>
     </header>
     <div id="mo-body" class="mo-list"></div>
   </section>
@@ -1091,7 +1131,7 @@ button.mo-ln{text-decoration:underline;text-decoration-color:var(--border);text-
   <section class="scr" id="s-order" hidden>
     <header class="hdr flat">
       <div class="sb"><div style="align-self:stretch;box-sizing:border-box;flex-shrink:0;height:44px;overflow:clip;position:relative"><div style="box-sizing:border-box;height:30px;left:78px;position:absolute;top:0px;width:219px"></div><svg viewbox="0 0 66.66 11.34" preserveaspectratio="none" width="66.66" height="11.34" xmlns="http://www.w3.org/2000/svg" style="left:293.667px;top:19.3306px;width:66.66px;height:11.34px;display:inline-block;overflow:visible;position:absolute"><g transform="matrix(1 0 0 1 42.333 0.002)"><path d="M2.667 0L2.667 1L19.333 1L19.333 0L19.333 -1L2.667 -1L2.667 0ZM22 2.667L21 2.667L21 8.667L22 8.667L23 8.667L23 2.667L22 2.667ZM19.333 11.333L19.333 10.333L2.667 10.333L2.667 11.333L2.667 12.333L19.333 12.333L19.333 11.333ZM0 8.667L1 8.667L1 2.667L0 2.667L-1 2.667L-1 8.667L0 8.667ZM2.667 11.333L2.667 10.333C1.746 10.333 1 9.587 1 8.667L0 8.667L-1 8.667C-1 10.692 0.642 12.333 2.667 12.333L2.667 11.333ZM22 8.667L21 8.667C21 9.587 20.254 10.333 19.333 10.333L19.333 11.333L19.333 12.333C21.358 12.333 23 10.692 23 8.667L22 8.667ZM19.333 0L19.333 1C20.254 1 21 1.746 21 2.667L22 2.667L23 2.667C23 0.642 21.358 -1 19.333 -1L19.333 0ZM2.667 0L2.667 -1C0.642 -1 -1 0.642 -1 2.667L0 2.667L1 2.667C1 1.746 1.746 1 2.667 1L2.667 0Z" fill-rule="nonzero" fill="#070707" style="opacity:0.35"></path><path transform="matrix(1 0 0 1 23 3.667)" d="M0.000 0.000C0.000 0.000 0.000 4.000 0.000 4.000C0.805 3.661 1.328 2.873 1.328 2.000C1.328 1.127 0.805 0.339 0.000 0.000Z" fill-rule="nonzero" fill="#070707" style="opacity:0.4"></path><path transform="matrix(1 0 0 1 2 2)" d="M1.333 0.000C1.333 0.000 16.667 0.000 16.667 0.000C17.020 0.000 17.359 0.140 17.609 0.391C17.860 0.641 18.000 0.980 18.000 1.333C18.000 1.333 18.000 6.000 18.000 6.000C18.000 6.736 17.403 7.333 16.667 7.333C16.667 7.333 1.333 7.333 1.333 7.333C0.597 7.333 0.000 6.736 0.000 6.000C0.000 6.000 0.000 1.333 0.000 1.333C-0.000 0.597 0.597 0.000 1.333 0.000Z" fill-rule="nonzero" fill="#070707"></path></g><path transform="matrix(1 0 0 1 22.027 0)" d="M5.427 8.401C6.702 7.322 8.571 7.322 9.847 8.401C9.911 8.459 9.947 8.541 9.949 8.627C9.951 8.714 9.917 8.797 9.855 8.858L7.858 10.873C7.800 10.932 7.720 10.966 7.637 10.966C7.553 10.966 7.474 10.932 7.415 10.873L5.417 8.858C5.355 8.797 5.321 8.714 5.323 8.627C5.325 8.541 5.363 8.459 5.427 8.401ZM2.762 5.711C5.510 3.155 9.766 3.155 12.514 5.711C12.576 5.771 12.611 5.854 12.612 5.940C12.613 6.026 12.579 6.109 12.519 6.170L11.364 7.337C11.245 7.456 11.053 7.459 10.931 7.343C10.028 6.526 8.854 6.073 7.637 6.073C6.420 6.074 5.247 6.526 4.345 7.343C4.223 7.459 4.030 7.456 3.911 7.337L2.757 6.170C2.696 6.109 2.662 6.026 2.663 5.940C2.664 5.854 2.700 5.771 2.762 5.711ZM0.097 3.029C4.312 -1.010 10.962 -1.010 15.177 3.029C15.238 3.089 15.272 3.172 15.272 3.257C15.273 3.343 15.239 3.425 15.179 3.486L14.022 4.653C13.903 4.772 13.711 4.773 13.590 4.655C11.984 3.129 9.853 2.278 7.637 2.278C5.421 2.278 3.289 3.129 1.683 4.655C1.562 4.773 1.369 4.772 1.250 4.653L0.094 3.486C0.033 3.425 -0.001 3.343 0.000 3.257C0.001 3.172 0.036 3.089 0.097 3.029Z" fill-rule="nonzero" fill="#070707"></path><path transform="matrix(1 0 0 1 0 0.336)" d="M2.000 6.667C2.552 6.667 3.000 7.115 3.000 7.667L3.000 9.667C3.000 10.219 2.552 10.667 2.000 10.667L1.000 10.667C0.448 10.667 0.000 10.219 0.000 9.667L0.000 7.667C0.000 7.115 0.448 6.667 1.000 6.667L2.000 6.667ZM6.667 4.667C7.219 4.667 7.667 5.115 7.667 5.667L7.667 9.667C7.667 10.219 7.219 10.667 6.667 10.667L5.667 10.667C5.115 10.667 4.667 10.219 4.667 9.667L4.667 5.667C4.667 5.115 5.115 4.667 5.667 4.667L6.667 4.667ZM11.333 2.333C11.885 2.333 12.333 2.781 12.333 3.333L12.333 9.667C12.333 10.219 11.885 10.667 11.333 10.667L10.333 10.667C9.781 10.667 9.333 10.219 9.333 9.667L9.333 3.333C9.333 2.781 9.781 2.333 10.333 2.333L11.333 2.333ZM16.000 0.000C16.552 -0.000 17.000 0.448 17.000 1.000L17.000 9.667C17.000 10.219 16.552 10.667 16.000 10.667L15.000 10.667C14.448 10.667 14.000 10.219 14.000 9.667L14.000 1.000C14.000 0.448 14.448 0.000 15.000 0.000L16.000 0.000Z" fill-rule="nonzero" fill="#070707"></path></svg><div style="box-sizing:border-box;height:21px;left:21px;position:absolute;top:14px;width:54px"><div style="border-radius:32px;box-sizing:border-box;height:21px;left:0px;position:absolute;top:0px;width:54px"><div style="box-sizing:border-box;color:var(--ink);font-family:system-ui, sans-serif;font-size:15px;font-weight:600;left:8px;letter-spacing:0.374px;line-height:18px;position:absolute;top:2px;width:max-content">10:10</div></div></div></div></div>
-      <div class="tb"><button class="gb" data-act="back" aria-label="Назад"><span class="ic" style="width:24px;height:24px"><svg viewBox="0 0 5 10" width="5" height="10" xmlns="http://www.w3.org/2000/svg" style="width:round(20.8333%, 1px);height:round(41.6667%, 1px);left:58.3333%;top:70.8333%;display:inline-block;overflow:visible;rotate:180deg;position:absolute;transform-origin:0% 0%"><g transform="translate(0 10) scale(1 -1)"><path d="M0.000 10.000C0.000 10.000 5.000 5.000 5.000 5.000C5.000 5.000 0.000 0.000 0.000 0.000" vector-effect="non-scaling-stroke" fill="none" stroke="#070707" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></g></svg></span></button><div class="tt">Детали записи</div><div class="tbr"><button class="gb" data-act="mo-share" aria-label="Поделиться"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8"/></svg></button></div></div>
+      <div class="tb"><button class="gb" data-act="back" aria-label="Назад"><span class="ic" style="width:24px;height:24px"><svg viewBox="0 0 5 10" width="5" height="10" xmlns="http://www.w3.org/2000/svg" style="width:round(20.8333%, 1px);height:round(41.6667%, 1px);left:58.3333%;top:70.8333%;display:inline-block;overflow:visible;rotate:180deg;position:absolute;transform-origin:0% 0%"><g transform="translate(0 10) scale(1 -1)"><path d="M0.000 10.000C0.000 10.000 5.000 5.000 5.000 5.000C5.000 5.000 0.000 0.000 0.000 0.000" vector-effect="non-scaling-stroke" fill="none" stroke="#070707" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></g></svg></span></button><div class="tt">Детали записи</div></div>
     </header>
     <div id="mo-dbody"></div>
   </section>
@@ -1160,6 +1200,7 @@ const anW=n=>`${n}${nb}${plural(n,'анализ','анализа','анализ�
 const maxPrice=i=>r10(i.price*2.4);
 const clinicWord=n=>`В ${n} ${plural(n,'клинике','клиниках','клиниках')}`;
 const isBlood=i=>/кров/i.test(i.bio);
+const bloodOf=L=>(L&&L.blood)||380; // взятие крови: у Инвитро на Кушелевской 250 ₽ (Figma 620:26285), иначе 380 ₽
 function hash(str){let h=2166136261;for(let k=0;k<str.length;k++){h^=str.charCodeAt(k);h=Math.imul(h,16777619)>>>0}return h}
 const rnd=(str)=>hash(str)/4294967296;
 const SV={
@@ -1648,7 +1689,7 @@ function replaceSheet(id,W,after){
 }
 function labFor(L,ids){
   const avail=ids.filter(id=>labHas(L,id)), miss=ids.filter(id=>!labHas(L,id));
-  return {k:avail.length,N:ids.length,full:!miss.length,miss,avail,p:avail.reduce((a,id)=>a+labPrice(L,id),0)+(avail.some(id=>isBlood(items[id]))?380:0)};
+  return {k:avail.length,N:ids.length,full:!miss.length,miss,avail,p:avail.reduce((a,id)=>a+labPrice(L,id),0)+(avail.some(id=>isBlood(items[id]))?bloodOf(L):0)};
 }
 const shortName=n=>{let s=n.split(/[(,:]/)[0].trim();return s};
 const fullCount=ids=>LABS.filter(L=>ids.every(id=>labHas(L,id))).length;
@@ -1656,10 +1697,10 @@ const fullCount=ids=>LABS.filter(L=>ids.every(id=>labHas(L,id))).length;
 /* ---------- cart screen ---------- */
 const checkedIds=()=>[...cart.entries()].filter(([id,v])=>v.on).map(([id])=>id);
 function cartTotals(){
-  if(ONE){const id=ONE.id,sum=labPrice(ONE.L,id),blood=isBlood(items[id])?380:0;return {ids:[id],sum,blood,total:sum+blood}}
+  if(ONE){const id=ONE.id,sum=labPrice(ONE.L,id),blood=isBlood(items[id])?bloodOf(ONE.L):0;return {ids:[id],sum,blood,total:sum+blood}}
   const ids=checkedIds().filter(id=>!LAB||labHas(LAB,id));
   const sum=ids.reduce((a,id)=>a+(LAB?labPrice(LAB,id):items[id].price),0);
-  const blood=ids.some(id=>isBlood(items[id]))?380:0;
+  const blood=ids.some(id=>isBlood(items[id]))?bloodOf(LAB):0;
   return {ids,sum,blood,total:sum+blood};
 }
 function labHead(L,act){
@@ -1690,7 +1731,7 @@ function renderCart(){
     <div class="ckrow"><button class="lrow" data-act="ckall" style="width:auto"><span class="cb${ckCls}" role="checkbox" aria-checked="${ckCls===' on'?'true':ckCls?'mixed':'false'}"><i>${SV.tick}</i></span><span style="font-size:14px;font-weight:600">Выбрать всё</span></button><button class="sbtn" data-act="clear-cart">Очистить</button></div>
     ${missN?`<div class="warn" style="margin-top:12px">${SV.alert}<div>${missN===1?'Один анализ нельзя сдать':'Не все анализы можно сдать'} в этой лаборатории<p>Сдайте ${anW(ids.length-missN)} здесь или выберите другую лабораторию.</p></div></div>`:''}
     <div class="clist">${ids.map(row).join('')}
-    ${t.blood?`<div class="draw"><div class="n">Взятие крови из вены</div><span class="pr">${LAB?'':'<i>от</i>'}<b>${fmt(380)}</b></span></div>`:''}</div>
+    ${t.blood?`<div class="draw"><div class="n">Взятие крови из вены</div><span class="pr">${LAB?'':'<i>от</i>'}<b>${fmt(bloodOf(LAB))}</b></span></div>`:''}</div>
     <div class="tot"><span>Итого</span><span class="pr">${LAB?'':'<i>от</i>'}<b style="font-size:18px">${fmt(t.total)}</b></span></div>
     <div class="ptsrow"><div class="tx"><b>Начислим баллы</b><span>после сдачи в лаборатории-партнёре</span></div><span class="ptp lg">+${fmt0(t.ids.length*PTS_PER)}${SV.coinY}</span></div>
   </div>
@@ -1783,7 +1824,7 @@ function renderCO(){
     ['foreign','Карта банка другой страны',`<svg width="34" height="26" viewBox="0 0 34 26"><rect x="1" y="2" width="28" height="19" rx="3" fill="#D7D9DE"/><rect x="1" y="6" width="28" height="3.5" fill="#B5B9C2"/><rect x="4" y="13" width="9" height="3" rx="1" fill="#fff"/><circle cx="27" cy="20" r="6" fill="#4F9FE8"/><path d="M21.5 20h11M27 14.5c2 2 2 9 0 11M27 14.5c-2 2-2 9 0 11" stroke="#fff" stroke-width="1.1" fill="none"/></svg>`]];
   $('#co-body').innerHTML=`
   <div class="csec"><button class="ttl${PAY.brkOpen?' open':''}" data-act="brk"><span>Итого</span><span class="v">${fmt(t.total)}${SV.chevUp}</span></button>
-    ${PAY.brkOpen?`<div class="brk">${t.ids.map(id=>`<div><span>${esc(shortName(items[id].name))}</span><b>${fmt(labPrice(curLab(),id))}</b></div>`).join('')}${t.blood?`<div><span>Взятие крови из вены</span><b>${fmt(380)}</b></div>`:''}${PAY.usePts&&ptsOff(t.total)?`<div class="ptsl"><span>Оплата баллами</span><b>−${fmt(ptsOff(t.total))}</b></div>`:''}</div>`:''}
+    ${PAY.brkOpen?`<div class="brk">${t.ids.map(id=>`<div><span>${esc(shortName(items[id].name))}</span><b>${fmt(labPrice(curLab(),id))}</b></div>`).join('')}${t.blood?`<div><span>Взятие крови из вены</span><b>${fmt(t.blood)}</b></div>`:''}${PAY.usePts&&ptsOff(t.total)?`<div class="ptsl"><span>Оплата баллами</span><b>−${fmt(ptsOff(t.total))}</b></div>`:''}</div>`:''}
   </div>
   <div class="csec"><div class="sh" style="font-size:22px;line-height:28px">Способы оплаты</div>
     <div>${pm.map(([k,n,svg])=>`<button class="pay" data-pm="${k}"><span class="pi">${svg}</span><span class="pn">${n}</span><span class="radio${PAY.method===k?' on':''}"></span></button>`).join('')}</div>
@@ -2050,7 +2091,7 @@ const CLP={
 const CLSTAR=c=>`<svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z" fill="${c}"/></svg>`;
 /* шаблоны сетей: тексты и контакты из Figma 619:20514 и реальных данных (см. память vitrina-ramsay-real-data) */
 const CLBRAND={
-  inv:{kind:'lab',about:'ИНВИТРО — федеральная сеть медицинских лабораторий. В этом офисе можно сдать анализы, подготовиться к беременности, пройти генетическое обследование и оформить медицинскую справку, в том числе в бассейн. Администратор подскажет, как подготовиться к анализу.',
+  inv:{kind:'lab',about:'ИНВИТРО — федеральная сеть медицинских лабораторий. В офисе @@ST@@ можно сдать анализы, подготовиться к беременности, пройти генетическое обследование и оформить медицинскую справку, в том числе в бассейн. Администратор подскажет, как подготовиться к анализу.',
     phone:'+7 (800) 200-87-69',sched:'Пн – пт 7:30–17:00, сб – вс 8:00–14:00',today:'07:30 – 17:00',wd:'07:30 – 17:00',we:'08:00 – 14:00',hero:'h-invitro',map:'m-invitro',rate:'5.0',rcount:'1 оценка',
     ach:[['thumb','Нет отрицательных отзывов']],svc:[['Справка в бассейн',750,'завтра, 07:30'],['Медицинская справка (форма 086/у)',1500,'сегодня, 14:30']],doctors:null,promo:['Скидка 15% на гормоны щитовидной железы','До 15 декабря']},
   kdl:{kind:'lab',about:'KDL — федеральная сеть клинико-диагностических лабораторий. Здесь сдают анализы крови и мочи, ПЦР-тесты, гормоны и чекапы. Результаты приходят на почту и в приложение.',
@@ -2070,10 +2111,10 @@ const CLPOLY={kind:'free',name:'Городская поликлиника № 51
   about:'Городская поликлиника № 51 Московского района — государственная поликлиника для взрослых. Приём бесплатно по полису ОМС, есть и платные услуги. Больше 200 врачей, в том числе травматолог-ортопед, невролог, врач УЗИ и функциональной диагностики.',
   phone:'+7 (812) 241-28-33',sched:'Пн – пт, с 8:00 до 20:00',today:'08:00 – 20:00',wd:'08:00 – 20:00',we:'Уточняйте',hero:'h-poly',map:'m-poly',
   svc:[['Приём участкового терапевта',null],['Приём невролога',1800],['Приём травматолога-ортопеда',null],['УЗИ органов брюшной полости',1600],['ЭКГ',null]],
-  an:[['Клинический анализ крови',null],['Креатинин',290],['Общий анализ крови (без лейкоцитарной формулы и СОЭ)',560],['Пролактин',310],['Глюкоза',null]],
+  an:[['Пролактин',310,'hormones-03'],['Клинический анализ крови',null,'general-01'],['Креатинин',290,'x-creat'],['Общий анализ крови с лейкоцитарной формулой',560,'hematology-02'],['Общий анализ крови без лейкоформулы + СОЭ',null,'general-02']],
   doctors:[['Козлова Марина Андреевна','Терапевт участковый'],['Орлов Дмитрий Сергеевич','Травматолог-ортопед']],promo:null};
 /* филиал из «Моих записей» (Figma 676:27687): Инвитро на Кушелевской, цены с zoon и Яндекс Карт */
-const KUSH={id:'kush',w:1,x:MC[0]+40,y:MC[1]-60,brand:BRANDS[0],n:'Инвитро на Кушелевской дороге',a:'Кушелевская дорога, д. 6, к. 1, стр. 1',metro:'Лесная',mc:'#D6083B',md:'1,3 км',rate:'5,0',rev:1,cov:1,f:1.05,pts:true,hours:['7:30—17:00','8:00—14:00'],
+const KUSH={blood:250,id:'kush',w:1,x:MC[0]+40,y:MC[1]-60,brand:BRANDS[0],n:'Инвитро на Кушелевской дороге',a:'Кушелевская дорога, д. 6, к. 1, стр. 1',metro:'Лесная',mc:'#D6083B',md:'1,3 км',rate:'5,0',rev:1,cov:1,f:1.05,pts:true,hours:['7:30—17:00','8:00—14:00'],
   px:{'Клинический анализ крови':835,'Ферритин':955,'Тиреотропный гормон':570,'25-ОН витамин D':2175,'Глюкоза':290,'Гликированный гемоглобин':975,'Креатинин':310,'Пролактин':750,'Холестерин общий':350}};
 const pxOf=(L,id)=>{if(!L.px)return null;const n=items[id].name;const k=Object.keys(L.px).find(x=>n.startsWith(x));return k?L.px[k]:null};
 const CLW={}; const clW=k=>CLW[k]||(CLW[k]=wlab(k));
@@ -2088,22 +2129,29 @@ function clPlace(src){
   if(src==='poly') return Object.assign({key:'poly',L:null},CLPOLY);
   const L=src==='kush'?KUSH:(typeof src==='string'&&src.startsWith('w')?clW(+src.slice(1)):LABS.find(x=>x.id===src));
   const B=CLBRAND[L.brand.k];
-  const kushB=L===KUSH?{}:{rate:L.rate?String(L.rate).replace(',','.'):B.rate,rcount:L.rev?`${L.rev} ${plural(L.rev,'отзыв','отзыва','отзывов')}`:B.rcount};
+  const kushB=L===KUSH?{rate:'5.0',rcount:'1 оценка'}:L.brand.k==='rem'?{}:{ /* Рэмси — рейтинг из макета 620:22245 */rate:L.rate?String(L.rate).replace(',','.'):B.rate,rcount:L.rev?`${L.rev} ${plural(L.rev,'отзыв','отзыва','отзывов')}`:B.rcount};
   const a=String(L.a).replace(/^г\. Санкт-Петербург, /,'');
-  return Object.assign({key:src,L,name:L.n,addr:a,metro:L.metro,mc:L.mc,md:L.md},B,kushB);
+  const st=L.n.replace(/^\S+\s+/,''); // «на Кушелевской дороге»
+  return Object.assign({key:src,L,name:L.n,addr:a,metro:L.metro,mc:L.mc,md:L.md},B,kushB,{about:B.about.replace('@@ST@@',st)});
 }
 const CL={src:null,ctx:null,tab:'info',only:false,q:'',more:false};
 function clLab(){return CL.src==='poly'?null:clPlace(CL.src).L}
+/* креатинина нет в моках каталога: строка только для деталек клиник, как в макете */
+items['x-creat']=Object.assign({},items['biochemistry-05'],{id:'x-creat',name:'Креатинин',price:300,fast:true});
+/* названия и порядок анализов в «Ценах» — как в макетах; ключи — id моков */
+const CLNM={lab:{'biochemistry-08':'Гликированный гемоглобин (HbA1c)','general-01':'Клинический анализ крови: общий анализ, лейкоформула, СОЭ','hormones-01':'ТТГ (тиреотропный гормон)','vitamins-01':'25-OH витамин D общий','biochemistry-06':'Холестерин общий'},
+  clinic:{'general-01':'Клинический анализ крови с лейкоформулой и СОЭ','hematology-02':'Общий анализ крови с лейкоцитарной формулой','general-02':'Общий анализ крови без лейкоформулы + СОЭ'}};
+CLNM.free=CLNM.clinic;
+const clNm=(P,id)=>(CLNM[P.kind]||{})[id]||items[id].name;
+const CLORD={lab:['biochemistry-08','x-creat','general-01','biochemistry-05','hormones-01','biochemistry-01','vitamins-01','biochemistry-06'],
+  clinic:['s0','s1','s2','general-01','s3','s4','x-creat','hematology-02','general-02']}; // у клиники услуги и анализы вперемешку (620:24746)
 function clAnalyses(P){
   if(P.kind==='free') return [];
-  const L=P.L, seen=new Set(), out=[];
-  const push=id=>{if(!id||!items[id])return;const nm=items[id].name;if(seen.has(nm)||!labHas(L,id))return;seen.add(nm);out.push(id)};
+  const L=P.L, out=[];
+  const push=id=>{if(!id||!items[id]||out.includes(id)||!labHas(L,id))return;out.push(id)};
   if(CL.ctx) push(CL.ctx);
-  if(L.px) Object.keys(L.px).forEach(k=>{const i=UNIQ.find(x=>x.name.startsWith(k));if(i)push(i.id)});
-  [...cart.keys()].forEach(push);
-  POP8.forEach(i=>push(i.id));
-  ['general','biochemistry','hormones','hematology'].forEach(c=>cats[c].items.slice(0,4).forEach(push));
-  return out.slice(0,16);
+  CLORD[P.kind].filter(k=>k[0]!=='s').forEach(push);
+  return out;
 }
 const clPrice=(L,id)=>pxOf(L,id)??labPrice(L,id);
 function clTags(i){
@@ -2115,9 +2163,9 @@ function clState(L,id){if(!inCart(id))return 'add';return LAB&&LAB.id===L.id?'in
 function clRow(P,id){
   const i=items[id], L=P.L, st=clState(L,id);
   const acts=st==='in'?`<button class="btn cl-in" data-cla="rm" data-id="${id}">${ic('check',16)}В корзине</button>`
-    :st==='here'?`<button class="btn" data-cla="here" data-id="${id}">${PIN_W.replace(/width="24" height="24"/,'width="16" height="16"')}Сдать здесь</button>`
     :`<button class="btn" data-cla="add" data-id="${id}">${ic('basketW',16)}В корзину</button><button class="btn t" data-cla="one" data-id="${id}">Записаться</button>`;
-  return `<article class="cl-pc"><div class="n tap" data-open="${id}">${esc(i.name)}</div>${clTags(i)}<div class="cl-pp"><b>${fmt(clPrice(L,id))}</b>${isBlood(i)?'<span>+ взятие крови 380 ₽</span>':''}</div><div class="cl-acts">${acts}</div></article>`;
+  const tap=id.startsWith('x-')?'':` tap" data-open="${id}`;
+  return `<article class="cl-pc"><div class="n${tap}">${esc(clNm(P,id))}</div>${clTags(i)}<div class="cl-pp"><b>${fmt(clPrice(L,id))}</b>${isBlood(i)?`<span>+ взятие крови ${fmt(bloodOf(L))}</span>`:''}</div><div class="cl-acts">${acts}</div></article>`;
 }
 function clSvc(P,r){
   if(P.kind==='free') return `<article class="cl-pc"><div class="n">${esc(r[0])}</div><div class="cl-pp"><b${r[1]==null?' class="sm"':''}>${r[1]==null?'Уточняйте по телефону':fmt(r[1])}</b></div></article>`;
@@ -2144,9 +2192,15 @@ function clPrices(P){
   const svc=(P.svc||[]).filter(r=>!nq||norm(r[0]).includes(nq));
   const fan=(P.an||[]).filter(r=>!nq||norm(r[0]).includes(nq));
   let body='';
-  if(P.kind==='free'){const an=fan.map(r=>{const i=UNIQ.find(x=>x.name.startsWith(r[0]));return `<article class="cl-pc"><div class="n">${esc(i?i.name:r[0])}</div>${i?clTags(i):''}<div class="cl-pp"><b${r[1]==null?' class="sm"':''}>${r[1]==null?'Уточняйте по телефону':fmt(r[1])}</b></div></article>`}).join('');
+  if(P.kind==='free'){const an=fan.filter(r=>r[2]!=='hormones-03'||CL.ctx==='hormones-03').map(r=>{const i=items[r[2]];return `<article class="cl-pc"><div class="n">${esc(i?clNm(P,r[2]):r[0])}</div>${i?clTags(i):''}<div class="cl-pp"><b${r[1]==null?' class="sm"':''}>${r[1]==null?'Уточняйте по телефону':fmt(r[1])}</b></div></article>`}).join('');
     body=CL.only?an:svc.map(r=>clSvc(P,r)).join('')+an;}
-  else body=ids.map(id=>clRow(P,id)).join('')+(CL.only?'':svc.map(r=>clSvc(P,r)).join(''));
+  else if(P.kind==='clinic'&&!CL.only){
+    const rows=[]; if(CL.ctx&&ids.includes(CL.ctx)) rows.push(clRow(P,CL.ctx));
+    CLORD.clinic.forEach(k=>{if(k[0]==='s'){const r=(P.svc||[])[+k.slice(1)];if(r&&svc.includes(r))rows.push(clSvc(P,r))}else if(ids.includes(k)&&k!==CL.ctx)rows.push(clRow(P,k))});
+    ids.filter(id=>!CLORD.clinic.includes(id)&&id!==CL.ctx).forEach(id=>rows.push(clRow(P,id)));
+    body=rows.join('');
+  }
+  else body=(CL.only?'':svc.map(r=>clSvc(P,r)).join(''))+ids.map(id=>clRow(P,id)).join('');
   if(!body) body=`<div class="empty"><b>${CL.only?'Анализов не нашли':'Ничего не нашли'}</b><span>${CL.only?`По запросу «${esc(CL.q)}» анализов здесь нет.`:'Попробуйте изменить запрос.'}</span><button class="btn t" data-act="${CL.only?'cl-allsvc':'cl-clearq'}">${CL.only?'Искать во всех услугах':'Сбросить поиск'}</button></div>`;
   return `<div class="cl-pane">
    <label class="inp cl-inp">${SEARCHIC}<input id="cl-q" type="text" placeholder="Поиск по услуге и анализам" value="${esc(CL.q)}" autocomplete="off" aria-label="Поиск по услуге и анализам"></label>
@@ -2246,7 +2300,7 @@ $('#ph').addEventListener('click',e=>{
   if(d.clplace){if(e.target.closest('[data-act]'))return;openClinic(d.clplace,null);return}
   if(d.cla){e.stopPropagation();clAct(d.cla,d.id);return}
   if(d.cltab){CL.tab=d.cltab;cur.tab=CL.tab;renderClinic(true);const s=$('#s-clinic'),tb=$('#cl-tabs');const pin=tb.offsetTop-s.querySelector('.hdr').offsetHeight;if(s.scrollTop>pin||d.cltab!=='info')s.scrollTop=pin;SC.ev('cltab:'+d.cltab);return}
-  if(d.wcl!==undefined){if(e.target.closest('[data-act],[data-clinic-add]'))return;openClinic(d.wcl==='free'?'poly':'w'+d.wcl,d.wcl==='free'?null:cur.id);return}
+  if(d.wcl!==undefined){if(e.target.closest('[data-act],[data-clinic-add]'))return;openClinic(d.wcl==='free'?'poly':'w'+d.wcl,cur.id);return}
 });
 $('#ph').addEventListener('click',e=>{
   const t=e.target.closest('[data-act]'); if(!t||t.closest('#dlg')) return;
@@ -2264,12 +2318,13 @@ $('#ph').addEventListener('click',e=>{
 $('#ph').addEventListener('input',e=>{if(e.target.id!=='cl-q')return;CL.q=e.target.value;const pos=e.target.selectionStart;clRefreshList();const i=$('#cl-q');i.focus();i.setSelectionRange(pos,pos)});
 
 /* =================== «МОИ ЗАПИСИ» С ЗАКАЗОМ АНАЛИЗОВ (Figma 676:27687, ТЗ 2.10) ===================
-   Вкладка таббара. Одна карточка на заказ лаборатории-партнёра, детали заказа, 6 статусов из макета.
+   Вкладка таббара. Одна карточка на заказ лаборатории-партнёра, детали заказа, 11 статусов из макета (правки 25.11).
    Оплаченный в прототипе заказ появляется сверху со статусом «Оформляем заказ». */
 const MON=d=>d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'});
 const dPlus=n=>{const d=new Date();d.setDate(d.getDate()+n);return d};
 const MOS=[ // статусы из макета, порядок как в секции 676:27687
-  ['new','Оформляем заказ'],['wait','Ожидает сдачи'],['today','Ожидает сдачи: сдать сегодня'],['part','Часть результатов готова'],['done','Результаты готовы'],['cancelling','Отменяем заказ'],['cancelled','Заказ отменён']];
+  ['new','Оформляем заказ'],['wait','Ожидает сдачи'],['today','Ожидает сдачи: сдать сегодня'],['work','Анализы в работе'],['part','Часть результатов готова'],['done','Результаты готовы'],
+  ['nores','Заказ выполнен, без результатов (нет согласия)'],['cancelling','Отменяем заказ'],['cancelled','Заказ отменён'],['rejected','Лаборатория не приняла заказ'],['partial','Заказ выполнен частично']];
 const MOI={
   load:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M13.5 8A5.5 5.5 0 1 1 8 2.5"/></svg>',
   clock:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 5v3.3l2.1 1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -2280,6 +2335,8 @@ const MOI={
   chevD:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   map:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6 9 4Z"/><path d="M9 4v14M15 6v5"/><circle cx="17" cy="15.5" r="2.2"/><path d="M17 17.7v2"/></svg>',
   clk20:'<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="7.25"/><path d="M10 6v4.2l2.6 1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  chev16:'<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="m8 5.5 4.5 4.5L8 14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  info:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.2v4M8 4.8v.2" stroke-linecap="round"/></svg>',
   copy:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="5.5" y="5" width="7.5" height="9.5" rx="2"/><path d="M3.5 11V3.5a2 2 0 0 1 2-2H10"/></svg>',
   dl:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/></svg>',
   pdf:'<svg width="24" height="24" viewBox="0 0 24 24"><path d="M6 2.5h8.5L19 7v13a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 20V4a1.5 1.5 0 0 1 1-1.5Z" fill="#fff" stroke="#E4E5E8"/><path d="M14.5 2.5V7H19" fill="none" stroke="#E4E5E8"/><rect x="2" y="10" width="15" height="8" rx="2" fill="#FF7777"/><text x="9.5" y="16.2" text-anchor="middle" font-family="Montserrat,sans-serif" font-size="5.6" font-weight="700" fill="#fff">PDF</text></svg>',
@@ -2287,7 +2344,7 @@ const MOI={
   phone:'<svg width="16" height="16" viewBox="0 0 16 16" fill="#6ABF68"><path d="M4.3 1.8 6 4.6c.3.5.2 1-.2 1.4l-.9.8a8 8 0 0 0 4.3 4.3l.8-.9c.4-.4 1-.5 1.4-.2l2.8 1.7c.5.3.6.9.3 1.4l-.8 1.2c-.4.6-1.1.9-1.8.8C6.9 14.5 1.5 9.1 1 3.9c-.1-.7.2-1.4.8-1.8l1.2-.8c.5-.3 1.1-.2 1.3.5Z"/></svg>',
   share:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-8"/></svg>',
 };
-const moIds=['Клинический анализ крови','Ферритин','Тиреотропный гормон','25-ОН витамин D'].map(n=>(UNIQ.find(i=>i.name.startsWith(n))||{}).id).filter(Boolean);
+const moIds=['general-01','biochemistry-01','hormones-01','vitamins-01'];
 const ORD_DEMO={no:'90897620044',lab:KUSH,ids:moIds,full:5085,pts:500,total:4585,card:'4417',created:'29 октября 2026, 09:12',patient:'Смирнова Ксения Алексеевна',st:'wait',consent:true};
 const ORDERS=[ORD_DEMO];
 function addOrder(P){ // из оплаты в прототипе (pay)
@@ -2299,115 +2356,134 @@ function addOrder(P){ // из оплаты в прототипе (pay)
 const MO={tab:'rec',more:{}};
 const moLast=o=>o.until||dPlus(5);
 const moLeft=o=>Math.max(1,Math.round((moLast(o)-new Date())/864e5));
-const moReady=o=>o.st==='done'?o.ids.length:o.st==='part'?Math.min(2,o.ids.length-1):0;
-const moRes=o=>o.consent!==false; // готовность результатов показываем только при согласии (ТЗ 2.10.2)
+/* без согласия на результаты (ТЗ 2.10.2) готовность не показываем: «в работе», потом «Заказ выполнен» без файлов */
+const moSt=o=>o.consent===false&&o.st==='part'?'work':o.consent===false&&o.st==='done'?'nores':o.st;
+const moReady=o=>{const s=moSt(o);return s==='done'?o.ids.length:s==='part'?Math.min(2,o.ids.length-1):s==='partial'?o.ids.length-1:0};
+const moCancelled=s=>s==='cancelled'||s==='rejected';
+const moPrice1=(o,id)=>labPrice(o.lab,id);
+const moHrs=o=>(o.lab.hours&&o.lab.hours[0]||'—19:30').split('—')[1];
+const moYear=d=>`${MON(d)} ${d.getFullYear()}, 16:00`;
 function moChip(o){
-  const st=o.st;
-  if((st==='part'||st==='done')&&!moRes(o)) return `<span class="mo-chip c-blue">${MOI.clock}Анализы в работе</span>`;
-  const m={new:['c-gray',MOI.load,'Оформляем заказ'],wait:['c-blue',MOI.clock,'Ожидает сдачи'],today:['c-blue',MOI.clock,'Ожидает сдачи'],
-    part:['c-green',MOI.check,`Часть результатов готова (${moReady(o)}/${o.ids.length})`],done:['c-green',MOI.check,'Результаты готовы'],
-    cancelling:['c-orange',MOI.load,'Отменяем заказ'],cancelled:['c-red',MOI.ban,'Заказ отменён']}[st];
+  const s=moSt(o), n=o.ids.length;
+  const m={new:['c-gray',MOI.load,'Оформляем заказ'],wait:['c-blue',MOI.clock,'Ожидает сдачи'],today:['c-blue',MOI.clock,'Ожидает сдачи'],work:['c-blue',MOI.clock,'Анализы в работе'],
+    part:['c-green',MOI.check,`Часть результатов готова (${moReady(o)}/${n})`],done:['c-greenf',MOI.check,'Результаты готовы'],nores:['c-greenf',MOI.check,'Заказ выполнен'],
+    partial:['c-greenf',MOI.check,`Заказ выполнен частично (${n-1}/${n})`],cancelling:['c-orange',MOI.load,'Отменяем заказ'],cancelled:['c-red',MOI.ban,'Заказ отменён'],rejected:['c-red',MOI.ban,'Лаборатория не приняла заказ']}[s];
   return `<span class="mo-chip ${m[0]}">${m[1]}${m[2]}</span>`;
 }
+const moRefund=o=>moSt(o)==='partial'?moPrice1(o,o.ids[o.ids.length-1]):o.total;
+const moRefundTx=o=>`<p class="mo-sub sm">Вернули ${fmt(moRefund(o))} на карту •• ${o.card}<br>Деньги придут в течение 10 рабочих дней. Чек вернём на email.</p>`;
 function moPrice(o){
   return `<div class="mo-price"><span class="paid">${fmt(o.total)}</span>${o.pts?`<s>${fmt(o.full)}</s><span class="pp">${SV.coinY}−${o.pts} баллов</span>`:''}</div>`;
 }
+const moTitle=o=>`<div class="mo-tp"><b>Заказ анализов</b>${moPrice(o)}</div>`;
 const moPlq=(cls,icn,t,s)=>`<div class="mo-plq ${cls}">${icn}<div><b>${t}</b>${s?`<span>${s}</span>`:''}</div></div>`;
 const COIN_O='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F3AA00" stroke-width="1.6"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 15.6V8.4l4.8 7.2V8.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-function moPlaques(o,detail){
-  const st=o.st, out=[];
-  if(st==='cancelled'){ if(o.pts) out.push(`<div class="mo-plq p-green">${MOI.checkC}<div><b>${o.pts} ${SV.coinY} баллов возвращены на ваш баланс</b></div></div>`); }
-  else if(o.pts) out.push(`<div class="mo-plq p-yellow">${COIN_O}<div><b>Оплачено частично ${SV.coinY} баллами</b></div></div>`);
-  if(!detail){
-    if(st==='wait') out.push(moPlq('p-blue',MOI.clock,`Осталось ${moLeft(o)} ${plural(moLeft(o),'день','дня','дней')} для сдачи`,`Последний день — ${MON(moLast(o))}`));
-    if(st==='today') out.push(moPlq('p-green',MOI.clock,'Сдать можно сегодня',`Забор до ${(o.lab.hours&&o.lab.hours[0]||'—17:00').split('—')[1]}`));
-  }
-  if(st==='cancelling') out.push(moPlq('p-orange',MOI.clock,'Отправили запрос в лабораторию',`Как только лаборатория подтвердит отмену, вернём ${fmt(o.total)} на карту •• ${o.card}.`));
-  if((st==='part'||st==='done')&&!moRes(o)) out.push(moPlq('p-blue',MOI.clock,'Результаты выдаст лаборатория','Вы не дали согласие получать их в НаПоправку'));
-  return out.length?`<div class="mo-plqs">${out.join('')}</div>`:'';
-}
+const moPts=o=>moCancelled(moSt(o))?(o.pts?`<div class="mo-plq p-green">${MOI.checkC}<div><b>${o.pts} ${SV.coinY} баллов возвращены на ваш баланс</b></div></div>`:'')
+  :(o.pts?`<div class="mo-plq p-yellow">${COIN_O}<div><b>Оплачено частично ${SV.coinY} баллами</b></div></div>`:'');
+const moWaitPlq=o=>moPlq('p-blue',MOI.clock,`Осталось ${moLeft(o)} ${plural(moLeft(o),'день','дня','дней')} для сдачи`,`Последний день — ${MON(moLast(o))}`);
+const moTodayPlq=o=>moPlq('p-green',MOI.clock,'Сдать можно сегодня',`Забор до ${moHrs(o)}`);
+const moCancelReq=o=>moPlq('p-orange',MOI.clock,'Отправили запрос в лабораторию',`Как только лаборатория подтвердит отмену, вернём ${fmt(o.total)} на карту •• ${o.card}.`);
 function moLab(o,k){
-  const L=o.lab;
+  const L=o.lab, ph=L===KUSH||L.brand.k==='inv'?'+7 (800) 200-87-69':L.brand.k==='kdl'?'+7 (800) 200-36-30':L.brand.k==='gem'?'+7 (800) 550-13-13':'+7 (812) 210-51-99';
   return `<div class="mo-lab"><button class="mo-ln" data-moclinic="${k}">${esc(L.n)}</button>
-    <div class="mo-pl"><div><span class="ad">${esc(String(L.a).replace(/^г\. Санкт-Петербург, /,''))}</span><span class="mt"><u style="background:${L.mc}"></u>${esc(L.metro)} <em>${L.md}</em></span></div><button class="mo-ic" data-act="mo-map" aria-label="Показать на карте">${MOI.map}</button></div>
-    <button class="mo-hrs" data-act="hours">${MOI.clk20}<b>Забор до ${(L.hours&&L.hours[0]||'—19:30').split('—')[1]}</b>${SV.chevR.replace(/24/g,'20')}</button>
-    <div class="mo-ph"><span>${L===KUSH?'+7 (800) 200-87-69':L.brand.k==='inv'?'+7 (800) 200-87-69':L.brand.k==='kdl'?'+7 (800) 200-36-30':L.brand.k==='gem'?'+7 (800) 550-13-13':'+7 (812) 210-51-99'}</span><button class="mo-lnk" data-act="mo-call">позвонить</button></div></div>`;
+    <div class="mo-pl"><div><span class="ad">${esc(String(L.a).replace(/^г\. Санкт-Петербург, /,''))}</span><span class="mt"><u style="background:${L.mc}"></u>${esc(L.metro)} <em>${String(L.md).replace(',','.')}</em></span></div><button class="mo-ic" data-act="mo-map" aria-label="Показать на карте">${MOI.map}</button></div>
+    <button class="mo-hrs" data-act="hours">${MOI.clk20}<b>Забор до ${moHrs(o)}</b>${MOI.chev16}</button>
+    <div class="mo-ph"><span>${ph}</span><button class="mo-lnk" data-act="mo-call">позвонить</button></div></div>`;
 }
-const moPrep=k=>`<button class="mo-prep" data-moprep="${k}"><span class="im" style="background-image:url(${ASSET.prep})"></span><b>Подготовка к анализам</b>${MOI.chevR}</button>`;
+const moPrep=k=>`<button class="mo-prep" data-moprep="${k}"><span class="im" style="background-image:url(${ASSET.prep})"></span><b>Подготовка к анализам</b>${MOI.chev16}</button>`;
 const moMeta=o=>`<div class="mo-meta"><div><b>Пациент:</b> ${esc(o.patient)}</div><div><b>Запись:</b> от ${esc(o.created)}</div><div><b>ID записи:</b> ${o.no} <button class="mo-cp" data-act="mo-copy" aria-label="Скопировать">${MOI.copy}</button></div></div>`;
+/* информер баллов (Coin-banner): 50 за каждый выполненный анализ, при отмене — 0 */
+function moCoin(o){
+  const s=moSt(o), cnc=moCancelled(s)||s==='cancelling';
+  const n=cnc?0:(s==='partial'?o.ids.length-1:o.ids.length)*PTS_PER;
+  return `<div class="mo-coin"><span>${cnc?'Баллы не начислены, так как запись отменена.':'За эту запись вам начислены баллы.'}</span><b>${fmt0(n)}${SV.coinY}</b></div>`;
+}
+const moName=id=>({'general-01':'Клинический анализ крови с лейкоформулой и СОЭ','hormones-01':'Тиреотропный гормон (ТТГ)'})[id]||items[id].name.split(' (')[0];
 function moCard(o,k){
-  const sub=o.st==='new'?'<p class="mo-sub">Ждём подтверждения лаборатории. Обычно это занимает до 15 минут — идти сдавать можно после него.</p>'
-    :o.st==='cancelled'?`<p class="mo-sub">Вернули ${fmt(o.total)} на карту •• ${o.card}<br>Деньги придут в течение 10 рабочих дней. Чек вернём на email.</p>`:'';
-  const open=MO.more[k], shown=open?o.ids:o.ids.slice(0,3), rest=o.ids.length-3; // совещание 24.11: 3 анализа и «показать ещё»
+  const s=moSt(o);
+  const sub=s==='new'?'<p class="mo-sub sm">Оплата прошла. Дождитесь подтверждения лаборатории перед визитом</p>'
+    :(moCancelled(s)||s==='partial')?moRefundTx(o):'';
+  const plq=[moPts(o), s==='wait'?moWaitPlq(o):s==='today'?moTodayPlq(o):s==='cancelling'?moCancelReq(o):''].join('');
+  const open=MO.more[k], shown=open?o.ids:o.ids.slice(0,4), rest=o.ids.length-4; // Figma: 4 анализа и «Ещё N»
+  const coin=['new','wait','today'].includes(s)?'':moCoin(o);
   return `<article class="mo-card" data-ordopen="${k}">
     <div class="mo-top">${moChip(o)}<span class="mo-chev">${MOI.chevR}</span></div>${sub}
-    <div class="mo-tp"><b>Заказ анализов</b>${moPrice(o)}</div>
-    ${moPlaques(o,false)}
-    <div><ul class="mo-ul">${shown.map(id=>`<li>${esc(shortName(items[id].name)===items[id].name?items[id].name:items[id].name.split(' (')[0])}</li>`).join('')}</ul>
+    ${moTitle(o)}
+    ${plq?`<div class="mo-plqs">${plq}</div>`:''}
+    <div><ul class="mo-ul">${shown.map(id=>`<li>${esc(moName(id))}</li>`).join('')}</ul>
     ${rest>0?`<button class="mo-more${open?' on':''}" data-momore="${k}">${MOI.chevD}${open?'Свернуть':`Ещё ${anW(rest)}`}</button>`:''}</div>
-    <div class="mo-line"></div>
-    ${moLab(o,k)}
     ${moPrep(k)}
     <div class="mo-line"></div>
+    ${moLab(o,k)}
+    <div class="mo-line"></div>
+    ${coin}
     <button class="big" data-morepeat="${k}">Записаться еще раз</button>
     ${moMeta(o)}
   </article>`;
 }
-function moDoctorCard(){ // карточка записи к врачу — как в макете 676:36719, без изменений
-  return `<article class="mo-card"><div class="mo-top"><span class="mo-chip c-greenf">${MOI.check}31 октября 2023, 09:00</span><span class="mo-tel">${MOI.phone}</span><span class="mo-chev">${MOI.chevR}</span></div>
-    <div class="mo-tp"><b>Консультация врача</b><div class="mo-price"><span class="paid ink">2500 ₽</span></div></div>
-    <div class="mo-doc"><span class="ava" style="background-image:url(${CLIMG.doc})"></span><b>Рождественская Марина Владимировна</b></div>
-    <div class="mo-line"></div>
-    <div class="mo-lab"><div class="mo-ln static">СМ-Клиника на Симферопольском бульваре</div><div class="mo-pl"><div><span class="ad">ул. Новослободская, д 3</span><span class="mt"><u style="background:#4F9FE8"></u>Новослободская <em>250м</em></span></div><span class="mo-ic">${MOI.map}</span></div>
-    <div class="mo-ph"><span>+7 (999) 999 99 99</span><button class="mo-lnk" data-act="mo-call">позвонить</button></div></div>
-    <div class="mo-line"></div>
-    <div class="mo-acts"><button data-act="soon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--brand-ink)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8.5Z"/><path d="M13.5 3v5.5H19M12 12v6M9 15h6"/></svg>Добавить документ</button><button data-act="soon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--brand-ink)" stroke-width="1.7" stroke-linejoin="round"><path d="M4 18.5V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8z"/><path d="M8.5 10.5h7" stroke-linecap="round"/></svg>Оставить отзыв</button></div>
-    <button class="big two mo-again" data-act="soon"><span class="t">Записаться еще раз</span><span class="r">${SV.coinY}+100</span></button>
-  </article>`;
+/* записи к врачу — как в макете 676:36719 */
+const DOC_CL=`<div class="mo-lab"><div class="mo-ln static">СМ-Клиника на Симферопольском бульваре</div><div class="mo-pl"><div><span class="ad">ул. Новослободская, д 3</span><span class="mt"><u style="background:#4F9FE8"></u>Новослободская <em>250м</em></span></div><span class="mo-ic">${MOI.map}</span></div>
+    <div class="mo-ph"><span>+7 (999) 999 99 99</span><button class="mo-lnk" data-act="mo-call">позвонить</button></div></div>`;
+const DOC_META=`<div class="mo-meta"><div><b>Пациент:</b> Смирнова Ксения Алексеевна</div><div><b>Запись:</b> от 29 октября 2023, 09:12</div><div><b>ID записи:</b> 90897620044 <span class="mo-cp">${MOI.copy}</span></div></div>`;
+const DOC_ACTS=b=>`<div class="mo-acts"><button data-act="soon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--brand-ink)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8.5Z"/><path d="M13.5 3v5.5H19M12 12v6M9 15h6"/></svg>Добавить документ${b?`<i class="mo-n">${b}</i>`:''}</button><button data-act="soon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--brand-ink)" stroke-width="1.7" stroke-linejoin="round"><path d="M4 18.5V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8z"/><path d="M8.5 10.5h7" stroke-linecap="round"/></svg>Оставить отзыв</button></div>`;
+const DOC_AGAIN=`<button class="big two mo-again" data-act="soon"><span class="t">Записаться еще раз</span><span class="r">${SV.coinY}+100</span></button>`;
+function moDoctorCards(){
+  const doc=`<div class="mo-doc"><span class="ava" style="background-image:url(${CLIMG.doc})"></span><b>Рождественская Марина Владимировна</b></div>`;
+  return `<article class="mo-card"><div class="mo-top"><span class="mo-chip c-greenf">${MOI.check}31 октября 2023, 09:00</span><span class="mo-chev">${MOI.chevR}</span></div>
+    <div class="mo-tp row"><b>Консультация врача</b><div class="mo-price"><span class="paid ink">2500 ₽</span></div></div>${doc}
+    <div class="mo-line"></div>${DOC_CL}<div class="mo-line"></div>${DOC_ACTS(0)}${DOC_AGAIN}${DOC_META}</article>
+  <article class="mo-card"><div class="mo-top"><span class="mo-chip c-red">${MOI.ban}31 октября 2023, 09:00 (отменена)</span><span class="mo-chev">${MOI.chevR}</span></div>
+    <div class="mo-tp row"><b>МРТ головного мозга</b><div class="mo-price"><span class="paid ink">2500 ₽</span></div></div>
+    <div class="mo-line"></div>${DOC_CL}<div class="mo-line"></div>${DOC_AGAIN}${DOC_META}</article>
+  <article class="mo-card"><div class="mo-top"><span class="mo-chip c-gray">${MOI.clock}Неизвестен</span><span class="mo-chev">${MOI.chevR}</span></div>
+    <p class="mo-sub sm">После подтверждения записи по телефону, можете спокойно ехать на приём</p>
+    <div class="mo-tp row"><b>Консультация врача</b><div class="mo-price"><span class="paid ink">2500 ₽</span></div></div>${doc}
+    <div class="mo-line"></div>${DOC_CL}<div class="mo-line"></div>${DOC_ACTS(2)}${DOC_AGAIN}${DOC_META}</article>`;
 }
 function renderOrders(){
-  $$('#s-orders [data-motab]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.motab===MO.tab)));
-  $('#mo-body').innerHTML=MO.tab==='rec'?ORDERS.map(moCard).join('')+moDoctorCard()
+  $$('#s-orders [data-motab]').forEach(b=>{const on=b.dataset.motab===MO.tab;b.setAttribute('aria-selected',String(on));b.classList.toggle('on',on)});
+  $('#mo-body').innerHTML=MO.tab==='rec'?ORDERS.map(moCard).join('')+moDoctorCards()
     :`<div class="empty" style="margin:0 16px"><b>Заявки к врачам</b><span>Здесь заявки, которые клиника ещё не подтвердила. Заказы анализов сюда не попадают: они сразу во вкладке «Записи».</span></div>`;
   moSel();
 }
-/* детали заказа (Figma 676:38380, 689:40236…689:42296) */
+/* детали заказа (Figma 676:38380 … 719:22046) */
 function moTopPlaque(o){
-  const st=o.st, rd=moReady(o);
-  if((st==='part'||st==='done')&&!moRes(o)) return moPlq('p-blue',MOI.clock,'Анализы в работе','Результаты выдаст лаборатория');
-  if(st==='wait') return moPlq('p-blue',MOI.clock,`Осталось ${moLeft(o)} ${plural(moLeft(o),'день','дня','дней')} для сдачи`,`Последний день — ${MON(moLast(o))}`);
-  if(st==='today') return moPlq('p-green',MOI.clock,'Сдать можно сегодня',`Забор до ${(o.lab.hours&&o.lab.hours[0]||'—17:00').split('—')[1]}`);
-  if(st==='part') return moPlq('p-green',MOI.check,'Часть результатов готова',`Готово ${rd} из ${o.ids.length}, остальные до ${MON(dPlus(3))}`);
-  if(st==='done') return moPlq('p-green',MOI.check,`${MON(dPlus(-1))} ${new Date().getFullYear()}, 16:00 (результаты готовы)`,'');
-  if(st==='cancelling') return moPlq('p-orange',MOI.clock,'Отменяем заказ','');
-  if(st==='cancelled') return `${moPlq('p-red',MOI.ban,`${MON(new Date())} ${new Date().getFullYear()}, 16:00 (отменена)`,'')}<p class="mo-sub" style="margin-top:-8px">Вернули ${fmt(o.total)} на карту •• ${o.card}<br>Деньги придут в течение 10 рабочих дней. Чек вернём на email.</p>`;
+  const s=moSt(o), rd=moReady(o), n=o.ids.length;
+  if(s==='new') return `<div class="mo-plq p-gray">${MOI.clock}<div><b>Оформляем заказ</b><span>Оплата прошла. Дождитесь подтверждения лаборатории перед визитом</span></div></div>`;
+  if(s==='wait') return moWaitPlq(o);
+  if(s==='today') return moTodayPlq(o);
+  if(s==='work') return moPlq('p-blue',MOI.clock,'Анализы в работе',`Результаты будут до ${MON(dPlus(3))}`);
+  if(s==='part') return moPlq('p-green',MOI.check,'Часть результатов готова',`Готово ${rd} из ${n}, остальные до ${MON(dPlus(3))}`);
+  if(s==='done') return moPlq('p-green',MOI.check,`${moYear(dPlus(-1))} (Результаты готовы)`,'');
+  if(s==='nores') return moPlq('p-green',MOI.check,`${moYear(dPlus(-1))} (Без результатов)`,'');
+  if(s==='partial') return moPlq('p-green',MOI.check,`Заказ выполнен частично (${n-1}/${n})`,'Часть анализов лаборатория выполнить не может')+moRefundTx(o);
+  if(s==='cancelling') return moPlq('p-orange',MOI.clock,'Отменяем заказ','');
+  if(s==='cancelled') return moPlq('p-red',MOI.ban,`${moYear(new Date())} (отменена)`,'')+moRefundTx(o);
+  if(s==='rejected') return moPlq('p-red',MOI.ban,`${moYear(new Date())} (Лаборатория не приняла заказ)`,'')+moRefundTx(o);
   return '';
 }
 function moRow(o,id,k){
-  const ready=moRes(o)&&k<moReady(o);
-  return `<div class="mo-ar">${ready?`<span class="ico pdf">${MOI.pdf}</span>`:`<span class="ico${o.st==='cancelled'?' off':''}">${o.st==='cancelled'?MOI.ban:MOI.clock}</span>`}<div class="tx"><b>${esc(items[id].name.split(' (')[0])}</b>${ready?'<span>Результат готов</span>':''}</div>${ready?`<button class="mo-dl" data-act="mo-dl" aria-label="Скачать результат">${MOI.dl}</button>`:''}</div>`;
-}
-function moCoin(o){
-  const n=o.ids.length*PTS_PER, st=o.st;
-  if(st==='cancelled') return '';
-  const t=st==='done'?'За эту запись вам начислены баллы.':st==='part'?`Начислили ${moReady(o)*PTS_PER} баллов за готовые анализы, остальные — после выполнения.`:st==='cancelling'?'Если лаборатория подтвердит отмену, баллы не начислим.':'Начислим за эту запись, когда лаборатория выполнит анализы.';
-  return `<div class="mo-coin"><span>${t}</span><b>${fmt0(n)}${SV.coinY}</b></div>`;
+  const s=moSt(o), n=o.ids.length;
+  const cnc=moCancelled(s)||(s==='partial'&&k===n-1), ready=!cnc&&k<moReady(o), nr=s==='nores';
+  const ico=ready?`<span class="ico pdf">${MOI.pdf}</span>`:cnc?`<span class="ico off">${MOI.ban}</span>`:nr?`<span class="ico ok">${MOI.check}</span>`:`<span class="ico">${MOI.clock}</span>`;
+  return `<div class="mo-ar">${ico}<div class="tx"><b>${esc(moName(id))}</b>${ready?'<span>Результат готов</span>':cnc?'<span class="x">Отменён</span>':''}</div>${ready?`<button class="mo-dl" data-act="mo-dl" aria-label="Скачать результат">${MOI.dl}</button>`:''}</div>`;
 }
 function renderOrder(){
-  const k=cur.i, o=ORDERS[k];
+  const k=cur.i, o=ORDERS[k], s=moSt(o);
   const map=o.lab===KUSH?`<div class="mo-map" style="background-image:url(${CLIMG['m-invitro']})"></div>`:`<div class="mo-map gen"><div class="mapw" style="transform:translate(-${Math.max(0,o.lab.x*.8-170)}px,-${Math.max(0,o.lab.y*.8-48)}px) scale(.8)"></div><i class="cl-mpin"></i></div>`;
+  const nores=s==='nores'?`<div class="mo-plq p-gray info">${MOI.info}<div><b>Результаты не пришли в приложение НаПоправку</b><span>При заказе вы не дали согласие на их передачу. Результаты в лаборатории ${esc(o.lab.brand.k==='inv'?'Инвитро':o.lab.brand.n)}.</span><button class="mo-howres" data-act="mo-howres">Как получить результаты${MOI.chev16}</button></div></div>`:'';
+  const canCancel=['new','wait','today','work'].includes(s); // Figma: «Отменить запись» до готовности результатов
   $('#mo-dbody').innerHTML=`<div class="mo-d">
     ${moTopPlaque(o)}
-    <div class="mo-tp"><b>Заказ анализов</b>${moPrice(o)}</div>
-    ${moPlaques(o,true)}
+    ${moTitle(o)}
+    ${moPts(o)}${nores}${s==='cancelling'?moCancelReq(o):''}
     <div class="mo-ars">${o.ids.map((id,j)=>moRow(o,id,j)).join('')}</div>
     ${moPrep(k)}
     ${moLab(o,k)}
     ${moCoin(o)}
     <div class="mo-mapw">${map}<button class="mo-route" data-act="mo-route">${MOI.route}Построить маршрут</button></div>
-    <div class="mo-btns"><button class="big" data-morepeat="${k}">Записаться еще раз</button><button class="big in" data-act="mo-support">Обратиться в поддержку</button></div>
+    <div class="mo-btns"><button class="big" data-morepeat="${k}">Записаться еще раз</button><button class="big in" data-act="mo-support">Обратиться в поддержку</button>${canCancel?'<button class="mo-cancel" data-act="mo-cancel">Отменить запись</button>':''}</div>
     <div class="mo-line"></div>
-    <div class="mo-docs"><div class="h"><b>Документы</b><button class="mo-lnk" data-act="mo-doc">Добавить</button></div><span>JPEG или PNG</span></div>
     ${moMeta(o)}
   </div>`;
   moSel();
@@ -2421,7 +2497,7 @@ function moSel(){
   $('#ord-st').value=o.st; $('#ord-lbl').textContent=cur&&cur.s==='order'?'Статус заказа':'Статус верхнего заказа';
 }
 $('#ord-st').innerHTML=MOS.map(([v,t])=>`<option value="${v}">${t}</option>`).join('');
-$('#ord-st').addEventListener('change',e=>{const o=ORDERS[cur&&cur.s==='order'?cur.i:0];o.st=e.target.value;if(cur.s==='order')renderOrder();else renderOrders();SC.ev('mo-st')});
+$('#ord-st').addEventListener('change',e=>{const o=ORDERS[cur&&cur.s==='order'?cur.i:0];o.st=e.target.value;if(['part','done'].includes(o.st))o.consent=o.consent!==false?true:o.consent;if(o.st==='nores')o.consent=false;if(cur.s==='order')renderOrder();else renderOrders();SC.ev('mo-st')});
 function moRepeat(o){ // ТЗ 2.10.1: корзина с набором заказа, весь набор отмечен, остальное — без галочек
   [...cart.values()].forEach(v=>v.on=false);
   o.ids.forEach(id=>{if(!cart.has(id))cart.set(id,{on:true});cart.get(id).on=true});
@@ -2447,12 +2523,12 @@ $('#ph').addEventListener('click',e=>{
   if(d.motopic){closeSheet();toast(`Откроем чат поддержки: «${d.motopic}»`);return}
   const a=d.act;
   if(a==='mo-support'){moSupport();SC.ev('mo-support');return}
-  if(a==='mo-share'){toast('Поделимся деталями записи');return}
+  if(a==='mo-cancel'){const o=ORDERS[cur.i];dialog('Отменить запись?',`Отправим запрос в лабораторию. Когда она подтвердит отмену, вернём ${fmt(o.total)} на карту •• ${o.card}${o.pts?`, а ${o.pts} баллов — на баланс`:''}.`,[['Отменить запись',()=>{o.st='cancelling';renderOrder();toast('Отправили запрос на отмену');SC.ev('mo-cancel')}],['Не отменять',()=>{}]]);return}
+  if(a==='mo-howres'){toast('Результаты выдадут в лаборатории по паспорту или пришлют на почту из личного кабинета лаборатории');return}
   if(a==='mo-map'||a==='mo-route'){toast('Откроем маршрут в картах');return}
   if(a==='mo-call'){toast('Позвоним в лабораторию');return}
   if(a==='mo-copy'){toast('ID записи скопирован');return}
   if(a==='mo-dl'){toast('Откроем PDF с результатом');return}
-  if(a==='mo-doc'){toast('Можно прикрепить фото или скан');return}
   if(d.ordopen!==undefined){if(e.target.closest('button,[data-act],a'))return;go({s:'order',i:+d.ordopen});SC.ev('mo-detail');return}
 });
 
@@ -2622,8 +2698,8 @@ else if(start==='cart'){demo();go({s:'cart'});}
 else if(start==='map'){demo();go({s:'cart'});go({s:'map'});}
 else if(start==='lab'){demo();LAB=LABS[0];go({s:'cart'});}
 else if(/^clinic(-lab)?$/.test(start)||start==='free'){ // деталька клиники с анализом (Рэмси), лаборатории (Инвитро) или поликлиника ОМС
-  const fe=(POP8.find(i=>/^Ферритин/.test(i.name))||POP8[0]).id, wk=WLABS.findIndex(w=>w.brand===(start==='clinic'?'rem':'inv'));
-  go({s:'an',q:''});go({s:'detail',id:fe});go(start==='free'?clView('poly',null):clView('w'+wk,fe));}
+  const fe='hormones-03', wk=WLABS.findIndex(w=>w.brand==='rem'); // контекст макетов 619:20514 — пролактин
+  go({s:'an',q:''});go({s:'detail',id:fe});go(start==='free'?clView('poly',fe):start==='clinic'?clView('w'+wk,fe):clView('kush',fe));}
 else if(start==='orders') resetTo({s:'orders'});
 else if(start==='order'){resetTo({s:'orders'});go({s:'order',i:0});}
 NOANIM=false;
@@ -2634,6 +2710,7 @@ NOANIM=false;
   function fresh(){cart.clear();LAB=null;ONE=null;ORDERS.length=0;ORDERS.push(ORD_DEMO);ORD_DEMO.st='wait';MO.tab='rec';MO.more={};PAID=null;PF=null;PATIENT=0;PAY.method='card';PAY.usePts=true;PAY.consent=true;PAY.brkOpen=true;MV.card=false;MV.sel=null;MV.searching=false;MV.place=null;MV.q='';$('#dlg').hidden=true;closeSheet();}
   function nav(views){const was=NOANIM;NOANIM=true;stack.length=0;cur=null;views.forEach((v,k)=>go(v,k>0,false));NOANIM=was;}
   const demo4=()=>['Пролактин','Билирубин общий','Глюкоза','Ферритин'].forEach(n=>{const i=DATA.items.find(x=>x.name===n||x.name.startsWith(n));if(i)addCart(i.id)});
+  const PRL='hormones-03';
   const REM=()=>WLABS.findIndex(w=>w.brand==='rem'), INV=()=>WLABS.findIndex(w=>w.brand==='inv');
   const wW=k=>{const W=wlab(k);W.always=new Set([ferr()]);return W};
   const scrollTo=(sel,scr)=>setTimeout(()=>{const e=$(sel),s=$(scr);if(e&&s)s.scrollTop+=e.getBoundingClientRect().top-s.getBoundingClientRect().top-(scr==='#s-detail'?380:140)},60);
@@ -2671,11 +2748,11 @@ NOANIM=false;
     {t:'Списать 500 баллов и оплатить',ev:'scr:res',hl:'#f-page [data-act=pay]',pre:()=>{fresh();demo4();LAB=LABS[0];PATIENT=0;patFill(0);nav([CART,{s:'pat'},{s:'co'}])}},
     {t:'Согласие на результаты: «Даю согласие» или «Пропустить»',ev:'scr:ok',hl:'#f-page [data-act=resok]',pre:()=>{fresh();demo4();LAB=LABS[0];pay0();nav([{s:'res'}])}}]},
    {id:'clinic',t:'Деталька клиники и лаборатории',d:'Из «Где сдать» в карточку клиники: цены, корзина, отзывы, запись на 1 анализ',steps:[
-    {t:'Тап по названию клиники в «Где сдать»',ev:'clinic-ctx',hl:'#b-where [data-wcl]:not([data-wcl=free])',pre:()=>{fresh();nav([A,{s:'detail',id:ferr()}]);scrollTo('#b-where [data-wcl]','#s-detail')}},
-    {t:'«Добавить в корзину» в нижней панели',ev:'cl-add',hl:'#f-clinic [data-cla=add]',pre:()=>{fresh();nav([A,{s:'detail',id:ferr()},clView('w'+REM(),ferr())])}},
-    {t:'Вкладка «Отзывы»: сначала про этот анализ',ev:'cltab:reviews',hl:'#cl-tabs [data-cltab=reviews]',pre:()=>{fresh();nav([A,{s:'detail',id:ferr()},clView('w'+REM(),ferr())])}},
-    {t:'Лаборатория: «Записаться» на 1 анализ',ev:'scr:pat',hl:'#cl-list [data-cla=one]',pre:()=>{fresh();nav([A,{s:'detail',id:ferr()},clView('w'+INV(),ferr())])}},
-    {t:'Поликлиника по ОМС из «Где сдать»',ev:'clinic',hl:'#b-where [data-wcl=free]',pre:()=>{fresh();nav([A,{s:'detail',id:ferr()}]);scrollTo('#b-where [data-wcl=free]','#s-detail')}}]},
+    {t:'Тап по названию клиники в «Где сдать»',ev:'clinic-ctx',hl:'#b-where [data-wcl]:not([data-wcl=free])',pre:()=>{fresh();nav([A,{s:'detail',id:PRL}]);scrollTo('#b-where [data-wcl]','#s-detail')}},
+    {t:'«Добавить в корзину» в нижней панели',ev:'cl-add',hl:'#f-clinic [data-cla=add]',pre:()=>{fresh();nav([A,{s:'detail',id:PRL},clView('w'+REM(),PRL)])}},
+    {t:'Вкладка «Отзывы»: сначала про этот анализ',ev:'cltab:reviews',hl:'#cl-tabs [data-cltab=reviews]',pre:()=>{fresh();nav([A,{s:'detail',id:PRL},clView('w'+REM(),PRL)])}},
+    {t:'Лаборатория: «Записаться» на 1 анализ',ev:'scr:pat',hl:'#cl-list [data-cla=one]',pre:()=>{fresh();nav([A,{s:'detail',id:PRL},clView('kush',PRL)])}},
+    {t:'Поликлиника по ОМС из «Где сдать»',ev:'clinic-ctx',hl:'#b-where [data-wcl=free]',pre:()=>{fresh();nav([A,{s:'detail',id:PRL}]);scrollTo('#b-where [data-wcl=free]','#s-detail')}}]},
    {id:'orders',t:'Мои записи: заказ анализов',d:'Вкладка таббара, карточка заказа, детали, поддержка, «Записаться еще раз»',steps:[
     {t:'Таб «Мои записи»',ev:'tab:orders',hl:'#tabbar [data-tab=orders]',pre:()=>{fresh();nav([{s:'home'}])}},
     {t:'Раскрыть список анализов «Ещё 1 анализ»',ev:'mo-more',hl:'#mo-body [data-momore]',pre:()=>{fresh();nav([{s:'orders'}])}},

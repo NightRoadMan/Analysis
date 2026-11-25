@@ -888,3 +888,44 @@ button.mo-ln{text-decoration:underline;text-decoration-color:var(--border);text-
 .ordctl{align-items:center;gap:8px;padding:3px 3px 3px 12px;font:600 13px/16px var(--font);color:var(--stage-fg)}
 .ordctl select{font:600 13px/16px var(--font);border:0;border-radius:9px;padding:7px 10px;background:var(--stage-ctl-on);color:var(--stage-ctl-on-fg);cursor:pointer}
 .mo-ar .ico.off{background:var(--mo-red);color:var(--mo-red-fg)}
+/* шапка детальки клиники: белая, иконки без стеклянных кругов (Figma 620:26281) */
+.cl-hdr .gb{background:none;box-shadow:none}
+/* нижний блок без анализа: белая подложка, как футер 620:26674 */
+.cl-ftr.nb{background:var(--raised);box-shadow:0 -6px 24px rgba(13,13,13,.08);padding-top:16px}
+.cl-ftr.nb .cl-fcart{position:absolute;right:16px;top:-72px}
+/* «Мои записи», правки макетов 25.11 */
+#s-orders .hdr{padding-bottom:0;border-radius:0}
+.mo-tabs{display:flex;border-bottom:1px solid var(--border)}
+.mo-tabs button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;height:40px;font-size:15px;font-weight:600;color:var(--light);border-bottom:2px solid transparent;margin-bottom:-1px}
+.mo-tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);background:none;box-shadow:none}
+.mo-tabs .mo-n{background:var(--yellow);color:#fff}
+.mo-tp{flex-direction:row;justify-content:space-between;align-items:flex-start;gap:12px}
+.mo-tp .mo-price{flex-direction:column;align-items:flex-end;gap:0;flex-shrink:0}
+.mo-tp .mo-price .paid{font-size:15px;line-height:20px}
+.mo-tp .mo-price s{font-size:14px;line-height:18px}
+.mo-chip{font-size:13px;line-height:16px;border-radius:12px}
+.mo-chip.c-greenf{background:#81D37F;color:#fff}
+.mo-chip.c-red{background:#FF7777;color:#fff}
+.mo-sub.sm{font-size:13px;line-height:18px;margin-top:-8px}
+.mo-plq.p-gray{background:var(--tint);color:var(--ink)}
+.mo-plq.p-gray span{color:var(--ink);font-size:13px;line-height:18px}
+.mo-plq.p-gray.info b{display:block}
+.mo-howres{display:flex;align-items:center;gap:2px;margin-top:8px;font-size:14px;font-weight:600;color:var(--ink)}
+.mo-ul{gap:0;padding-left:18px}
+.mo-ln{font-weight:500}
+button.mo-ln{text-decoration:none}
+.mo-ic{background:none;width:32px;height:32px;color:var(--soft)}
+.mo-ph{justify-content:space-between;font-weight:500}
+.mo-hrs svg:last-child{color:var(--ink)}
+.mo-prep svg{color:var(--ink)}
+#s-order{background:var(--base)}
+#mo-dbody{padding:0 0 60px}
+.mo-d{border-radius:0;padding:8px 16px 16px}
+.mo-ars{gap:0}
+.mo-ar{padding:12px 0;border-bottom:1px solid var(--border)}
+.mo-ar .ico{background:var(--tint);color:var(--light)}
+.mo-ar .ico.ok{background:var(--mo-green);color:var(--mo-green-fg)}
+.mo-ar .ico.off{background:var(--mo-red);color:var(--mo-red-fg)}
+.mo-ar .tx span.x{color:var(--mo-red-fg)}
+.mo-route{background:none;height:36px}
+.mo-cancel{height:44px;font-size:16px;font-weight:600;color:#E66161;text-align:center;width:100%}
