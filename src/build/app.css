@@ -1,7 +1,7 @@
 /* Phone 375×812 on a neutral stage; full-bleed on phones. Colours are the app's tokens from Figma (light / dark modes). */
 :root{
   --stage:#E4E6EA; --stage-fg:#5D5E63; --stage-ctl:#FFFFFF; --stage-ctl-on:#3F4045; --stage-ctl-on-fg:#FFFFFF;
-  --tile:#F3F5FC; --canvas:#F4F5F6; --canvas0:#F4F5F600; --fgrad:#F4F5F6; --fgrad0:#F4F5F600; --sw-knob:#FFFFFF; --tab-on:#EDEDED; --tab-hl:#FFFFFF; --tab-hl2:#E6E6E6; --sw-off:#E2E3E6; --base:#FFFFFF; --raised:#FFFFFF; --tint:#F4F5F6; --glass:#F4F5F699;
+  --tile:#F4F5F6; --canvas:#F4F5F6; --canvas0:#F4F5F600; --fgrad:#F4F5F6; --fgrad0:#F4F5F600; --sw-knob:#FFFFFF; --tab-on:#EDEDED; --tab-hl:#FFFFFF; --tab-hl2:#E6E6E6; --sw-off:#E2E3E6; --base:#FFFFFF; --raised:#FFFFFF; --tint:#F4F5F6; --glass:#F4F5F699;
   --ink:#0D0D0D; --soft:#5D5E63; --light:#929297; --border:#EAEBED; --line:#EAEBED;
   --brand:#61B7C6; --brand-ink:#31858C; --brand-tint:#E6F4F6; --brand-tint-ink:#31858C;
   --chip-on:#3F4045; --chip-on-fg:#FFFFFF; --ok:#6ABF68; --badge:#FF7777; --accent:#F3AA00; --yellow:#FFC63D;
@@ -439,8 +439,8 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .anhero p{margin:8px 0 0;font-size:13px;line-height:16px;font-weight:400;color:var(--soft)}
 .anq{position:sticky;top:98px;z-index:4;background:var(--base);border-radius:0 0 24px 24px;padding:8px 16px 16px}
 .agrid-w{padding:16px}
-.agrid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:136px 136px 174px 120px;gap:8px}
-.atile{position:relative;width:100%;height:100%;min-width:0;border-radius:20px;background:var(--tile);padding:12px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-start;text-align:left;isolation:isolate}
+.agrid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:139px 139px 175px 121px;gap:8px}
+.atile{position:relative;width:100%;height:100%;min-width:0;border-radius:12px;background:var(--tile);padding:12px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-start;text-align:left;isolation:isolate}
 .atx{position:relative;z-index:2;display:flex;flex-direction:column;gap:2px;max-width:112px}
 .atx b{font-size:13px;line-height:16px;font-weight:600;color:var(--ink)}
 .atx span{font-size:12px;line-height:16px;font-weight:500;color:var(--light)}
@@ -929,3 +929,36 @@ button.mo-ln{text-decoration:none}
 .mo-ar .tx span.x{color:var(--mo-red-fg)}
 .mo-route{background:none;height:36px}
 .mo-cancel{height:44px;font-size:16px;font-weight:600;color:#E66161;text-align:center;width:100%}
+
+/* запись в обычную клинику (Figma 765:24292, 765:24331) */
+#s-book{background:var(--base)}
+.bk{display:flex;flex-direction:column;padding:8px 16px 150px}
+.bk-pl{display:flex;flex-direction:column;gap:8px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.bk-pl b,.bk-an b{font-size:16px;font-weight:600;line-height:20px;color:var(--ink)}
+.bk-pl span,.bk-an span{font-size:12px;font-weight:600;line-height:16px;color:var(--light)}
+.bk-an{display:flex;flex-direction:column;gap:12px;padding-top:16px}
+.bk-an div{display:flex;flex-direction:column;gap:8px}
+.bk h2{font-size:22px;font-weight:700;line-height:28px;margin:24px 8px 0;color:var(--ink)}
+.bk h2.bk-tt{margin-top:44px}
+.bk h2.bk-pt{margin-top:32px}
+.bk-nav{display:flex;align-items:center;justify-content:space-between;margin-top:22px;height:20px}
+.bk-nav b{font-size:16px;font-weight:600;line-height:20px}
+.bk-nav button{width:24px;height:24px;display:flex;align-items:center;justify-content:center;color:var(--ink)}
+.bk-nav button[disabled]{opacity:.3}
+.bk-cal{display:grid;grid-template-columns:repeat(7,52px);row-gap:12px;margin:24px 0 0 -9px;justify-items:center}
+.bk-cal .wd{font-size:16px;font-weight:600;line-height:20px;color:var(--light);margin-bottom:10px}
+.bk-d{width:40px;height:40px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;line-height:20px;color:#fff;background:var(--brand)}
+.bk-d.sel{background:var(--yellow)}
+.bk-d.off{background:none;color:var(--light);font-weight:400}
+.bk-ts{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.bk-t{width:80px;height:40px;border-radius:20px;background:var(--brand);color:#fff;font-size:16px;font-weight:600;line-height:20px}
+.bk-fl{display:flex;gap:12px;align-items:center;margin-top:24px;font-size:12px;font-weight:600;line-height:16px;color:var(--accent)}
+.bk-fl.pl{padding:11px 15px;background:#FFF8E5;border:1px solid #FFE5A3;border-radius:16px;color:#F4AC10}
+:root[data-theme="dark"] .bk-fl.pl{background:#3A3220;border-color:#5A4A20}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .bk-fl.pl{background:#3A3220;border-color:#5A4A20}}
+.bk-ch{margin-top:21px}
+.bk-ch .pchip{height:40px;border-radius:16px;padding:0 16px;font-size:14px;font-weight:500}
+.bk-fs{display:flex;flex-direction:column;gap:23px;margin-top:24px}
+.bk-fs .ferr{margin-top:-17px}
+.bk-t{display:flex;align-items:center;justify-content:center}
+.paybtn .bk-bt{flex:1;text-align:center}
