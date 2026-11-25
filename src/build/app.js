@@ -16,6 +16,7 @@ const anW=n=>`${n}${nb}${plural(n,'анализ','анализа','анализ�
 const maxPrice=i=>r10(i.price*2.4);
 const clinicWord=n=>`В ${n} ${plural(n,'клинике','клиниках','клиниках')}`;
 const isBlood=i=>/кров/i.test(i.bio);
+const bloodOf=L=>(L&&L.blood)||380; // взятие крови: у Инвитро на Кушелевской 250 ₽ (Figma 620:26285), иначе 380 ₽
 function hash(str){let h=2166136261;for(let k=0;k<str.length;k++){h^=str.charCodeAt(k);h=Math.imul(h,16777619)>>>0}return h}
 const rnd=(str)=>hash(str)/4294967296;
 const SV={
@@ -504,7 +505,7 @@ function replaceSheet(id,W,after){
 }
 function labFor(L,ids){
   const avail=ids.filter(id=>labHas(L,id)), miss=ids.filter(id=>!labHas(L,id));
-  return {k:avail.length,N:ids.length,full:!miss.length,miss,avail,p:avail.reduce((a,id)=>a+labPrice(L,id),0)+(avail.some(id=>isBlood(items[id]))?380:0)};
+  return {k:avail.length,N:ids.length,full:!miss.length,miss,avail,p:avail.reduce((a,id)=>a+labPrice(L,id),0)+(avail.some(id=>isBlood(items[id]))?bloodOf(L):0)};
 }
 const shortName=n=>{let s=n.split(/[(,:]/)[0].trim();return s};
 const fullCount=ids=>LABS.filter(L=>ids.every(id=>labHas(L,id))).length;
@@ -512,10 +513,10 @@ const fullCount=ids=>LABS.filter(L=>ids.every(id=>labHas(L,id))).length;
 /* ---------- cart screen ---------- */
 const checkedIds=()=>[...cart.entries()].filter(([id,v])=>v.on).map(([id])=>id);
 function cartTotals(){
-  if(ONE){const id=ONE.id,sum=labPrice(ONE.L,id),blood=isBlood(items[id])?380:0;return {ids:[id],sum,blood,total:sum+blood}}
+  if(ONE){const id=ONE.id,sum=labPrice(ONE.L,id),blood=isBlood(items[id])?bloodOf(ONE.L):0;return {ids:[id],sum,blood,total:sum+blood}}
   const ids=checkedIds().filter(id=>!LAB||labHas(LAB,id));
   const sum=ids.reduce((a,id)=>a+(LAB?labPrice(LAB,id):items[id].price),0);
-  const blood=ids.some(id=>isBlood(items[id]))?380:0;
+  const blood=ids.some(id=>isBlood(items[id]))?bloodOf(LAB):0;
   return {ids,sum,blood,total:sum+blood};
 }
 function labHead(L,act){
@@ -546,7 +547,7 @@ function renderCart(){
     <div class="ckrow"><button class="lrow" data-act="ckall" style="width:auto"><span class="cb${ckCls}" role="checkbox" aria-checked="${ckCls===' on'?'true':ckCls?'mixed':'false'}"><i>${SV.tick}</i></span><span style="font-size:14px;font-weight:600">Выбрать всё</span></button><button class="sbtn" data-act="clear-cart">Очистить</button></div>
     ${missN?`<div class="warn" style="margin-top:12px">${SV.alert}<div>${missN===1?'Один анализ нельзя сдать':'Не все анализы можно сдать'} в этой лаборатории<p>Сдайте ${anW(ids.length-missN)} здесь или выберите другую лабораторию.</p></div></div>`:''}
     <div class="clist">${ids.map(row).join('')}
-    ${t.blood?`<div class="draw"><div class="n">Взятие крови из вены</div><span class="pr">${LAB?'':'<i>от</i>'}<b>${fmt(380)}</b></span></div>`:''}</div>
+    ${t.blood?`<div class="draw"><div class="n">Взятие крови из вены</div><span class="pr">${LAB?'':'<i>от</i>'}<b>${fmt(bloodOf(LAB))}</b></span></div>`:''}</div>
     <div class="tot"><span>Итого</span><span class="pr">${LAB?'':'<i>от</i>'}<b style="font-size:18px">${fmt(t.total)}</b></span></div>
     <div class="ptsrow"><div class="tx"><b>Начислим баллы</b><span>после сдачи в лаборатории-партнёре</span></div><span class="ptp lg">+${fmt0(t.ids.length*PTS_PER)}${SV.coinY}</span></div>
   </div>
@@ -639,7 +640,7 @@ function renderCO(){
     ['foreign','Карта банка другой страны',`<svg width="34" height="26" viewBox="0 0 34 26"><rect x="1" y="2" width="28" height="19" rx="3" fill="#D7D9DE"/><rect x="1" y="6" width="28" height="3.5" fill="#B5B9C2"/><rect x="4" y="13" width="9" height="3" rx="1" fill="#fff"/><circle cx="27" cy="20" r="6" fill="#4F9FE8"/><path d="M21.5 20h11M27 14.5c2 2 2 9 0 11M27 14.5c-2 2-2 9 0 11" stroke="#fff" stroke-width="1.1" fill="none"/></svg>`]];
   $('#co-body').innerHTML=`
   <div class="csec"><button class="ttl${PAY.brkOpen?' open':''}" data-act="brk"><span>Итого</span><span class="v">${fmt(t.total)}${SV.chevUp}</span></button>
-    ${PAY.brkOpen?`<div class="brk">${t.ids.map(id=>`<div><span>${esc(shortName(items[id].name))}</span><b>${fmt(labPrice(curLab(),id))}</b></div>`).join('')}${t.blood?`<div><span>Взятие крови из вены</span><b>${fmt(380)}</b></div>`:''}${PAY.usePts&&ptsOff(t.total)?`<div class="ptsl"><span>Оплата баллами</span><b>−${fmt(ptsOff(t.total))}</b></div>`:''}</div>`:''}
+    ${PAY.brkOpen?`<div class="brk">${t.ids.map(id=>`<div><span>${esc(shortName(items[id].name))}</span><b>${fmt(labPrice(curLab(),id))}</b></div>`).join('')}${t.blood?`<div><span>Взятие крови из вены</span><b>${fmt(t.blood)}</b></div>`:''}${PAY.usePts&&ptsOff(t.total)?`<div class="ptsl"><span>Оплата баллами</span><b>−${fmt(ptsOff(t.total))}</b></div>`:''}</div>`:''}
   </div>
   <div class="csec"><div class="sh" style="font-size:22px;line-height:28px">Способы оплаты</div>
     <div>${pm.map(([k,n,svg])=>`<button class="pay" data-pm="${k}"><span class="pi">${svg}</span><span class="pn">${n}</span><span class="radio${PAY.method===k?' on':''}"></span></button>`).join('')}</div>
@@ -1049,8 +1050,8 @@ else if(start==='cart'){demo();go({s:'cart'});}
 else if(start==='map'){demo();go({s:'cart'});go({s:'map'});}
 else if(start==='lab'){demo();LAB=LABS[0];go({s:'cart'});}
 else if(/^clinic(-lab)?$/.test(start)||start==='free'){ // деталька клиники с анализом (Рэмси), лаборатории (Инвитро) или поликлиника ОМС
-  const fe=(POP8.find(i=>/^Ферритин/.test(i.name))||POP8[0]).id, wk=WLABS.findIndex(w=>w.brand===(start==='clinic'?'rem':'inv'));
-  go({s:'an',q:''});go({s:'detail',id:fe});go(start==='free'?clView('poly',null):clView('w'+wk,fe));}
+  const fe='hormones-03', wk=WLABS.findIndex(w=>w.brand==='rem'); // контекст макетов 619:20514 — пролактин
+  go({s:'an',q:''});go({s:'detail',id:fe});go(start==='free'?clView('poly',fe):start==='clinic'?clView('w'+wk,fe):clView('kush',fe));}
 else if(start==='orders') resetTo({s:'orders'});
 else if(start==='order'){resetTo({s:'orders'});go({s:'order',i:0});}
 NOANIM=false;
@@ -1061,6 +1062,7 @@ NOANIM=false;
   function fresh(){cart.clear();LAB=null;ONE=null;ORDERS.length=0;ORDERS.push(ORD_DEMO);ORD_DEMO.st='wait';MO.tab='rec';MO.more={};PAID=null;PF=null;PATIENT=0;PAY.method='card';PAY.usePts=true;PAY.consent=true;PAY.brkOpen=true;MV.card=false;MV.sel=null;MV.searching=false;MV.place=null;MV.q='';$('#dlg').hidden=true;closeSheet();}
   function nav(views){const was=NOANIM;NOANIM=true;stack.length=0;cur=null;views.forEach((v,k)=>go(v,k>0,false));NOANIM=was;}
   const demo4=()=>['Пролактин','Билирубин общий','Глюкоза','Ферритин'].forEach(n=>{const i=DATA.items.find(x=>x.name===n||x.name.startsWith(n));if(i)addCart(i.id)});
+  const PRL='hormones-03';
   const REM=()=>WLABS.findIndex(w=>w.brand==='rem'), INV=()=>WLABS.findIndex(w=>w.brand==='inv');
   const wW=k=>{const W=wlab(k);W.always=new Set([ferr()]);return W};
   const scrollTo=(sel,scr)=>setTimeout(()=>{const e=$(sel),s=$(scr);if(e&&s)s.scrollTop+=e.getBoundingClientRect().top-s.getBoundingClientRect().top-(scr==='#s-detail'?380:140)},60);
@@ -1098,11 +1100,11 @@ NOANIM=false;
     {t:'Списать 500 баллов и оплатить',ev:'scr:res',hl:'#f-page [data-act=pay]',pre:()=>{fresh();demo4();LAB=LABS[0];PATIENT=0;patFill(0);nav([CART,{s:'pat'},{s:'co'}])}},
     {t:'Согласие на результаты: «Даю согласие» или «Пропустить»',ev:'scr:ok',hl:'#f-page [data-act=resok]',pre:()=>{fresh();demo4();LAB=LABS[0];pay0();nav([{s:'res'}])}}]},
    {id:'clinic',t:'Деталька клиники и лаборатории',d:'Из «Где сдать» в карточку клиники: цены, корзина, отзывы, запись на 1 анализ',steps:[
-    {t:'Тап по названию клиники в «Где сдать»',ev:'clinic-ctx',hl:'#b-where [data-wcl]:not([data-wcl=free])',pre:()=>{fresh();nav([A,{s:'detail',id:ferr()}]);scrollTo('#b-where [data-wcl]','#s-detail')}},
-    {t:'«Добавить в корзину» в нижней панели',ev:'cl-add',hl:'#f-clinic [data-cla=add]',pre:()=>{fresh();nav([A,{s:'detail',id:ferr()},clView('w'+REM(),ferr())])}},
-    {t:'Вкладка «Отзывы»: сначала про этот анализ',ev:'cltab:reviews',hl:'#cl-tabs [data-cltab=reviews]',pre:()=>{fresh();nav([A,{s:'detail',id:ferr()},clView('w'+REM(),ferr())])}},
-    {t:'Лаборатория: «Записаться» на 1 анализ',ev:'scr:pat',hl:'#cl-list [data-cla=one]',pre:()=>{fresh();nav([A,{s:'detail',id:ferr()},clView('w'+INV(),ferr())])}},
-    {t:'Поликлиника по ОМС из «Где сдать»',ev:'clinic',hl:'#b-where [data-wcl=free]',pre:()=>{fresh();nav([A,{s:'detail',id:ferr()}]);scrollTo('#b-where [data-wcl=free]','#s-detail')}}]},
+    {t:'Тап по названию клиники в «Где сдать»',ev:'clinic-ctx',hl:'#b-where [data-wcl]:not([data-wcl=free])',pre:()=>{fresh();nav([A,{s:'detail',id:PRL}]);scrollTo('#b-where [data-wcl]','#s-detail')}},
+    {t:'«Добавить в корзину» в нижней панели',ev:'cl-add',hl:'#f-clinic [data-cla=add]',pre:()=>{fresh();nav([A,{s:'detail',id:PRL},clView('w'+REM(),PRL)])}},
+    {t:'Вкладка «Отзывы»: сначала про этот анализ',ev:'cltab:reviews',hl:'#cl-tabs [data-cltab=reviews]',pre:()=>{fresh();nav([A,{s:'detail',id:PRL},clView('w'+REM(),PRL)])}},
+    {t:'Лаборатория: «Записаться» на 1 анализ',ev:'scr:pat',hl:'#cl-list [data-cla=one]',pre:()=>{fresh();nav([A,{s:'detail',id:PRL},clView('kush',PRL)])}},
+    {t:'Поликлиника по ОМС из «Где сдать»',ev:'clinic-ctx',hl:'#b-where [data-wcl=free]',pre:()=>{fresh();nav([A,{s:'detail',id:PRL}]);scrollTo('#b-where [data-wcl=free]','#s-detail')}}]},
    {id:'orders',t:'Мои записи: заказ анализов',d:'Вкладка таббара, карточка заказа, детали, поддержка, «Записаться еще раз»',steps:[
     {t:'Таб «Мои записи»',ev:'tab:orders',hl:'#tabbar [data-tab=orders]',pre:()=>{fresh();nav([{s:'home'}])}},
     {t:'Раскрыть список анализов «Ещё 1 анализ»',ev:'mo-more',hl:'#mo-body [data-momore]',pre:()=>{fresh();nav([{s:'orders'}])}},
