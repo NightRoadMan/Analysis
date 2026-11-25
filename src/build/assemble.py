@@ -56,7 +56,7 @@ for pre, uri in _pos:
         if lb in last: CATIMG.setdefault(cid, []).append(uri)
 h = h[:start] + h[end:]
 DH = 220 + 8  # высота карточки + gap
-h = h.replace('height:1290px', f'height:{1290-DH}px', 1).replace('height:1258px', f'height:{1258-DH}px', 1)
+h = h.replace('height:1290px', f'height:{1290-DH+14}px', 1).replace('height:1258px', f'height:{1258-DH+14}px', 1)  # +14: точки карусели
 h = h.replace('<div style="background-color:#F4F5F6;', '<div class="homefix" style="background-color:#F4F5F6;', 1)
 _i = h.find('Сдача<br>анализов'); _k = h.rfind('data-act="search"', 0, _i)
 h = h[:_k] + 'data-act="allan" role="button" tabindex="0" aria-label="Сдача анализов"' + h[_k+len('data-act="search"'):]
@@ -75,13 +75,33 @@ _row2 = '<div style="align-items:center;box-sizing:border-box;display:flex;gap:8
 _r = h.find(_row2, _ts)
 assert _r > 0
 h = h[:_r + len(_row2)] + tile + h[_r + len(_row2):]
+# Figma 439:109476: в «Записи в клиники» 6 плиток — лишние 4 убираем
+for _lb in ['Справки,<br>больничные', '>Психологи<', 'Онлайн-<br>консультации', 'Вызов <br>врача']:
+    _i = h.find(_lb); assert _i > 0, _lb
+    _ts = h.rfind('<div style="align-items:start;background-color:#F4F5F6;border-radius:12px', 0, _i)
+    _d = 0
+    for _m in re.finditer(r'<(/?)div\b[^>]*>', h[_ts:]):
+        _d += -1 if _m.group(1) else 1
+        if _d == 0: _te = _ts + _m.end(); break
+    assert _te > _i, _lb
+    h = h[:_ts] + h[_te:]
+# Figma 439:109476: под «Рекомендациями» индикатор страниц карусели (3 точки, активная оранжевая)
+_i = h.find('>Рекомендации<'); assert _i > 0
+_rs = list(re.finditer(r'<div style="[^"]*background-color:#FFFFFF[^"]*"', h[:_i]))[-1].start()
+_d = 0
+for _m in re.finditer(r'<(/?)div\b[^>]*>', h[_rs:]):
+    _d += -1 if _m.group(1) else 1
+    if _d == 0: _re = _rs + _m.start(); break
+h = h[:_re] + '<div class="hdots"><i class="on"></i><i></i><i></i></div>' + h[_re:]
+# бейдж «онлайн» у «Консилиума врачей» поверх картинки
+h = h.replace('right:0.25px;top:-2px"', 'right:0.25px;top:-2px;z-index:3"', 1)
 h = theme(h)
 
 
 # ---- карточки лаб в детальке (Figma 439:111091): «Забор до …» → БШ часов, «Записаться на 1 анализ»
 CLOCK = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.25" stroke="currentColor" stroke-width="1.5"/><path d="M10 6v4.2l2.6 1.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 CHR = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="m8 5.5 4.5 4.5L8 14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-WHERE = re.sub(r"(<div style='[^']*' class=\"cp\")", lambda m: f'<button class="lhrs" type="button" data-act="hours"><span class="ci">{CLOCK}</span><b>Забор до 19:30</b>{CHR}</button>' + m.group(1), p['WHERE'])
+WHERE = re.sub(r"(<div style='[^']*' class=\"cp\")", lambda m: f'<button class="lhrs" type="button" data-act="hours"><span class="ci">{CLOCK}</span><b class="hz">Забор до 19:30</b>{CHR}</button>' + m.group(1), p['WHERE'])
 assert WHERE.count('class="lhrs"') == 10, WHERE.count('class="lhrs"')
 WHERE = WHERE.replace('Записаться сейчас', 'Записаться на 1 анализ')
 # данные филиалов из карточек — для выбора филиала с детальки (ТЗ 2.6)
@@ -149,6 +169,9 @@ _rc = WHERE.rfind('<div style="align-items:start;background-color:#FFFFFF;border
 _rcard = _elem(WHERE, _rc)
 _rnew = _rcard.replace('Рэмси Диагностика на Московском', 'Рэмси Диагностика на Конституции')
 _rnew = re.sub(r'г\. Санкт-Петербург, [^<]+', 'г. Санкт-Петербург, пл. Конституции, д. 7', _rnew, count=1)
+_PH = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M7.2 3.3 9.4 7c.4.7.3 1.5-.3 2l-1.2 1.1a11.5 11.5 0 0 0 6 6l1.1-1.2c.5-.6 1.3-.7 2-.3l3.7 2.2c.7.4.9 1.3.5 2l-1.1 1.7c-.6.9-1.6 1.4-2.6 1.2C10.3 20.6 3.4 13.7 2.3 6.5c-.2-1 .3-2 1.2-2.6L5.2 2.8c.7-.4 1.6-.2 2 .5Z"/></svg>'
+_rnew = re.sub(r'(<button class="lhrs" type="button" data-act="hours"><span class="ci">.*?</span><b class="hz">[^<]*</b>)(.*?</button>)', lambda m: m.group(1) + '<i class="ldot"></i><b>Расписание</b>' + m.group(2) + f'<button class="lhrs" type="button" data-act="wcall"><span class="ci">{_PH}</span><b>+7 (812) 622-45-56</b><i class="ldot"></i><b>Позвонить</b>{CHR}</button>', _rnew, count=1, flags=re.S)
+assert 'Расписание' in _rnew
 _rnew = _rnew.replace('Обводный канал, 500 м', 'Московская, 1 км').replace('Лиговский проспект, 900 м', 'Парк Победы, 1,6 км').replace('#702785', '#0078C9')
 WHERE = WHERE[:_rc] + _rnew + WHERE[_rc + len(_rcard):]
 # бесплатная клиника в конце списка (ТЗ 2.5: бесплатные карточки в конце, без кнопок)

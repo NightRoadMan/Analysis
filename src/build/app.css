@@ -176,12 +176,11 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .kv .v{font-size:16px;font-weight:600;line-height:20px}
 .kv .sep{height:1px;background:linear-gradient(90deg,var(--line),transparent)}
 .dmid{background:var(--base);border-radius:24px 24px 0 0;overflow:clip}
-.dchips{position:sticky;z-index:4;margin-top:-8px;background:var(--base);border-top:1px solid var(--line);border-radius:0 0 24px 24px;padding:12px 16px}
+.dchips{position:relative;z-index:4;margin-top:-8px;background:var(--base);border-top:1px solid var(--line);border-radius:0 0 24px 24px;padding:12px 16px}
 .dchips .in{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-right:-16px;padding-right:16px}
 .dchips .in::-webkit-scrollbar{display:none}
 #s-detail .hdr{transition:border-radius .15s}
 #s-detail.stuck .hdr{border-radius:0}
-#s-detail.stuck .dchips{border-top-color:transparent;padding-top:0}
 .dmid .a{padding:16px;display:flex;flex-direction:column;gap:24px;border-bottom:1px solid var(--line)}
 .desc{font-size:12px;font-weight:500;line-height:18px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
 .desc.full{-webkit-line-clamp:unset;display:block}
@@ -596,7 +595,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 /* вариант A: разница с выбранным филиалом под ценой, текст БШ замены */
 .wdelta{display:block;margin-top:-4px;font-size:12px;font-weight:500;line-height:16px;color:var(--light)}
 .wdelta.cheap{color:var(--ok,#2E9E5B)}
-.rpl{margin:0;font-size:16px;line-height:22px;color:var(--light)}
+.rpl{margin:0;font-size:16px;line-height:22px;color:var(--soft)}
 .rpl b{color:var(--ink);font-weight:600}
 /* режим «Сценарии для показа» */
 .stagerow{display:flex;gap:24px;align-items:flex-start;justify-content:center}
@@ -795,7 +794,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .mo-tabs button{gap:6px}
 .mo-tabs button[aria-selected="true"]{background:var(--base);box-shadow:0 0 0 1px var(--border) inset}
 .mo-n{font-style:normal;min-width:20px;height:20px;border-radius:10px;background:var(--badge);color:#fff;font-size:12px;line-height:20px;padding:0 6px}
-.mo-list{display:flex;flex-direction:column;gap:8px;padding:8px 0 140px}
+.mo-list{display:flex;flex-direction:column;gap:8px;padding:8px 16px 140px}
 .mo-list .empty{background:var(--base);border-radius:16px}
 .mo-card{background:var(--base);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:16px;cursor:pointer}
 .mo-top{display:flex;align-items:center;gap:8px}
@@ -859,7 +858,7 @@ button.mo-ln{text-decoration:underline;text-decoration-color:var(--border);text-
 .mo-cp{color:var(--light);display:flex}
 .mo-doc{display:flex;gap:12px;align-items:center;font-size:15px;font-weight:600;line-height:20px}
 .mo-acts{display:flex;gap:8px}
-.mo-acts button{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--brand-ink);background:var(--tint);border-radius:16px;padding:12px 8px}
+.mo-acts button{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--brand-ink);background:none;border-radius:16px;padding:4px 8px}
 .mo-again{justify-content:space-between;padding:0}
 .mo-again .t{flex:1;text-align:center}.mo-again .r{display:flex;align-items:center;gap:6px;padding:0 22px;border-left:1px solid #ffffff66;height:28px}
 /* детали заказа */
@@ -930,35 +929,46 @@ button.mo-ln{text-decoration:none}
 .mo-route{background:none;height:36px}
 .mo-cancel{height:44px;font-size:16px;font-weight:600;color:#E66161;text-align:center;width:100%}
 
-/* запись в обычную клинику (Figma 765:24292, 765:24331) */
-#s-book{background:var(--base)}
-.bk{display:flex;flex-direction:column;padding:8px 16px 150px}
-.bk-pl{display:flex;flex-direction:column;gap:8px;padding-bottom:16px;border-bottom:1px solid var(--line)}
-.bk-pl b,.bk-an b{font-size:16px;font-weight:600;line-height:20px;color:var(--ink)}
-.bk-pl span,.bk-an span{font-size:12px;font-weight:600;line-height:16px;color:var(--light)}
-.bk-an{display:flex;flex-direction:column;gap:12px;padding-top:16px}
-.bk-an div{display:flex;flex-direction:column;gap:8px}
-.bk h2{font-size:22px;font-weight:700;line-height:28px;margin:24px 8px 0;color:var(--ink)}
-.bk h2.bk-tt{margin-top:44px}
-.bk h2.bk-pt{margin-top:32px}
-.bk-nav{display:flex;align-items:center;justify-content:space-between;margin-top:22px;height:20px}
-.bk-nav b{font-size:16px;font-weight:600;line-height:20px}
-.bk-nav button{width:24px;height:24px;display:flex;align-items:center;justify-content:center;color:var(--ink)}
-.bk-nav button[disabled]{opacity:.3}
-.bk-cal{display:grid;grid-template-columns:repeat(7,52px);row-gap:12px;margin:24px 0 0 -9px;justify-items:center}
-.bk-cal .wd{font-size:16px;font-weight:600;line-height:20px;color:var(--light);margin-bottom:10px}
-.bk-d{width:40px;height:40px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;line-height:20px;color:#fff;background:var(--brand)}
-.bk-d.sel{background:var(--yellow)}
-.bk-d.off{background:none;color:var(--light);font-weight:400}
-.bk-ts{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
-.bk-t{width:80px;height:40px;border-radius:20px;background:var(--brand);color:#fff;font-size:16px;font-weight:600;line-height:20px}
-.bk-fl{display:flex;gap:12px;align-items:center;margin-top:24px;font-size:12px;font-weight:600;line-height:16px;color:var(--accent)}
-.bk-fl.pl{padding:11px 15px;background:#FFF8E5;border:1px solid #FFE5A3;border-radius:16px;color:#F4AC10}
-:root[data-theme="dark"] .bk-fl.pl{background:#3A3220;border-color:#5A4A20}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .bk-fl.pl{background:#3A3220;border-color:#5A4A20}}
-.bk-ch{margin-top:21px}
-.bk-ch .pchip{height:40px;border-radius:16px;padding:0 16px;font-size:14px;font-weight:500}
-.bk-fs{display:flex;flex-direction:column;gap:23px;margin-top:24px}
-.bk-fs .ferr{margin-top:-17px}
-.bk-t{display:flex;align-items:center;justify-content:center}
-.paybtn .bk-bt{flex:1;text-align:center}
+/* «Мои записи»: чипсы-фильтры (676:36719), подпись с иконкой */
+.mo-chips{padding:12px 16px;margin:-8px 0 0}
+.mo-sub.ic{display:flex;gap:6px;align-items:flex-start}
+.mo-sub.ic svg{flex-shrink:0;margin-top:1px}
+.mo-sub b{font-weight:600;color:var(--ink)}
+#s-home::after{content:"";display:block;height:120px} /* последний ряд рекомендаций и точки над таббаром (439:109476) */
+
+/* обычная клиника: запись по телефону (765:23378, 836:26532) */
+.callnote{display:flex;gap:12px;align-items:center;font-size:12px;font-weight:600;line-height:16px;color:var(--brand-ink);margin-bottom:12px}
+.callnote svg{width:16px;height:16px;flex-shrink:0}
+.callbtn,.callq .big{display:flex;align-items:center;justify-content:center;gap:8px}
+.callq{display:flex;flex-direction:column;gap:16px}
+.callq .chev-ctl{margin:-8px 0 -8px}
+.callq2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.callq .cq-yes{background:#F2FBF1;color:#6ABF68}
+.callq .cq-no{background:#FFEBEB;color:#E66161}
+.callq .cq-miss{background:var(--brand-tint);color:var(--brand-ink)}
+:root[data-theme="dark"] .callq .cq-yes{background:#1F3320}:root[data-theme="dark"] .callq .cq-no{background:#3A2020}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .callq .cq-yes{background:#1F3320}:root:not([data-theme="light"]) .callq .cq-no{background:#3A2020}}
+
+/* правки по Flow 25.11 вечер */
+.pcard.in{padding:0;background:none;margin-top:8px}
+.lhrs .ldot{width:4px;height:4px;border-radius:50%;background:var(--light);display:inline-block}
+.lhrs2{display:flex;align-items:center;gap:6px;color:var(--ink);font-size:12px;font-weight:600;line-height:16px;margin-top:4px}
+.lhrs2 svg{width:16px;height:16px;color:var(--soft)}
+.misst{display:inline-flex;align-self:flex-start;align-items:center;gap:6px;padding:4px 8px;border-radius:8px;background:var(--warn-bg);color:var(--warn-fg);font-size:12px;font-weight:600;line-height:16px}
+.misst svg{width:16px;height:16px}
+
+/* деталька клиники: баллы, взятие крови, отзывы (619:20514) */
+.cl-ach.pts svg{width:16px;height:16px}
+.cl-ptsbar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:var(--warn-bg);color:var(--ink);font-size:13px;font-weight:600;line-height:18px}
+.cl-ptsbar svg{width:18px;height:18px;flex-shrink:0}
+.cl-ptsbar span{flex:1}
+.cl-ptsbar svg:last-child{color:var(--light)}
+.cl-bl{display:flex;flex-direction:column;gap:4px;font-size:12px;line-height:16px;color:var(--light);font-weight:500;margin-top:4px}
+.cl-bl div{display:flex;align-items:baseline;gap:6px;color:var(--ink);font-size:14px;line-height:20px}
+.cl-bl i{flex:1;border-bottom:1px dotted var(--border);transform:translateY(-4px)}
+.cl-bl b{font-weight:600;white-space:nowrap}
+.cl-blk{display:flex;flex-direction:column;gap:2px;margin-top:8px;font-size:12px;line-height:16px;color:var(--light)}
+.sheet .sfoot.callq{align-items:stretch;text-align:left}
+.hdots{align-self:stretch;display:flex;justify-content:center;gap:6px;margin-top:4px}
+.hdots i{width:6px;height:6px;border-radius:3px;background:var(--border)}
+.hdots i.on{width:16px;background:var(--accent)}

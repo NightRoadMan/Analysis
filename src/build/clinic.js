@@ -32,7 +32,7 @@ const CLBRAND={
     phone:'+7 (800) 550-13-13',sched:'Пн – пт 7:30–19:00, сб – вс 8:00–14:00',today:'07:30 – 19:00',wd:'07:30 – 19:00',we:'08:00 – 14:00',hero:null,map:null,rate:'4.7',rcount:'58 отзывов',
     ach:[['thumb','Нет отрицательных отзывов']],svc:[['ЭКГ с расшифровкой',1100,'сегодня, 18:30']],doctors:null,promo:['Скидка 10% на первый заказ','Постоянно']},
   rem:{kind:'clinic',about:'«Рэмси Диагностика» — сеть экспертных диагностических центров, которую в 2014 году открыл в России Пол Рэмси, основатель Ramsay Health Care. МРТ и КТ на оборудовании GE, УЗИ, приёмы врачей и лабораторные анализы. Центр на площади Конституции — около 1 км от метро Московская, работает ежедневно до полуночи.',
-    phone:'+7 (812) 210-51-99',sched:'Ежедневно, с 9:00 до 24:00',today:'09:00 – 24:00',wd:'09:00 – 24:00',we:'09:00 – 24:00',hero:'h-ramsay',map:'m-ramsay',rate:'4.8',rcount:'101 отзыв',
+    phone:'+7 (812) 210-51-99',sched:'Ежедневно, с 9:00 до 24:00',today:'09:00 – 24:00',wd:'09:00 – 24:00',we:'09:00 – 24:00',hero:'h-ramsay',map:'m-ramsay',rate:'4.8',rcount:'101 отзыв и 100 оценок',rphoto:'101 отзыв',
     ach:[['medal','Выбор пациентов 2025'],['thumb','Нет отрицательных отзывов']],
     svc:[['МРТ позвоночника (один отдел)',4800,'сегодня, 21:00'],['Консультация гинеколога + УЗИ малого таза',6200,'завтра, 10:30'],['Первичный приём кардиолога',3500,'завтра, 12:00',true],['ФГДС / Гастроскопия желудка',6500,'суббота, 28 ноя, 21:00'],['МРТ головного мозга (+ придаточных пазух носа)',6000,'сегодня, 14:00']],
     doctors:[['Вилков Алексей Юрьевич','Терапевт · Хирург · Акушер-гинеколог'],['Смирнова Ольга Петровна','Эндокринолог · стаж 12 лет']],promo:['МРТ днём по ночной цене','До 30 ноября']}
@@ -50,7 +50,6 @@ const KUSH={blood:250,id:'kush',w:1,x:MC[0]+40,y:MC[1]-60,brand:BRANDS[0],n:'И�
 const pxOf=(L,id)=>{if(!L.px)return null;const n=items[id].name;const k=Object.keys(L.px).find(x=>n.startsWith(x));return k?L.px[k]:null};
 const CLW={}; const clW=k=>CLW[k]||(CLW[k]=wlab(k));
 const CLREV=[
-  {n:'Марина',d:'18.11.2026',s:5,badge:'После записи',av:'a3',svc:'МРТ головного мозга',an:[],t:'Делала МРТ головного мозга вечером после работы, приняли минута в минуту. Врач подробно объяснил заключение, снимки сразу записали на диск.',c:1,l:4},
   {n:'Софья',d:'12.11.2026',s:4,badge:'После записи',av:'a1',svc:'Пролактин, общий анализ крови',an:['Пролактин','Клинический анализ крови','Общий анализ крови','Ферритин'],t:'Сдавала анализы по направлению эндокринолога. Записалась онлайн, в процедурном приняли без очереди, кровь взяли быстро и почти безболезненно. Результаты пришли на почту на следующий день, с нормами и понятными пометками.',c:3,l:1},
   {n:'Александра М.',d:'10.11.2026',s:4,badge:'Проверен модератором',av:'a2',ref:'place',an:['Гликированный','Холестерин','Креатинин','Глюкоза'],t:'Сдавала чекап: гликированный гемоглобин, холестерин и креатинин. Администратор заранее напомнила прийти натощак и спросила, какие лекарства принимаю. Медсестра очень аккуратная, синяка не осталось.',c:0,l:0},
   {n:'Евгения',d:'28.10.2026',s:4,badge:'После записи',av:'a3',ref:'doc',an:[],t:'Была на приёме у терапевта, всё объяснил, назначил обследование. Записывалась через приложение, перенос времени прошёл без проблем.',c:0,l:2}
@@ -96,10 +95,11 @@ function clRow(P,id){
   const acts=st==='in'?`<button class="btn cl-in" data-cla="rm" data-id="${id}">${ic('check',16)}В корзине</button>`
     :`<button class="btn" data-cla="add" data-id="${id}">${ic('basketW',16)}В корзину</button><button class="btn t" data-cla="one" data-id="${id}">Записаться</button>`;
   const tap=id.startsWith('x-')?'':` tap" data-open="${id}`;
-  return `<article class="cl-pc"><div class="n${tap}">${esc(clNm(P,id))}</div>${clTags(i)}<div class="cl-pp"><b>${fmt(clPrice(L,id))}</b>${isBlood(i)?`<span>+ взятие крови ${fmt(bloodOf(L))}</span>`:''}</div><div class="cl-acts">${acts}</div></article>`;
+  return `<article class="cl-pc"><div class="n${tap}">${esc(clNm(P,id))}</div><div class="cl-pp"><b>${fmt(clPrice(L,id))}</b></div>${isBlood(i)?clBlood(bloodOf(L)):''}<div class="cl-acts">${acts}</div></article>`;
 }
+const clBlood=p=>`<div class="cl-bl"><span>Оплачивается отдельно:</span><div><span>Взятие крови</span><i></i><b>от ${fmt(p)}</b></div></div>`;
 function clSvc(P,r){
-  if(P.kind==='free') return `<article class="cl-pc"><div class="n">${esc(r[0])}</div><div class="cl-pp"><b${r[1]==null?' class="sm"':''}>${r[1]==null?'Уточняйте по телефону':fmt(r[1])}</b></div></article>`;
+  if(P.kind==='free') return `<article class="cl-pc"><div class="n">${esc(r[0])}</div><div class="cl-pp"><b>${r[1]==null?'Уточняйте по телефону':fmt(r[1])}</b></div></article>`;
   return `<article class="cl-pc"><div class="n">${esc(r[0])}</div><div class="cl-pp"><b>${r[3]?'от ':''}${fmt(r[1])}</b></div><div class="cl-acts"><button class="btn" data-act="cl-svc">Записаться</button><div class="cl-near">Ближайшая запись:<b>${r[2]}</b></div></div></article>`;
 }
 function clInfo(P){
@@ -123,7 +123,7 @@ function clPrices(P){
   const svc=(P.svc||[]).filter(r=>!nq||norm(r[0]).includes(nq));
   const fan=(P.an||[]).filter(r=>!nq||norm(r[0]).includes(nq));
   let body='';
-  if(P.kind==='free'){const an=fan.filter(r=>r[2]!=='hormones-03'||CL.ctx==='hormones-03').map(r=>{const i=items[r[2]];return `<article class="cl-pc"><div class="n">${esc(i?clNm(P,r[2]):r[0])}</div>${i?clTags(i):''}<div class="cl-pp"><b${r[1]==null?' class="sm"':''}>${r[1]==null?'Уточняйте по телефону':fmt(r[1])}</b></div></article>`}).join('');
+  if(P.kind==='free'){const an=fan.filter(r=>r[2]!=='hormones-03'||CL.ctx==='hormones-03').map(r=>{const i=items[r[2]];return `<article class="cl-pc"><div class="n">${esc(i?clNm(P,r[2]):r[0])}</div><div class="cl-pp"><b>${r[1]==null?'Уточняйте по телефону':fmt(r[1])}</b></div>${i&&isBlood(i)?clBlood(1200):''}</article>`}).join('');
     body=CL.only?an:svc.map(r=>clSvc(P,r)).join('')+an;}
   else if(P.kind==='clinic'&&!CL.only){
     const rows=[]; if(CL.ctx&&ids.includes(CL.ctx)) rows.push(clRow(P,CL.ctx));
@@ -135,6 +135,7 @@ function clPrices(P){
   if(!body) body=`<div class="empty"><b>${CL.only?'Анализов не нашли':'Ничего не нашли'}</b><span>${CL.only?`По запросу «${esc(CL.q)}» анализов здесь нет.`:'Попробуйте изменить запрос.'}</span><button class="btn t" data-act="${CL.only?'cl-allsvc':'cl-clearq'}">${CL.only?'Искать во всех услугах':'Сбросить поиск'}</button></div>`;
   return `<div class="cl-pane">
    <label class="inp cl-inp">${SEARCHIC}<input id="cl-q" type="text" placeholder="Поиск по услуге и анализам" value="${esc(CL.q)}" autocomplete="off" aria-label="Поиск по услуге и анализам"></label>
+   ${P.kind==='free'?'':`<div class="cl-ptsbar">${SV.coinY}<span>Доступна оплата баллами</span>${SV.infoC}</div>`}
    <div class="cl-frow"><button class="cl-fchip" data-act="cl-only" aria-pressed="${CL.only}">${CLSV(CLP.flask,'#F3AA00',18,2)}Только анализы${CL.only?`<span class="fx">${FX}</span>`:''}</button></div>
    <div class="cl-list" id="cl-list">${body}</div></div>`;
 }
@@ -148,7 +149,7 @@ function clDocs(P){
 }
 function clRv(P,r){
   const st='★'.repeat(r.s)+'<s>'+'★'.repeat(5-r.s)+'</s>';
-  const ref=r.ref==='place'?`<div class="cl-ref"><div class="ava" style="background-image:url(${CLIMG.thumb})"></div>${esc(P.name)}</div>`:r.ref==='doc'?`<div class="cl-ref"><div class="ava" style="background-image:url(${CLIMG.doc})"></div><div>Вилков Алексей Юрьевич<div style="font-size:12px;color:var(--brand-ink)">Терапевт · Хирург</div></div></div>`:'';
+  const ref=r.ref==='place'?`<div class="cl-ref"><div class="ava" style="background-image:url(${CLIMG.thumb})"></div>${esc(P.name)}</div>`:r.ref==='doc'?`<div class="cl-ref"><div class="ava" style="background-image:url(${CLIMG.doc})"></div><div>Вилков Алексей Юрьевич<div style="font-size:12px;color:var(--brand-ink)">Терапевт | Хирург | Акушер-гинеколог</div></div></div><div class="cl-ref"><div class="ava" style="background-image:url(${CLIMG.thumb})"></div>${esc(P.name)}</div>`:'';
   return `<article class="cl-rv"><span class="cl-rbadge">${CLSV(r.badge==='После записи'?CLP.check:CLP.shield,'var(--brand-ink)',18,2)}${r.badge}</span>
    <div class="cl-rvh"><div class="ava" style="background-image:url(${CLIMG[r.av]})"></div><div><b>${r.n}</b><span>1 отзыв</span></div></div>
    ${r.svc?`<div class="cl-svc">${CLSV(CLP.steth,'#F3AA00',18,2)}Услуга: ${esc(r.svc)}</div>`:''}
@@ -161,7 +162,7 @@ function clReviews(P){
   const top=`<div class="cl-rtop"><div class="q">Оцените ${lab?'лабораторию':'клинику'}</div><div class="st">${CLSTAR('var(--brand-tint)').repeat(5)}</div>
    <button class="cl-wr" data-act="soon">Написать отзыв<span class="sep"></span>${SV.coinY}+20</button>
    <div class="cl-how">${CLSV(CLP.shield,'#F3AA00',22)}Как мы проверяем отзывы?</div>
-   <div class="cl-rgrid"><div><div style="font-weight:600;font-size:13px;line-height:16px">Рейтинг по отзывам пользователей</div><div class="big">${P.rate}</div><div class="cl-stars" style="font-size:20px">★★★★★</div><div style="font-size:12px;color:var(--light)">${P.rcount}</div></div>
+   <div class="cl-rgrid"><div><div style="font-weight:600;font-size:13px;line-height:16px">Рейтинг по отзывам пользователей</div><div class="big">${P.rate}</div><div class="cl-stars" style="font-size:20px">★★★★★</div><div style="font-size:12px;color:var(--light)">${P.rcount}</div><div class="cl-blk"><span>Заблокировано — 10</span><span>Нерелевантно — 0</span></div></div>
    <div class="cl-bar">${bars.map(b=>`<div><span>${b[0]}</span><em>${lab?(b[0]==='Отлично'?1:0):b[1]}</em></div><i><u style="width:${lab?(b[0]==='Отлично'?100:0):b[2]*100}%"></u></i>`).join('')}</div></div>
    <div class="cl-chips"><span class="on">Все</span><span>5 ★</span><span>4 ★</span><span>3 ★</span><span>2 ★</span><span>1 ★</span></div>
    <div style="font-weight:600;font-size:14px">Сортировать:</div><div class="cl-chips" style="margin-top:-8px"><span class="on">По дате</span><span>Сначала с текстом</span></div></div>`;
@@ -174,8 +175,8 @@ function renderClinic(keep){
   const s=$('#s-clinic'), y=s.scrollTop, P=clPlace(CL.src);
   $('#cl-title').textContent=P.name;
   const hero=P.hero?`<div class="cl-hero" style="background-image:url(${CLIMG[P.hero]})">`:`<div class="cl-hero gen"><span class="lg" style="background-image:url(${LOGO[P.L.brand.k]})"></span>`;
-  $('#cl-body').innerHTML=`${hero}<div class="cl-dots"><i></i><i></i><i></i><i></i><i></i></div><div class="cl-rate">${SV.star}<b>${P.rate}</b><span>${P.rcount}</span></div></div>
-   <div class="cl-head"><div class="cl-achs">${P.ach.map(a=>`<span class="cl-ach">${CLSV(CLP[a[0]],'#E8A200',16,2)}${a[1]}</span>`).join('')}</div><div class="n">${esc(P.name)}</div></div>
+  $('#cl-body').innerHTML=`${hero}<div class="cl-dots"><i></i><i></i><i></i><i></i><i></i></div><div class="cl-rate">${SV.star}<b>${P.rate}</b><span>${P.rphoto||P.rcount}</span></div></div>
+   <div class="cl-head"><div class="cl-achs">${P.kind==='free'?'':`<span class="cl-ach pts">${SV.coinY}Оплата баллами${SV.infoC}</span>`}${P.ach.map(a=>`<span class="cl-ach">${CLSV(CLP[a[0]],'#E8A200',16,2)}${a[1]}</span>`).join('')}</div><div class="n">${esc(P.name)}</div></div>
    <div class="cl-tabs" role="tablist" id="cl-tabs">${[['info','Инфо'],['prices','Цены'],['promo','Акции'],['docs','Врачи'],['reviews','Отзывы']].map(t=>`<button class="cl-tab" role="tab" aria-selected="${t[0]===CL.tab}" data-cltab="${t[0]}">${t[1]}</button>`).join('')}</div>
    <div id="cl-pane">${clPane(P)}</div>`;
   const h=s.querySelector('.hdr'); $('#cl-tabs').style.top=h.offsetHeight+'px';
@@ -202,7 +203,7 @@ function renderClinicFooter(){
     $('#cl-body').style.paddingBottom='230px';
   } else {
     f.className='ftr cl-ftr nb';
-    f.innerHTML=`${n?`<button class="cl-fcart" data-act="cart" aria-label="Корзина">${ic('basketT',24)}${badge}</button>`:''}<button class="big wide cl-cta" data-act="cl-svc"><span class="m">Записаться</span><span class="r">${SV.coinY}+100</span></button>${hi()}`;
+    f.innerHTML=`<button class="big wide cl-cta" data-act="cl-svc"><span class="m">Записаться</span><span class="r">${SV.coinY}+100</span></button>${hi()}`;
     $('#cl-body').style.paddingBottom='150px';
   }
 }
