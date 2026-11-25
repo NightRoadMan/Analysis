@@ -94,7 +94,7 @@ function show(id){CUR_ID=id;
   updateFooters(id);
 }
 function render(view){
-  if(ONE&&!['pat','co','res','ok','fail'].includes(view.s)) ONE=null; // запись на 1 анализ живёт только в оформлении
+  if(ONE&&!['pat','co','book','res','ok','fail'].includes(view.s)) ONE=null; // запись на 1 анализ живёт только в оформлении
   if(view.s==='home') show('s-home');
   else if(view.s==='clinic'){CL.src=view.src;CL.ctx=view.ctx||null;CL.tab=view.tab||'info';show('s-clinic');renderClinic();}
   else if(view.s==='orders'){show('s-orders');renderOrders();}
@@ -107,6 +107,7 @@ function render(view){
   else if(view.s==='cart'){renderCart();show('s-cart');}
   else if(view.s==='map'){show('s-map');renderMap(true);}
   else if(view.s==='pat'){renderPat();show('s-pat');}
+  else if(view.s==='book'){renderBook(view);show('s-book');}
   else if(view.s==='co'){renderCO();show('s-co');}
   else if(view.s==='res'){renderRes();show('s-res');}
   else if(view.s==='ok'){renderOK(view);show('s-ok');}
@@ -184,7 +185,7 @@ function updateFooters(id){
   $('#f-cart-n').textContent=anW(n);
   $('#f-detail').hidden=id!=='s-detail';
   const c=$('#d-cnt'); c.hidden=!n; c.textContent=n;
-  $('#f-page').hidden=!['s-cart','s-pat','s-co','s-res','s-ok','s-fail'].includes(id);
+  $('#f-page').hidden=!(['s-cart','s-pat','s-co','s-res','s-ok','s-fail'].includes(id)||(id==='s-book'&&cur&&cur.st===2));
   if(!$('#f-page').hidden) renderPageFooter(id);
   if(id==='s-clinic') renderClinicFooter(); else $('#f-clinic').hidden=true;
 }
@@ -560,6 +561,9 @@ function renderPageFooter(id){
     if(!cart.size){f.hidden=true;return}
     const t=cartTotals();
     f.innerHTML=`<button class="big wide two" data-act="${LAB?'checkout':'pickfirst'}" ${t.ids.length?'':'disabled'}><span class="t">Перейти к оформлению</span>${CHEVW}</button>${hi()}`;
+  } else if(id==='s-book'){ // Figma 765:24331: «Записаться» с баллами
+    const t=cartTotals();
+    f.innerHTML=`<button class="big wide paybtn" data-act="book"><span class="bk-bt">Записаться</span><span class="sep"></span><span class="bn">${SV.coinY}+${fmt0(t.ids.length*PTS_PER)}</span></button>${hi()}`;
   } else if(id==='s-pat'){
     f.innerHTML=`<button class="big wide two" data-act="patnext"><span class="t">Продолжить</span>${CHEVW}</button>${hi()}`;
   } else if(id==='s-co'){
@@ -676,6 +680,18 @@ function renderRes(){ // Figma 557:39952: согласие на получени
 function renderOK(){
   const P=PAID; if(!P){return}
   const L=P.lab;
+  if(P.clinic){ // запись в обычную клинику: макета успеха нет, адаптирован успех заказа (Figma 439:110538)
+    const wd=P.when?P.when.toLocaleDateString('ru-RU',{weekday:'long'}):'';
+    $('#ok-body').innerHTML=`<div class="okbox"><div style="width:171px;height:120px;display:flex;align-items:center;justify-content:center">${SUCCESS}</div><h1>Вы записаны<br>${P.when?dm(P.when):''} в ${P.time||''}</h1><div class="s">Вам будет начислено ${SV.coinY} ${fmt0(P.ids.length*PTS_PER)}</div></div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+    <button class="csec pickrow" data-act="prep-paid" style="flex-direction:row"><span class="illu" style="background-image:url(${ASSET.prep})"></span><span class="tx"><b>Подготовка к анализам</b><span>Чтобы результаты были точными</span></span><span>${SV.chevR}</span></button>
+    <div class="csec" style="gap:24px">
+      <div class="irow">${SV.cal}<div class="tx"><b>${P.when?dm(P.when):''}, ${wd}, ${P.time||''}</b><span class="k">${anW(P.ids.length)} · ${fmt(P.total)}, оплата в клинике</span></div></div>
+      <div class="irow">${SV.pinO}<div class="tx"><b>${esc(L.n)}</b><span>${esc(L.a)}</span><span class="mt"><u style="background:${L.mc}"></u>${esc(L.metro)}, ${L.md}</span></div></div>
+      <div class="pass"><span style="display:flex;gap:8px;align-items:center">${SV.infoC}Не забудьте взять с собой паспорт</span><span class="im" style="background-image:url(${ASSET.passport})"></span></div>
+    </div></div>`;
+    return;
+  }
   $('#ok-body').innerHTML=`<div class="okbox"><div style="width:171px;height:120px;display:flex;align-items:center;justify-content:center">${SUCCESS}</div><h1>Заказ оплачен<br>${fmt(P.total)}</h1><div class="s">Вам будет начислено ${SV.coinY} ${fmt0(P.ids.length*PTS_PER)}</div></div>
   <div style="display:flex;flex-direction:column;gap:8px">
   <button class="csec pickrow" data-act="prep-paid" style="flex-direction:row"><span class="illu" style="background-image:url(${ASSET.prep})"></span><span class="tx"><b>Подготовка к анализам</b><span>Чтобы результаты были точными</span></span><span>${SV.chevR}</span></button>
@@ -686,6 +702,71 @@ function renderOK(){
     <div class="pass"><span style="display:flex;gap:8px;align-items:center">${SV.infoC}Не забудьте взять с собой паспорт</span><span class="im" style="background-image:url(${ASSET.passport})"></span></div>
   </div>
   </div>`;
+}
+
+/* ---------- запись в обычную клинику (CJM 439:109448: корзина 765:23378 → время 765:24292 → пациент 765:24331 → согласие 557:39952) ---------- */
+const isClinic=L=>!!(L&&L.brand&&L.brand.k==='rem'); // Рэмси — обычная клиника: запись на время, без онлайн-оплаты
+const BK={wk:0,d:null,t:null,f:null};
+const BK_TODAY=['11:00','13:00','13:30','14:00','15:30','16:00','16:30']; // слоты «на сегодня» из макета
+const BK_SL=['09:30','11:00','12:30','13:00','13:30','14:00','15:30','16:00','16:30','18:00'];
+const FLASH='<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.3 1.3 3.2 9.1h4.1l-.9 5.6 6.4-8H8.6l.7-5.4Z" fill="currentColor"/></svg>';
+const BK_AR='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>';
+const dNow=()=>{const t=new Date();t.setHours(0,0,0,0);return t};
+const sameD=(a,b)=>a&&b&&a.toDateString()===b.toDateString();
+const dm=d=>d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'});
+function bkWin(wk){const m=dNow();m.setDate(m.getDate()-((m.getDay()+6)%7)+wk*14);return Array.from({length:14},(_,k)=>{const d=new Date(m);d.setDate(m.getDate()+k);return d})}
+function bkSlots(d){
+  if(d<dNow()) return [];
+  const w=(d.getDay()+6)%7, k=Math.round((d-bkWin(0)[0])/864e5)%14;
+  if(!(k<7?[0,1,2,4]:[0,1,2,5]).includes(w)&&!sameD(d,dNow())) return []; // свободные дни как в макете: Пн Вт Ср Пт, затем Пн Вт Ср Сб
+  if(sameD(d,dNow())){const n=new Date(),m=n.getHours()*60+n.getMinutes()+30;return BK_TODAY.filter(s=>{const [h,mi]=s.split(':');return +h*60+ +mi>m})}
+  return BK_SL.filter((s,i)=>(i+d.getDate())%3!==0);
+}
+const bkFirst=wk=>bkWin(wk).find(d=>bkSlots(d).length)||null;
+function bkInit(){BK.wk=0;BK.d=bkFirst(0);if(!BK.d){BK.wk=1;BK.d=bkFirst(1)}BK.t=null;BK.f=null}
+function bkFill(k){const p=PDATA[k];BK.f=p?{k,fio:[p.f,p.i,p.o].filter(Boolean).join(' '),b:p.b,phone:CONTACT.phone,err:{}}:{k:-1,fio:'',b:'',phone:'',err:{}}}
+function bkFld(k,label,opts){
+  const v=BK.f[k]||'', e=BK.f.err[k];
+  return `<label class="fld${v?' has':''}${e?' err':''}"><span class="fl">${label}</span><input data-bf="${k}" value="${esc(v)}" placeholder="${label}" ${opts||''} autocomplete="off"><button class="fx" type="button" data-act="bk-clr" data-fk="${k}" aria-label="Очистить">${CLEARIC}</button></label>${e?`<div class="ferr">${e}</div>`:''}`;
+}
+function renderBook(view){
+  const L=curLab(), t=cartTotals(), st=view&&view.st===2?2:1;
+  let h=`<div class="bk-pl"><b>${esc(L.n)}</b><span>${esc(L.a)}</span></div>
+    <div class="bk-an">${t.ids.map(id=>`<div><b>${esc(shortName(items[id].name))}</b><span>${fmt(labPrice(L,id))}</span></div>`).join('')}</div>`;
+  if(st===1){
+    const days=bkWin(BK.wk), sl=BK.d?bkSlots(BK.d):[];
+    const tl=!BK.d?'':sameD(BK.d,dNow())?`на сегодня, ${dm(BK.d)}`:sameD(BK.d,new Date(dNow().getTime()+864e5))?`на завтра, ${dm(BK.d)}`:`на ${dm(BK.d)}`;
+    h+=`<h2>Выберите дату</h2>
+    <div class="bk-nav"><button data-act="bk-wk" data-v="-1" aria-label="Раньше" ${BK.wk?'':'disabled'}><span style="display:flex;transform:scaleX(-1)">${BK_AR}</span></button><b>${dm(days[0])} – ${dm(days[13])}</b><button data-act="bk-wk" data-v="1" aria-label="Позже" ${BK.wk<1?'':'disabled'}>${BK_AR}</button></div>
+    <div class="bk-cal">${['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(w=>`<span class="wd">${w}</span>`).join('')}
+      ${days.map(d=>bkSlots(d).length?`<button class="bk-d${sameD(d,BK.d)?' sel':''}" data-act="bk-d" data-v="${d.getTime()}" aria-pressed="${sameD(d,BK.d)}">${d.getDate()}</button>`:`<span class="bk-d off">${d.getDate()}</span>`).join('')}</div>
+    ${BK.d?`<h2 class="bk-tt">Выберите время<br>${tl}</h2><div class="bk-ts">${sl.map(s=>`<button class="bk-t" data-act="bk-t" data-v="${s}">${s}</button>`).join('')}</div>`:''}
+    <div class="bk-fl">${FLASH}Мгновенное подтверждение записи</div>`;
+  } else {
+    if(!BK.f) bkFill(0);
+    h+=`<div class="bk-fl pl">${FLASH}Мгновенное подтверждение записи</div>
+    <h2 class="bk-pt">Данные пациента</h2>
+    <div class="pchips hscroll bk-ch">${PATIENTS.map((p,k)=>`<button class="pchip${k===BK.f.k?' on':''}" data-act="bk-pk" data-v="${k}">${esc(p.n)}</button>`).join('')}<button class="pchip${BK.f.k===-1?' on':''}" data-act="bk-pk" data-v="-1">+ Новый пациент</button></div>
+    <div class="bk-fs">${bkFld('fio','ФИО пациента полностью')}${bkFld('b','Дата рождения','inputmode="numeric" maxlength="10"')}${bkFld('phone','Номер телефона','inputmode="tel"')}</div>`;
+  }
+  $('#book-body').innerHTML=h;
+}
+function bkValid(){
+  const f=BK.f, e={};
+  if(!(f.fio||'').trim()) e.fio='Укажите ФИО'; else if(f.fio.trim().split(/\s+/).length<2) e.fio='Укажите фамилию и имя';
+  if(!(f.b||'').trim()) e.b='Укажите дату рождения'; else if(!/^\d{2}\.\d{2}\.\d{4}$/.test(f.b.trim())) e.b='Дата в формате ДД.ММ.ГГГГ';
+  if(!(f.phone||'').trim()) e.phone='Укажите номер телефона';
+  f.err=e; return !Object.keys(e).length;
+}
+function book(){
+  const t=cartTotals(), L=curLab();
+  $('#loader').hidden=false;
+  setTimeout(()=>{
+    $('#loader').hidden=true;
+    PAID={lab:L,total:t.total,ids:t.ids.slice(),clinic:true,when:BK.d,time:BK.t,pts:0};
+    if(!ONE) t.ids.forEach(id=>cart.delete(id));
+    resetTo({s:'res'});
+  },900);
 }
 
 /* ---------- sheet & dialog & toast ---------- */
@@ -881,7 +962,7 @@ function openBrandSheet(){
 })();
 
 /* ---------- запись на 1 анализ: сразу к данным пациента, корзина не меняется ---------- */
-function startOne(id,L){ONE={id,L};PF=null;go({s:'pat'});SC.ev('one');toast(`Запись на 1 анализ в ${L.n}`)}
+function startOne(id,L){ONE={id,L};PF=null;if(isClinic(L)){bkInit();go({s:'book'});SC.ev('one');toast(`Запись на 1 анализ в ${L.n}`);return}go({s:'pat'});SC.ev('one');toast(`Запись на 1 анализ в ${L.n}`)}
 
 /*@@MODULES@@*/
 
@@ -956,7 +1037,13 @@ $('#ph').addEventListener('click',e=>{
     case 'prep-paid': openPrep(PAID?PAID.ids:[]); break;
     case 'ckall': {const ids=[...cart.keys()].filter(id=>!LAB||labHas(LAB,id));const all=ids.every(id=>cart.get(id).on);ids.forEach(id=>cart.get(id).on=!all);renderCart();updateFooters('s-cart');break;}
     case 'clear-cart': dialog('Очистить корзину?','Уберём все анализы и выбранную лабораторию.',[['Очистить',()=>{cart.clear();LAB=null;renderCart();updateFooters('s-cart');toast('Корзина очищена')}],['Отмена',()=>{}]]); break;
-    case 'checkout': if(!cartTotals().ids.length){toast('Отметьте анализы');break} PF=null; go({s:'pat'}); break;
+    case 'checkout': if(!cartTotals().ids.length){toast('Отметьте анализы');break} if(isClinic(LAB)){bkInit();go({s:'book'});break} PF=null; go({s:'pat'}); break;
+    case 'bk-wk': {BK.wk=Math.max(0,Math.min(1,BK.wk+ +d.v));BK.d=bkFirst(BK.wk);renderBook(cur);break;}
+    case 'bk-d': {const s=$('#s-book'),y=s.scrollTop;BK.d=new Date(+d.v);renderBook(cur);s.scrollTop=y;SC.ev('bk-d');break;}
+    case 'bk-t': BK.t=d.v; go({s:'book',st:2}); SC.ev('bk-t'); break;
+    case 'bk-pk': {bkFill(+d.v);renderBook(cur);SC.ev('bk-pk');break;}
+    case 'bk-clr': {const k=d.fk;BK.f[k]='';delete BK.f.err[k];renderBook(cur);const i=$(`#book-body [data-bf="${k}"]`);if(i)i.focus();break;}
+    case 'book': if(!bkValid()){renderBook(cur);toast('Заполните данные пациента');const i=$('#book-body .err input');if(i)i.focus();break} book(); break;
     case 'pickfirst': if(!checkedIds().length){toast('Отметьте анализы, которые будете сдавать');break} toast('Сначала выберите клинику'); go({s:'map'}); break;
     case 'patnext': if(!patValid()){renderPat();toast(PF.err.g&&Object.keys(PF.err).length===1?'Укажите пол':'Заполните обязательные поля');const f=$('#pat-body .err input');if(f)f.focus();break} PAY.brkOpen=true; go({s:'co'}); break;
     case 'fclear': {const k=t.dataset.fk;PF[k]='';delete PF.err[k];renderPat();const i=$(`#pat-body [data-f="${k}"]`);if(i)i.focus();break;}
@@ -1003,6 +1090,7 @@ $('#ph').addEventListener('click',e=>{
 });
 $('#dim').addEventListener('click',e=>{if(e.target.id==='dim') closeSheet()});
 $('#q').addEventListener('input',e=>{cur.q=e.target.value;renderGS(e.target.value)});
+$('#book-body').addEventListener('input',e=>{const k=e.target.dataset.bf;if(!k||!BK.f)return;BK.f[k]=e.target.value;delete BK.f.err[k];const l=e.target.closest('.fld');l.classList.toggle('has',!!e.target.value);l.classList.remove('err');const n=l.nextElementSibling;if(n&&n.classList.contains('ferr'))n.remove()});
 $('#pat-body').addEventListener('input',e=>{const k=e.target.dataset.f;if(!k)return;let v=e.target.value;
   if(k==='b'){const dg=v.replace(/\D/g,'').slice(0,8);v=dg.replace(/^(\d{2})(\d)/,'$1.$2').replace(/^(\d{2}\.\d{2})(\d)/,'$1.$2');if(v!==e.target.value)e.target.value=v;}
   PF[k]=v;const l=e.target.closest('.fld');l.classList.toggle('has',!!v);if(PF.err[k]){delete PF.err[k];l.classList.remove('err');const n=l.nextElementSibling;if(n&&n.classList.contains('ferr'))n.remove();}});
@@ -1045,6 +1133,9 @@ else if(start==='analyses') go({s:'an',q:''});
 else if(start==='pat'){demo();LAB=LABS[0];go({s:'cart'});go({s:'pat'});}
 else if(start==='res'){demo();LAB=LABS[0];const t=cartTotals();const d=new Date();d.setDate(d.getDate()+14);PAID={lab:LAB,total:t.total-ptsOff(t.total),ids:t.ids.slice(),until:d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})};t.ids.forEach(id=>cart.delete(id));go({s:'res'});}
 else if(start==='ok'){demo();LAB=LABS[0];const t=cartTotals();const d=new Date();d.setDate(d.getDate()+14);PAID={lab:LAB,total:t.total-ptsOff(t.total),ids:t.ids.slice(),until:d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})};go({s:'ok'});}
+else if(start==='book'||start==='book2'){ // запись в обычную клинику (Рэмси), CJM 765:23378 → 765:24292
+  ['Пролактин','Билирубин общий'].forEach(n=>{const i=DATA.items.find(x=>x.name===n||x.name.startsWith(n));if(i)addCart(i.id)});
+  LAB=wlab(WLABS.findIndex(w=>w.brand==='rem'));LAB.always=new Set(cart.keys());go({s:'cart'});bkInit();go({s:'book'});if(start==='book2'){BK.t=(BK.d&&bkSlots(BK.d)[0])||'13:00';go({s:'book',st:2});}}
 else if(start==='search') go({s:'gs',q:''});
 else if(start==='cart'){demo();go({s:'cart'});}
 else if(start==='map'){demo();go({s:'cart'});go({s:'map'});}
@@ -1059,10 +1150,12 @@ NOANIM=false;
 (function(){
   const LS=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}};
   const ferr=()=>(POP8.find(i=>/^Ферритин/.test(i.name))||POP8[0]).id;
-  function fresh(){cart.clear();LAB=null;ONE=null;ORDERS.length=0;ORDERS.push(ORD_DEMO);ORD_DEMO.st='wait';MO.tab='rec';MO.more={};PAID=null;PF=null;PATIENT=0;PAY.method='card';PAY.usePts=true;PAY.consent=true;PAY.brkOpen=true;MV.card=false;MV.sel=null;MV.searching=false;MV.place=null;MV.q='';$('#dlg').hidden=true;closeSheet();}
+  function fresh(){cart.clear();LAB=null;ONE=null;ORDERS.length=0;ORDERS.push(ORD_DEMO);ORD_DEMO.st='wait';MO.tab='rec';MO.more={};PAID=null;PF=null;PATIENT=0;BK.f=null;BK.t=null;PAY.method='card';PAY.usePts=true;PAY.consent=true;PAY.brkOpen=true;MV.card=false;MV.sel=null;MV.searching=false;MV.place=null;MV.q='';$('#dlg').hidden=true;closeSheet();}
   function nav(views){const was=NOANIM;NOANIM=true;stack.length=0;cur=null;views.forEach((v,k)=>go(v,k>0,false));NOANIM=was;}
   const demo4=()=>['Пролактин','Билирубин общий','Глюкоза','Ферритин'].forEach(n=>{const i=DATA.items.find(x=>x.name===n||x.name.startsWith(n));if(i)addCart(i.id)});
   const PRL='hormones-03';
+  const remCart=()=>{['Пролактин','Билирубин общий'].forEach(n=>{const i=DATA.items.find(x=>x.name===n||x.name.startsWith(n));if(i)addCart(i.id)});LAB=wlab(REM());LAB.always=new Set(cart.keys())};
+  const BOOK=()=>{bkInit();return {s:'book'}}, BOOK2=()=>{BK.t=(BK.d&&bkSlots(BK.d)[0])||'13:00';return {s:'book',st:2}};
   const REM=()=>WLABS.findIndex(w=>w.brand==='rem'), INV=()=>WLABS.findIndex(w=>w.brand==='inv');
   const wW=k=>{const W=wlab(k);W.always=new Set([ferr()]);return W};
   const scrollTo=(sel,scr)=>setTimeout(()=>{const e=$(sel),s=$(scr);if(e&&s)s.scrollTop+=e.getBoundingClientRect().top-s.getBoundingClientRect().top-(scr==='#s-detail'?380:140)},60);
@@ -1099,6 +1192,12 @@ NOANIM=false;
     {t:'«Продолжить» к оплате',ev:'scr:co',hl:'#f-page [data-act=patnext]',pre:()=>{fresh();demo4();LAB=LABS[0];PATIENT=0;patFill(0);nav([CART,{s:'pat'}])}},
     {t:'Списать 500 баллов и оплатить',ev:'scr:res',hl:'#f-page [data-act=pay]',pre:()=>{fresh();demo4();LAB=LABS[0];PATIENT=0;patFill(0);nav([CART,{s:'pat'},{s:'co'}])}},
     {t:'Согласие на результаты: «Даю согласие» или «Пропустить»',ev:'scr:ok',hl:'#f-page [data-act=resok]',pre:()=>{fresh();demo4();LAB=LABS[0];pay0();nav([{s:'res'}])}}]},
+   {id:'clbook',t:'Запись в обычную клинику',d:'Корзина в Рэмси: дата и время, данные пациента, согласие на результаты, успех',steps:[
+    {t:'Корзина с Рэмси: «Перейти к оформлению»',ev:'scr:book',hl:'#f-page [data-act=checkout]',pre:()=>{fresh();remCart();nav([CART])}},
+    {t:'Выбрать другой день',ev:'bk-d',hl:'#book-body button.bk-d:not(.sel)',pre:()=>{fresh();remCart();nav([CART,BOOK()])}},
+    {t:'Выбрать время',ev:'bk-t',hl:'#book-body .bk-t',pre:()=>{fresh();remCart();nav([CART,BOOK()]);scrollTo('#book-body .bk-t','#s-book')}},
+    {t:'Данные пациента: «Записаться»',ev:'scr:res',hl:'#f-page [data-act=book]',pre:()=>{fresh();remCart();nav([CART,BOOK(),BOOK2()])}},
+    {t:'Согласие на результаты: «Даю согласие» или «Пропустить»',ev:'scr:ok',hl:'#f-page [data-act=resok]',pre:()=>{fresh();remCart();bkInit();BK.t='13:00';const t=cartTotals();PAID={lab:LAB,total:t.total,ids:t.ids.slice(),clinic:true,when:BK.d,time:BK.t,pts:0};t.ids.forEach(id=>cart.delete(id));nav([{s:'res'}])}}]},
    {id:'clinic',t:'Деталька клиники и лаборатории',d:'Из «Где сдать» в карточку клиники: цены, корзина, отзывы, запись на 1 анализ',steps:[
     {t:'Тап по названию клиники в «Где сдать»',ev:'clinic-ctx',hl:'#b-where [data-wcl]:not([data-wcl=free])',pre:()=>{fresh();nav([A,{s:'detail',id:PRL}]);scrollTo('#b-where [data-wcl]','#s-detail')}},
     {t:'«Добавить в корзину» в нижней панели',ev:'cl-add',hl:'#f-clinic [data-cla=add]',pre:()=>{fresh();nav([A,{s:'detail',id:PRL},clView('w'+REM(),PRL)])}},
