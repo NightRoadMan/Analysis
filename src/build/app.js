@@ -91,7 +91,7 @@ const TABS={'s-home':'home','s-orders':'orders'}; // экраны с табба�
 function show(id){CUR_ID=id;
   $$('.scr').forEach(s=>s.hidden=s.id!==id);
   const tb=TABS[id]; $('#tabbar').hidden=!tb; if(tb)$$('#tabbar .tbi').forEach(b=>{const on=b.dataset.tab===tb;b.classList.toggle('on',on);b.setAttribute('aria-current',on?'page':'false')});
-  updateFooters(id); bkSel(); moSel(); // контролы над телефоном только на своих экранах (Артем, 26.11)
+  updateFooters(id); // внутри: контролы над телефоном только на своих экранах (Артем, 26.11)
 }
 function render(view){
   if(ONE&&!['pat','co','res','ok','fail'].includes(view.s)) ONE=null; // запись на 1 анализ живёт только в оформлении
@@ -183,6 +183,7 @@ function btnHTML(id,up){
     : `<button class="btn" data-cart="${id}"${u}>${ic('basketW',24)}Добавить в корзину</button>`;
 }
 function updateFooters(id){
+  if(typeof bkSel==='function'){bkSel();moSel();}
   const n=cart.size;
   $('#f-cart').hidden=!(n>0&&(id==='s-cat'||id==='s-an'||id==='s-ctg')&&$('#dim').hidden);
   $('#f-cart-n').textContent=anW(n);

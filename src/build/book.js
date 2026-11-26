@@ -164,4 +164,4 @@ function bkClick(e){
 /* переключатель способа записи над телефоном */
 $('#bk-mode').innerHTML=BK_MODES.map(([v,t])=>`<option value="${v}">${t}</option>`).join('');
 $('#bk-mode').addEventListener('change',e=>{BK_OVR=e.target.value;if(cur&&cur.s==='cart'){renderCart();updateFooters('s-cart')}});
-function bkSel(){const w=$('#bk-ctl');if(!w)return;const on=(CUR_ID==='s-cart'&&isClinic(LAB))||CUR_ID==='s-detail'||CUR_ID==='s-clinic';w.hidden=!on;}
+function bkSel(){const w=$('#bk-ctl');if(!w)return;const on=(CUR_ID==='s-cart'&&isClinic(LAB))||CUR_ID==='s-detail'||(CUR_ID==='s-clinic'&&typeof clLab==='function'&&!!clLab()&&isClinic(clLab()));w.hidden=!on;}
