@@ -177,7 +177,7 @@ function moSel(){
   $('#ord-st').value=o.st; $('#ord-lbl').textContent=cur&&cur.s==='order'?'Статус заказа':'Статус верхнего заказа';
 }
 $('#ord-st').innerHTML=MOS.map(([v,t])=>`<option value="${v}">${t}</option>`).join('');
-$('#ord-st').addEventListener('change',e=>{const o=ORDERS[cur&&cur.s==='order'?cur.i:0];o.st=e.target.value;if(['part','done'].includes(o.st))o.consent=o.consent!==false?true:o.consent;if(o.st==='nores')o.consent=false;if(cur.s==='order')renderOrder();else renderOrders();SC.ev('mo-st')});
+$('#ord-st').addEventListener('change',e=>{const o=ORDERS[cur&&cur.s==='order'?cur.i:0];o.st=e.target.value;if(['part','done'].includes(o.st))o.consent=true;if(o.st==='nores')o.consent=false;if(cur.s==='order')renderOrder();else renderOrders();SC.ev('mo-st')});
 function moRepeat(o){ // ТЗ 2.10.1: корзина с набором заказа, весь набор отмечен, остальное — без галочек
   [...cart.values()].forEach(v=>v.on=false);
   o.ids.forEach(id=>{if(!cart.has(id))cart.set(id,{on:true});cart.get(id).on=true});

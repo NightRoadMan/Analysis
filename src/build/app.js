@@ -502,7 +502,7 @@ function replaceSheet(id,W,after){
     <div class="chev-ctl" data-act="close" style="color:var(--ink)">${SV.grabDown}</div>
     <div class="sh" style="font-size:22px;line-height:28px">Заменить филиал?</div>
     <p class="rpl">${lead} для <b>${esc(LAB.n)}</b>. Заменить на <b>${esc(W.n)}</b>?</p>
-    ${miss.length?`<div class="warn">${SV.alert}<div>${miss.length>1?'Анализы не доступны':'Анализ не доступен'} для сдачи в ${esc(W.n)}:<p>${esc(miss.map(x=>shortName(items[x].name)).join(', '))}</p></div></div>`:''}
+    ${miss.length?`<div class="warn">${SV.alert}<div>${miss.length>1?'Анализы недоступны':'Анализ недоступен'} для сдачи в ${esc(W.n)}:<p>${esc(miss.map(x=>shortName(items[x].name)).join(', '))}</p></div></div>`:''}
   </div></div>
   <div class="sfoot"><button class="big wide" data-act="rep-yes">Да, заменить</button><button class="lnk" data-act="close">Нет</button>${hi()}</div>`);
 }
@@ -516,7 +516,7 @@ const fullCount=ids=>LABS.filter(L=>ids.every(id=>labHas(L,id))).length;
 /* ---------- cart screen ---------- */
 const checkedIds=()=>[...cart.entries()].filter(([id,v])=>v.on).map(([id])=>id);
 function cartTotals(){
-  if(ONE){const id=ONE.id,sum=labPrice(ONE.L,id),blood=isBlood(items[id])?bloodOf(ONE.L):0;return {ids:[id],sum,blood,total:sum+blood}}
+  if(ONE){const id=ONE.id,sum=labPrice(ONE.L,id),blood=0;return {ids:[id],sum,blood,total:sum+blood}}
   const ids=checkedIds().filter(id=>!LAB||labHas(LAB,id));
   const sum=ids.reduce((a,id)=>a+(LAB?labPrice(LAB,id):items[id].price),0);
   const blood=ids.some(id=>isBlood(items[id]))?bloodOf(LAB):0;
@@ -563,7 +563,7 @@ function renderPageFooter(id){
     if(!cart.size){f.hidden=true;return}
     const t=cartTotals();
     f.innerHTML=isClinic(LAB)&&bkMode(t.ids.length)==='call'?`<div class="callnote">${SV.clock}В клинику можно записаться только по телефону</div><button class="big wide callbtn" data-act="call" ${t.ids.length?'':'disabled'}>${IC_PH}Позвонить</button>${hi()}`
-      :`${t.ids.length?'':`<div class="callnote">${SV.infoC}Выберите анализы, чтобы перейти к оформлению заказа</div>`}<button class="big wide two" data-act="${LAB?'checkout':'pickfirst'}" ${t.ids.length?'':'disabled'}><span class="t">Перейти к оформлению</span>${CHEVW}</button>${hi()}`;
+      :`${t.ids.length?'':`<div class="callnote off">${SV.infoC}Выберите анализы, чтобы перейти к оформлению заказа</div>`}<button class="big wide two" data-act="${LAB?'checkout':'pickfirst'}" ${t.ids.length?'':'disabled'}><span class="t">Перейти к оформлению</span>${CHEVW}</button>${hi()}`;
   } else if(id==='s-pat'){
     f.innerHTML=`<button class="big wide two" data-act="patnext"><span class="t">Продолжить</span>${CHEVW}</button>${hi()}`;
   } else if(id==='s-co'){
@@ -833,6 +833,11 @@ function renderMap(fresh){
 function selectLab(id,card=true){
   MV.sel=id; MV.searching=false; const L=LABS.find(x=>x.id===id);
   if(card){MV.card=true;renderMSheet();SC.ev('pin');if(!labFor(L,mapIds()).full)SC.ev('pin-partial');}
+  if(card==='pin'){ // тап по метке: карта не прыгает, сдвигаем только если метку закроет карточка (Артем, 26.11)
+    const [sx,sy]=toScr(L), bot=vpH()-310, top=HDR+40;
+    if(sy>bot||sy<top||sx<40||sx>vpW()-40){MV.x+=Math.max(40-sx,Math.min(0,vpW()-40-sx));MV.y+=sy>bot?bot-sy:sy<top?top-sy:0;clampView();applyView();}
+    return;
+  }
   centerOn(L.x,L.y,Math.max(MV.s,0.8));
 }
 function zoomAt(f,cx,cy){
@@ -878,7 +883,7 @@ function openBrandSheet(){
     start={x:MV.x,y:MV.y,s:MV.s,p:[...pts.values()].map(a=>a.slice())}; moved=false;
   });
   vp.addEventListener('pointermove',e=>{
-    if(!pts.has(e.pointerId)||!start) return; pts.set(e.pointerId,[e.clientX,e.clientY]);
+    if(!pts.has(e.pointerId)||!start) return; if(e.pointerType==='mouse'&&!e.buttons){moved=true;end(e);return} pts.set(e.pointerId,[e.clientX,e.clientY]);
     const P=[...pts.values()];
     if(P.length===1&&start.p.length===1){const dx=P[0][0]-start.p[0][0],dy=P[0][1]-start.p[0][1]; if(!moved&&Math.hypot(dx,dy)>5){moved=true;vp.classList.add('drag')} if(moved){MV.x=start.x+dx;MV.y=start.y+dy;clampView();applyView();}}
     else if(P.length>=2&&start.p.length>=2){
@@ -889,7 +894,7 @@ function openBrandSheet(){
     }
   });
   const end=e=>{pts.delete(e.pointerId); if(pts.size<2&&start&&start.p.length>=2){start=null;pts.clear()} if(!pts.size){vp.classList.remove('drag'); if(!moved&&start&&!e.target.closest('.mk')){ if(MV.card){MV.card=false;renderMSheet();renderMarkers();} else if(MV.searching){MV.searching=false;renderMSheet();} } start=null;}};
-  vp.addEventListener('pointerup',end); vp.addEventListener('pointercancel',end);
+  vp.addEventListener('pointerup',end); vp.addEventListener('pointercancel',end); vp.addEventListener('lostpointercapture',e=>{if(pts.has(e.pointerId)){moved=true;end(e)}}); vp.addEventListener('dragstart',e=>e.preventDefault());
   vp.addEventListener('wheel',e=>{e.preventDefault();const r=vp.getBoundingClientRect();zoomAt(e.deltaY<0?1.12:1/1.12,e.clientX-r.left,e.clientY-r.top)},{passive:false});
   // sheet drag between peek / half / full
   let sd=null;
@@ -919,7 +924,7 @@ $('#ph').addEventListener('click',e=>{
   if(!t) return;
   if(t.closest('#dlg')) return;
   const d=t.dataset;
-  if(d.mk){selectLab(d.mk);return}
+  if(d.mk){selectLab(d.mk,'pin');return}
   if(d.cl){const [x,y]=d.cl.split(',').map(Number);centerOn(x,y,0.8);return}
   if(d.lab){selectLab(d.lab);return}
   if(d.place!==undefined){pickPlace(PLACES[+d.place]);return}
@@ -935,7 +940,7 @@ $('#ph').addEventListener('click',e=>{
     const nm=shortName(items[id].name);
     if(inCart(id)&&LAB&&LAB.id===W.id){delCart(id);if(!cart.size)LAB=null;refresh();toast(`${nm} убран из корзины`);SC.ev('wrm');return}
     if(inCart(id)){
-      if(!LAB){setLab();refresh();toast(`Сдаёте в ${W.n}`);SC.ev('here');return}
+      if(!LAB){setLab();refresh();SC.ev('here');return}
       replaceSheet(id,W,()=>{setLab();refresh()});return}
     const add=()=>{setLab();addCart(id);cart.get(id).on=true;refresh();openUpsell(id)};
     if(LAB&&LAB.id!==W.id&&cart.size) replaceSheet(id,W,add); else add();

@@ -30,14 +30,14 @@ function bkStart(L,ids,one){
   go({s:mode==='callback'?'bk':'slot'}); SC.ev('bk-'+mode);
 }
 function bkPat(k){const d=PDATA[k];return {k,fio:[d.f,d.i,d.o].filter(Boolean).join(' '),b:d.b,phone:'+7 (999) 999 99 99'}}
-function bkTotal(){const t=BK.ids.reduce((s,id)=>s+labPrice(BK.L,id),0);const bl=BK.ids.some(id=>isBlood(items[id]))?bloodOf(BK.L):0;return t+bl}
+function bkTotal(){const t=BK.ids.reduce((s,id)=>s+labPrice(BK.L,id),0);const bl=!BK.one&&BK.ids.some(id=>isBlood(items[id]))?bloodOf(BK.L):0;return t+bl}
 function bkOff(){return BK.usePts&&BK.mode==='rtz'?ptsOff(bkTotal()):0}
 function bkPts(){return BK.ids.length*PTS_PER} // 50 за анализ (ТЗ 2.8)
 function bkWhat(){return BK.ids.length===1?shortName(items[BK.ids[0]].name):'Корзина анализов'}
 function bkHead(withPrice){
   const tot=bkTotal(), off=withPrice?bkOff():0;
   return `<div class="bk-cl"><b>${esc(BK.L.n)}</b><span>${esc(BK.L.a)}</span></div>
-  <div class="bk-what"><div><b>${esc(bkWhat())}</b>${off?`<div class="bk-pr"><span class="g">${fmt(tot-off)}</span><s>${fmt(tot)}</s></div><div class="bk-off">с учетом −${fmt0(off)} ${SV.coinY} баллов</div>`:`<div class="bk-pr">${fmt(tot)}</div>`}</div><button class="bk-pen" data-act="bk-edit" aria-label="Изменить">${IC_PEN}</button></div>`;
+  <div class="bk-what"><div><b>${esc(bkWhat())}</b>${off?`<div class="bk-pr"><span class="g">${fmt(tot-off)}</span><s>${fmt(tot)}</s></div><div class="bk-off">с учетом −${fmt0(off)} ${SV.coinY} баллов</div>`:`<div class="bk-pr">${fmt(tot)}</div>`}</div></div>`;
 }
 function bkPatHTML(){
   const chips=PATIENTS.map((p,k)=>`<button class="pchip${k===BK.k?' on':''}" data-bkp="${k}">${esc(p.n)}</button>`).join('');
@@ -123,7 +123,7 @@ function bkFinish(){ // записанные анализы уходят из к
 
 /* шторка «Позвонить»: «Да» → «Очистить корзину?» (923:57415) */
 function callYes(){
-  openSheet(`<div class="sbody"></div><div class="sfoot callq">
+  openSheet(`<div class="chev-ctl" data-act="close" style="color:var(--ink)">${SV.grabDown}</div><div class="sbody"></div><div class="sfoot callq">
     <div class="sh" style="font-size:22px;line-height:28px">Очистить корзину?</div>
     <p class="callq-p">Вы записались по телефону, оформлять эти анализы в приложении не нужно.</p>
     <button class="big wide" data-act="call-clear">Да, очистить</button>

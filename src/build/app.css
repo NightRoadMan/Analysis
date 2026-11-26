@@ -77,7 +77,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .hdr.flat{padding-bottom:0;border-radius:0 0 24px 24px}
 .sb{height:44px;position:relative;flex-shrink:0}
 .tb{height:54px;position:relative;padding:0 16px 10px;display:flex;align-items:flex-start}
-.gb{width:44px;height:44px;border-radius:1000px;display:flex;align-items:center;justify-content:center;position:relative;background:var(--glass);box-shadow:0 0 0 1px var(--border) inset,0 2px 8px rgba(0,0,0,.06)}
+.gb{width:44px;height:44px;border-radius:1000px;display:flex;align-items:center;justify-content:center;position:relative;background:var(--glass);box-shadow:0 0 0 1px var(--border) inset}
 .tt{position:absolute;left:64px;right:64px;top:13px;text-align:center;font-size:16px;font-weight:600;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hs{padding-inline:16px;display:flex;flex-direction:column;gap:8px}
 .hs.g12{gap:12px}
@@ -149,7 +149,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .big.two{justify-content:space-between;padding:0 16px 0 24px}
 .big.two .t{flex:1;text-align:center}
 .wide{width:343px;max-width:calc(100% - 32px)}
-.gocart{width:343px;max-width:calc(100% - 32px);height:56px;border-radius:20px;background:var(--brand);color:#fff;display:flex;align-items:center;padding:0 16px 0 40px;box-shadow:0 6px 20px rgba(49,133,140,.25)}
+.gocart{width:343px;max-width:calc(100% - 32px);height:56px;border-radius:20px;background:var(--brand);color:#fff;display:flex;align-items:center;padding:0 16px 0 40px}
 .gocart .t{flex:1;display:flex;flex-direction:column;gap:2px;text-align:center}
 .gocart .t b{font-size:16px;font-weight:600;line-height:16px}
 .gocart .t span{font-size:12px;font-weight:500;line-height:18px}
@@ -327,7 +327,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .irow .tx .k{color:var(--light)}
 .pass{display:flex;align-items:center;justify-content:space-between;background:var(--warn-bg);border-radius:12px;padding:0 0 0 12px;height:40px;color:var(--warn-fg);font-size:12px;font-weight:600;gap:8px;overflow:visible}
 .pass .im{width:47px;height:59px;background:center/contain no-repeat;margin-top:-19px;flex-shrink:0}
-.failbox{display:flex;flex-direction:column;gap:12px;padding:120px 16px 0}
+.failbox{display:flex;flex-direction:column;gap:12px;padding:30px 16px 0}
 .failbox h1{margin:8px 0 0;font-size:22px;font-weight:700;line-height:28px}
 .failbox p{margin:0;font-size:16px;line-height:24px;color:var(--soft)}
 .failbox a{color:var(--brand-ink);font-weight:500}
@@ -776,7 +776,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .cl-fb.t [fill="#31858C"]{fill:var(--brand-tint-ink)} .cl-fb.t [stroke="#31858C"]{stroke:var(--brand-tint-ink)}
 .cl-sq{width:56px;height:56px;border-radius:20px;box-shadow:0 0 0 1px var(--border) inset;background:var(--base);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
 .cl-sq [fill="#31858C"],.cl-fcart [fill="#31858C"]{fill:var(--ink)}
-.cl-fcart{align-self:flex-end;width:56px;height:56px;border-radius:18px;background:var(--base);box-shadow:0 6px 20px rgba(13,13,13,.14);display:flex;align-items:center;justify-content:center;position:relative}
+.cl-fcart{align-self:flex-end;width:56px;height:56px;border-radius:18px;background:var(--base);box-shadow:0 0 0 1px var(--border) inset;display:flex;align-items:center;justify-content:center;position:relative}
 .cl-cta{justify-content:space-between;padding:0}
 .cl-cta .m{flex:1;text-align:center}
 .cl-cta .r{display:flex;align-items:center;gap:6px;padding:0 22px;border-left:1px solid #ffffff66;height:28px}
@@ -1051,3 +1051,19 @@ button.mo-ln{text-decoration:none}
 .bk-will b{display:inline-flex;vertical-align:middle}
 .bk-will>svg{vertical-align:middle;margin:0 2px}
 .sheet .sfoot.callq .big.wide{width:100%;max-width:none}
+/* аудит 26.11: экраны записи на белом фоне, блоки через линию (855:56203, 923:61259, 923:61210) */
+#s-bk,#s-slot,#s-bkf{background:var(--base)}
+.bk-body{gap:0;padding-top:0}
+.bk-body>.csec{border-radius:0}
+.bk-body>.csec+.csec{border-top:1px solid var(--line)}
+.bk-form .big.wide{width:100%;max-width:none}
+#s-bkok .sb{z-index:2}
+.snack .sb{position:absolute;left:0;right:0;top:0}
+/* аудит 26.11: неактивные кнопки серые (854:47540), кнопки футера клиники во всю ширину (620:22245), плашка баллов на неоплате (439:112254) */
+.big[disabled]{opacity:1;background:color-mix(in srgb,var(--ink) 8%,var(--base));color:var(--light)}
+.big[disabled] *{color:inherit}
+.sbtn:disabled{opacity:1;background:color-mix(in srgb,var(--ink) 6%,var(--base));box-shadow:none;color:var(--light)}
+.callnote.off{color:var(--light)}
+.cl-ftr .big.wide{width:100%;max-width:none}
+#fail-pts{color:var(--warn-fg)}
+.showall>*:last-child{transform:none!important;rotate:none!important}.showall>*:last-child *{transform:none!important;rotate:none!important}
