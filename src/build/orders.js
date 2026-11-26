@@ -35,7 +35,7 @@ function addOrder(P){ // из оплаты в прототипе (pay)
   const o={no:String(90897620100+ORDERS.length),lab:P.lab,ids:P.ids.slice(),full:P.total+(P.pts||0),pts:P.pts||0,total:P.total,card:'4417',created:t,patient:pt,st:'new',consent:!!P.res,until:P.untilD};
   ORDERS.unshift(o); return o;
 }
-const MO={tab:'rec',more:{},f:'all'}; // f — чипсы «Все / Записи / Анализы» (676:36719)
+const MO={tab:'rec',more:{},f:'all'};
 const moLast=o=>o.until||dPlus(5);
 const moLeft=o=>Math.max(1,Math.round((moLast(o)-new Date())/864e5));
 /* без согласия на результаты (ТЗ 2.10.2) готовность не показываем: «в работе», потом «Заказ выполнен» без файлов */
@@ -123,9 +123,7 @@ function moDoctorCards(){
 }
 function renderOrders(){
   $$('#s-orders [data-motab]').forEach(b=>{const on=b.dataset.motab===MO.tab;b.setAttribute('aria-selected',String(on));b.classList.toggle('on',on)});
-  const nDoc=3, ch=[['all','Все',ORDERS.length+nDoc],['doc','Записи',nDoc],['an','Анализы',ORDERS.length]];
-  $('#mo-body').innerHTML=MO.tab==='rec'?`<div class="chips mo-chips">${ch.map(([k,t,n])=>`<button class="chip${MO.f===k?' on':''}" data-mof="${k}" aria-pressed="${MO.f===k}">${t} <i>${n}</i></button>`).join('')}</div>`
-    +(MO.f!=='doc'?ORDERS.map(moCard).join(''):'')+(MO.f!=='an'?moDoctorCards():'')
+  $('#mo-body').innerHTML=MO.tab==='rec'?ORDERS.map(moCard).join('')+moDoctorCards() // чипсы «Все / Записи / Анализы» убраны (Артем, 26.11; 676:36719)
     :`<div class="empty" style="margin:0 16px"><b>Заявки к врачам</b><span>Здесь заявки, которые клиника ещё не подтвердила. Заказы анализов сюда не попадают: они сразу во вкладке «Записи».</span></div>`;
   moSel();
 }
