@@ -412,7 +412,6 @@ function renderDetail(id){
       </div>
       <div class="kv"><div><div class="k">Метод исследования</div><div class="v">${esc(i.method)}</div></div><div class="sep"></div><div><div class="k">Биоматериал</div><div class="v">${esc(i.biomat||i.bio)}</div></div></div>
     </div>
-    <button class="coinb" data-act="coininfo"><span>Получи</span><span class="c50">+50${SV.coinY}</span><span>за каждый анализ</span><span class="ii">${SV.infoC}</span><i class="gift" style="background-image:url(${ASSET.gift})"></i></button>
   </div>
   <div class="dmid">
     <div class="a">
