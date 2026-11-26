@@ -952,7 +952,7 @@ button.mo-ln{text-decoration:none}
 /* правки по Flow 25.11 вечер */
 .pcard.in{padding:0;background:none;margin-top:8px}
 .lhrs .ldot{width:4px;height:4px;border-radius:50%;background:var(--light);display:inline-block}
-.lhrs2{display:flex;align-items:center;gap:6px;color:var(--ink);font-size:12px;font-weight:600;line-height:16px;margin-top:4px}
+.lhrs2{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:14px;font-weight:600;line-height:20px}
 .lhrs2 svg{width:16px;height:16px;color:var(--soft)}
 .misst{display:inline-flex;align-self:flex-start;align-items:center;gap:6px;padding:4px 8px;border-radius:8px;background:var(--warn-bg);color:var(--warn-fg);font-size:12px;font-weight:600;line-height:16px}
 .misst svg{width:16px;height:16px}
@@ -961,14 +961,94 @@ button.mo-ln{text-decoration:none}
 .cl-ach.pts svg{width:16px;height:16px}
 .cl-ptsbar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:var(--warn-bg);color:var(--ink);font-size:13px;font-weight:600;line-height:18px}
 .cl-ptsbar svg{width:18px;height:18px;flex-shrink:0}
-.cl-ptsbar span{flex:1}
 .cl-ptsbar svg:last-child{color:var(--light)}
 .cl-bl{display:flex;flex-direction:column;gap:4px;font-size:12px;line-height:16px;color:var(--light);font-weight:500;margin-top:4px}
 .cl-bl div{display:flex;align-items:baseline;gap:6px;color:var(--ink);font-size:14px;line-height:20px}
 .cl-bl i{flex:1;border-bottom:1px dotted var(--border);transform:translateY(-4px)}
 .cl-bl b{font-weight:600;white-space:nowrap}
 .cl-blk{display:flex;flex-direction:column;gap:2px;margin-top:8px;font-size:12px;line-height:16px;color:var(--light)}
-.sheet .sfoot.callq{align-items:stretch;text-align:left}
+.sheet .sfoot.callq{align-items:stretch;text-align:left;padding-left:16px;padding-right:16px}
+.sheet .sfoot.callq .hi,.sheet .sfoot.callq>.home{margin-left:-16px;margin-right:-16px}
 .hdots{align-self:stretch;display:flex;justify-content:center;gap:6px;margin-top:4px}
 .hdots i{width:6px;height:6px;border-radius:3px;background:var(--border)}
 .hdots i.on{width:16px;background:var(--accent)}
+#s-fail{background:var(--base)}
+.sbtn:disabled{opacity:.4;pointer-events:none}
+.wpts{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:500;line-height:16px;color:var(--soft);margin-top:-8px}
+.wpts svg{width:16px;height:16px}
+.wpts svg:last-child{color:var(--light)}
+/* ===== запись в классическую клинику (Figma «Виды записей» 855:48381) ===== */
+.bk-body{display:flex;flex-direction:column;gap:8px;padding:8px 0 60px}
+.bk-top{gap:12px}
+.bk-cl{display:flex;flex-direction:column;gap:2px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.bk-cl b{font-size:16px;font-weight:600;line-height:20px}
+.bk-cl span{font-size:12px;font-weight:500;line-height:16px;color:var(--light)}
+.bk-what{display:flex;align-items:flex-start;gap:12px}
+.bk-what>div{flex:1;display:flex;flex-direction:column;gap:2px}
+.bk-what b{font-size:16px;font-weight:600;line-height:20px}
+.bk-pr{display:flex;align-items:baseline;gap:6px;font-size:14px;font-weight:600;line-height:20px}
+.bk-pr .g,.bk-svc .g{color:var(--mo-green-fg)}
+.bk-pr s{font-size:12px;font-weight:500;color:var(--light)}
+.bk-off{display:flex;align-items:center;gap:3px;font-size:12px;font-weight:500;line-height:16px;color:var(--soft)}
+.bk-off svg{width:14px;height:14px}
+.bk-pen{width:24px;height:24px;color:var(--ink);flex-shrink:0}
+.bk-when{font-size:16px;font-weight:600;line-height:20px;padding-top:12px;border-top:1px solid var(--line)}
+.bk-note{display:flex;align-items:center;gap:10px;border-radius:12px;padding:12px 16px;font-size:12px;font-weight:600;line-height:16px}
+.bk-note svg{flex-shrink:0}
+.bk-note.g{background:var(--info-bg);color:var(--brand-ink);outline:1px solid color-mix(in srgb,var(--brand) 30%,transparent);outline-offset:-1px}
+.bk-note.y{background:var(--warn-bg);color:var(--warn-fg)}
+.bk-prep{border-radius:16px;outline:1px solid var(--border);outline-offset:-1px;padding:12px 16px}
+.bk-prep .illu{width:44px;height:44px;margin-top:0}
+.bk-prep .tx b{font-size:14px}
+.bk-form{gap:16px}
+.bk-legal{margin:0;font-size:12px;font-weight:500;line-height:16px;color:var(--light)}
+.bk-legal a{color:var(--brand-ink)}
+.cal-nav{display:flex;align-items:center;justify-content:space-between}
+.cal-nav b{font-size:16px;font-weight:600}
+.cal-nav button{width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:var(--ink)}
+.cal-nav button:disabled{opacity:.3}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px 6px;justify-items:center}
+.cal-grid i{font-style:normal;font-size:14px;font-weight:500;color:var(--light);line-height:20px}
+.cal-grid .cd{width:40px;height:40px;border-radius:12px;font-size:16px;font-weight:600;color:var(--light)}
+.cal-grid .cd.ok{background:var(--brand);color:#fff}
+.cal-grid .cd.on{background:var(--yellow);color:#fff}
+.cal-times{display:flex;flex-wrap:wrap;gap:8px}
+.cal-times .ct{height:40px;min-width:76px;padding:0 14px;border-radius:20px;background:var(--brand);color:#fff;font-size:16px;font-weight:600}
+.bk-instant{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;line-height:16px;color:var(--warn-fg);margin-top:8px}
+.bkok{min-height:100%;background:var(--base);padding:0 16px 220px;display:flex;flex-direction:column;gap:16px}
+.bkok h1{margin:0;font-size:22px;font-weight:700;line-height:28px}
+.bkok.sent{padding-top:60px}
+.bk-ill{height:240px;background:center/contain no-repeat;margin-bottom:8px}
+.bk-li{display:flex;gap:10px;align-items:flex-start;font-size:16px;font-weight:500;line-height:24px}
+.bk-li svg{width:20px;height:20px;flex-shrink:0;margin-top:2px;color:var(--brand-ink)}
+.bk-got,.bk-will{display:flex;flex-wrap:wrap;align-items:center;gap:4px;font-size:16px;font-weight:500;line-height:24px;margin:0}
+.bk-got b,.bk-will b{display:inline-flex;align-items:center;gap:4px;color:var(--accent);font-weight:600}
+.bk-got svg,.bk-will svg{width:20px;height:20px}
+.bkok.booked{padding-top:0}
+.bk-wave{margin:-44px -16px 0;height:193px;background:top/100% 100% no-repeat;position:relative}
+.bk-wave h1{position:absolute;left:16px;top:82px;width:287px;color:#fff;font-size:26px;line-height:32px}
+.bk-card{border-radius:16px;outline:1px solid var(--border);outline-offset:-1px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.bk-tagrow{display:flex;align-items:center;justify-content:space-between;color:var(--light)}
+.bk-tag{height:24px;padding:0 8px;border-radius:8px;background:var(--brand-tint);color:var(--brand-tint-ink);font-size:12px;font-weight:600;line-height:24px}
+.bk-cal2{display:flex;align-items:center;gap:8px;color:var(--brand-ink);font-size:16px;font-weight:600}
+.bk-cal2 svg{width:24px;height:24px}
+.bk-cn{font-size:18px;font-weight:700;line-height:24px}
+.bk-ad{display:flex;flex-direction:column;gap:2px;font-size:12px;font-weight:500;line-height:16px;color:var(--soft)}
+.bk-ad .mt{display:flex;align-items:center;gap:6px}
+.bk-ad .mt u{width:6px;height:6px;border-radius:50%}
+.bk-ph{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:500}
+.bk-ph svg{color:var(--brand-ink)}
+.bk-ph span{flex:1}
+.bk-ph button{color:var(--brand-ink);font-size:12px;font-weight:600}
+.bk-svc{display:flex;gap:8px;align-items:flex-start;font-size:12px;font-weight:600;line-height:16px}
+.bk-svc svg{flex-shrink:0;color:var(--brand-ink);width:18px;height:18px}
+.sheet .sfoot .callq-p{margin:0;font-size:16px;font-weight:500;line-height:24px;color:var(--soft)}
+.snack{position:absolute;left:0;right:0;top:0;height:84px;z-index:45;background:#F4FBF4;color:#3F9A44;display:flex;align-items:flex-end;justify-content:center;padding-bottom:14px;font-size:14px;font-weight:600;line-height:20px;transform:translateY(-100%);transition:transform .25s;pointer-events:none}
+.snack.on{transform:none}
+:root[data-theme="dark"] .snack{background:#1E2B1F;color:#7BCB7E}
+.lcard .wpts{margin-top:-4px}
+.cal-grid .cd{display:flex;align-items:center;justify-content:center;padding:0;width:40px!important}
+.bk-will{display:block}
+.bk-will b{display:inline-flex;vertical-align:middle}
+.bk-will>svg{vertical-align:middle;margin:0 2px}
+.sheet .sfoot.callq .big.wide{width:100%;max-width:none}

@@ -91,7 +91,7 @@ const TABS={'s-home':'home','s-orders':'orders'}; // экраны с табба�
 function show(id){CUR_ID=id;
   $$('.scr').forEach(s=>s.hidden=s.id!==id);
   const tb=TABS[id]; $('#tabbar').hidden=!tb; if(tb)$$('#tabbar .tbi').forEach(b=>{const on=b.dataset.tab===tb;b.classList.toggle('on',on);b.setAttribute('aria-current',on?'page':'false')});
-  updateFooters(id);
+  updateFooters(id); bkSel();
 }
 function render(view){
   if(ONE&&!['pat','co','res','ok','fail'].includes(view.s)) ONE=null; // запись на 1 анализ живёт только в оформлении
@@ -111,6 +111,10 @@ function render(view){
   else if(view.s==='res'){renderRes();show('s-res');}
   else if(view.s==='ok'){renderOK(view);show('s-ok');}
   else if(view.s==='fail'){show('s-fail');}
+  else if(view.s==='bk'){renderBK();show('s-bk');}
+  else if(view.s==='slot'){renderSlot();show('s-slot');}
+  else if(view.s==='bkf'){renderBKF();show('s-bkf');}
+  else if(view.s==='bkok'){renderBKOK();show('s-bkok');}
 }
 let CUR_ID='s-home', NOANIM=true;
 /* iOS push/pop: новый экран въезжает справа, старый уходит на 30% влево; назад наоборот */
@@ -184,7 +188,7 @@ function updateFooters(id){
   $('#f-cart-n').textContent=anW(n);
   $('#f-detail').hidden=id!=='s-detail';
   const c=$('#d-cnt'); c.hidden=!n; c.textContent=n;
-  $('#f-page').hidden=!['s-cart','s-pat','s-co','s-res','s-ok','s-fail'].includes(id);
+  $('#f-page').hidden=!['s-cart','s-pat','s-co','s-res','s-ok','s-fail','s-bkok'].includes(id);
   if(!$('#f-page').hidden) renderPageFooter(id);
   if(id==='s-clinic') renderClinicFooter(); else $('#f-clinic').hidden=true;
 }
@@ -467,6 +471,7 @@ function wlab(k){const w=WLABS[k];return {id:'w'+k,w:1,x:MC[0],y:MC[1],brand:BRA
 const PIN_W='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M12 21s6.5-5.6 6.5-11a6.5 6.5 0 0 0-13 0c0 5.4 6.5 11 6.5 11Z"/><circle cx="12" cy="10" r="2.4"/></svg>';
 function updWhere(){ // вариант A: «В корзине» у выбранного филиала, «Сдать здесь» у остальных, пока анализ в корзине
   const id=cur&&cur.id; if(!id) return;
+  document.querySelectorAll('#b-where .cp').forEach(cp=>{if(!(cp.nextElementSibling&&cp.nextElementSibling.classList.contains('wpts')))cp.insertAdjacentHTML('afterend',`<div class="wpts"><span>Доступно оплата</span>${SV.coinY}<span>баллами</span>${SV.infoC}</div>`)}); // 923:65161
   const inC=inCart(id), labW=LAB&&String(LAB.id).startsWith('w');
   document.querySelectorAll('#b-where [data-clinic-add]').forEach(b=>{
     const wid='w'+b.dataset.wk, sel=!!(inC&&LAB&&LAB.id===wid), here=inC&&!sel;
@@ -527,28 +532,28 @@ function renderCart(){
   if(!cart.size){
     // пустая корзина (Figma 439:111882): популярные — те же 8 анализов, строки с круглой кнопкой
     b.innerHTML=`<div class="csec"><div class="ebig"><div style="width:74px;height:74px;background:url(${ASSET.basket}) center/contain no-repeat"></div><h2>В корзине пока что пусто</h2><p>Добавьте анализы — покажем, в каких клиниках вашего города их можно сдать</p><button class="big" data-act="allan">Перейти к анализам</button></div></div>
-    <div class="csec slist"><div class="sh">Популярные анализы</div><div class="rows3">${POP8.map(i=>rowHTML(i,'full')).join('')}</div></div>`;
+    <div class="csec slist"><div class="sh">Популярные анализы</div><div class="rows3">${POP8.slice(0,7).map(i=>rowHTML(i,'full')).join('')}</div></div>`;
     return;
   }
   const ids=[...cart.keys()], allOn=ids.every(id=>cart.get(id).on||(LAB&&!labHas(LAB,id)));
   const elig=ids.filter(id=>!LAB||labHas(LAB,id)), onN=elig.filter(id=>cart.get(id).on).length, ckCls=onN&&onN===elig.length?' on':(onN?' mid':'');
   const t=cartTotals(), P=PATIENTS[PATIENT];
-  const place=LAB?`<div class="csec"><div class="tapl" data-clplace="${LAB.id}">${labHead(LAB,'<button class="sbtn" data-act="tomap">Изменить</button>')}</div><div class="infobar"><span style="color:var(--ink)">${SV.info}</span>Срок сдачи 14 дней после оплаты</div></div>`
+  const place=LAB?`<div class="csec"><div class="tapl" data-clplace="${LAB.id}">${labHead(LAB,'<button class="sbtn" data-act="tomap">Изменить</button>')}</div>${isClinic(LAB)?'':`<div class="infobar"><span style="color:var(--ink)">${SV.info}</span>Срок сдачи 14 дней после оплаты</div>`}</div>`
     :`<button class="csec pickrow" data-act="tomap" style="flex-direction:row"><span class="illu" style="background-image:url(${ASSET.pin})"></span><span class="tx"><b>Выбрать клинику</b><span>Доступно в ${fullCount(checkedIds().length?checkedIds():ids)} ${plural(fullCount(ids),'клинике','клиниках','клиниках')}</span></span><span>${SV.chevR}</span></button>`;
   const row=id=>{const i=items[id],v=cart.get(id),miss=LAB&&!labHas(LAB,id);
-    return `<div class="citem${(!v.on||miss)?' off':''}"><button class="cb${v.on&&!miss?' on':''}" data-ck="${id}" ${miss?'disabled':''} aria-label="Отметить"><i>${SV.tick}</i></button>
+    return `<div class="citem${miss?' off':''}"><button class="cb${v.on&&!miss?' on':''}" data-ck="${id}" ${miss?'disabled':''} aria-label="Отметить"><i>${SV.tick}</i></button>
       <div class="b"><div class="n tap" data-open="${id}">${esc(i.name)}</div>${miss?`<div class="miss">Нет в этой лаборатории</div>`:`<span class="pr">${LAB?'':'<i>от</i>'}<b>${fmt(LAB?labPrice(LAB,id):i.price)}</b></span>`}<div class="m">Готовность за ${esc(i.days||'1 день')}</div></div>
       <div class="rc"><button class="sbtn sq" data-rm="${id}" aria-label="Удалить">${SV.trash}</button></div></div>`};
   const missN=LAB?ids.filter(id=>!labHas(LAB,id)).length:0;
   // один островок: «Выбрать всё», анализы, забор, итого и баллы (Figma 439:109975)
   b.innerHTML=`${place}
   <div class="csec cbox">
-    <div class="ckrow"><button class="lrow" data-act="ckall" style="width:auto"><span class="cb${ckCls}" role="checkbox" aria-checked="${ckCls===' on'?'true':ckCls?'mixed':'false'}"><i>${SV.tick}</i></span><span style="font-size:14px;font-weight:600">Выбрать всё</span></button><button class="sbtn" data-act="clear-cart">Очистить</button></div>
+    <div class="ckrow"><button class="lrow" data-act="ckall" style="width:auto"><span class="cb${ckCls}" role="checkbox" aria-checked="${ckCls===' on'?'true':ckCls?'mixed':'false'}"><i>${SV.tick}</i></span><span style="font-size:14px;font-weight:600">Выбрать всё</span></button><button class="sbtn" data-act="clear-cart" ${onN?'':'disabled'}>Очистить</button></div>
     ${missN?`<div class="warn" style="margin-top:12px">${SV.alert}<div>${missN===1?'Один анализ нельзя сдать':'Не все анализы можно сдать'} в этой лаборатории<p>Сдайте ${anW(ids.length-missN)} здесь или выберите другую лабораторию.</p></div></div>`:''}
     <div class="clist">${ids.map(row).join('')}
     ${t.blood?`<div class="draw"><div class="n">Взятие крови из вены</div><span class="pr">${LAB?'':'<i>от</i>'}<b>${fmt(bloodOf(LAB))}</b></span></div>`:''}</div>
     <div class="tot"><span>Итого</span><span class="pr">${LAB?'':'<i>от</i>'}<b style="font-size:18px">${fmt(t.total)}</b></span></div>
-    <div class="ptsrow"><div class="tx"><b>Начислим баллы</b><span>после сдачи в лаборатории-партнёре</span></div><span class="ptp lg">+${fmt0(t.ids.length*PTS_PER)}${SV.coinY}</span></div>
+    ${isClinic(LAB)&&bkMode(t.ids.length)==='call'?'':`<div class="ptsrow"><div class="tx"><b>Начислим баллы</b><span>после сдачи в лаборатории-партнёре</span></div><span class="ptp lg">+${fmt0(t.ids.length*PTS_PER)}${SV.coinY}</span></div>`}
   </div>
   <button class="csec pickrow" data-act="prep" style="flex-direction:row"><span class="illu" style="background-image:url(${ASSET.prep})"></span><span class="tx"><b>Подготовка к анализам</b><span>Чтобы результаты были точными</span></span><span>${SV.chevR}</span></button>
   <div class="csec slist"><div class="sh" style="font-size:22px;line-height:28px">Часто добавляют к этим анализам</div><div class="rows3">${cartRecs(ids).map(i=>rowHTML(i,'full')).join('')}</div></div>`;
@@ -558,8 +563,8 @@ function renderPageFooter(id){
   if(id==='s-cart'){
     if(!cart.size){f.hidden=true;return}
     const t=cartTotals();
-    f.innerHTML=isClinic(LAB)?`<div class="callnote">${SV.clock}В клинику можно записаться только по телефону</div><button class="big wide callbtn" data-act="call" ${t.ids.length?'':'disabled'}>${IC_PH}Позвонить</button>${hi()}`
-      :`<button class="big wide two" data-act="${LAB?'checkout':'pickfirst'}" ${t.ids.length?'':'disabled'}><span class="t">Перейти к оформлению</span>${CHEVW}</button>${hi()}`;
+    f.innerHTML=isClinic(LAB)&&bkMode(t.ids.length)==='call'?`<div class="callnote">${SV.clock}В клинику можно записаться только по телефону</div><button class="big wide callbtn" data-act="call" ${t.ids.length?'':'disabled'}>${IC_PH}Позвонить</button>${hi()}`
+      :`${t.ids.length?'':`<div class="callnote">${SV.infoC}Выберите анализы, чтобы перейти к оформлению заказа</div>`}<button class="big wide two" data-act="${LAB?'checkout':'pickfirst'}" ${t.ids.length?'':'disabled'}><span class="t">Перейти к оформлению</span>${CHEVW}</button>${hi()}`;
   } else if(id==='s-pat'){
     f.innerHTML=`<button class="big wide two" data-act="patnext"><span class="t">Продолжить</span>${CHEVW}</button>${hi()}`;
   } else if(id==='s-co'){
@@ -571,6 +576,8 @@ function renderPageFooter(id){
     f.innerHTML=`<button class="big wide" data-act="resok">Даю согласие</button><button class="lnk" data-act="resskip">Пропустить</button>${hi()}`;
   } else if(id==='s-ok'){
     f.innerHTML=`<button class="big wide" data-act="home">Хорошо</button>${hi()}`;
+  } else if(id==='s-bkok'){
+    f.innerHTML=`<button class="big wide" data-act="home">Хорошо</button><button class="lnk" data-act="bk-orders">Перейти в “Мои записи”</button>${hi()}`;
   } else if(id==='s-fail'){
     f.innerHTML=`<button class="big wide" data-act="retry">Попробовать ещё раз</button><button class="lnk" data-act="closefail">Закрыть</button>${hi()}`;
   }
@@ -637,7 +644,7 @@ function renderCO(){
     ['card','Банковская карта',`<svg width="34" height="26" viewBox="0 0 34 26"><rect x="1" y="2" width="28" height="19" rx="3" fill="#D7D9DE"/><rect x="1" y="6" width="28" height="3.5" fill="#B5B9C2"/><rect x="4" y="13" width="9" height="3" rx="1" fill="#fff"/><circle cx="27" cy="20" r="6" fill="#6ABF68"/><path d="M27 17v6M24 20h6" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>`],
     ['foreign','Карта банка другой страны',`<svg width="34" height="26" viewBox="0 0 34 26"><rect x="1" y="2" width="28" height="19" rx="3" fill="#D7D9DE"/><rect x="1" y="6" width="28" height="3.5" fill="#B5B9C2"/><rect x="4" y="13" width="9" height="3" rx="1" fill="#fff"/><circle cx="27" cy="20" r="6" fill="#4F9FE8"/><path d="M21.5 20h11M27 14.5c2 2 2 9 0 11M27 14.5c-2 2-2 9 0 11" stroke="#fff" stroke-width="1.1" fill="none"/></svg>`]];
   $('#co-body').innerHTML=`
-  <div class="csec"><button class="ttl${PAY.brkOpen?' open':''}" data-act="brk"><span>Итого</span><span class="v">${fmt(t.total)}${SV.chevUp}</span></button>
+  <div class="csec"><button class="ttl${PAY.brkOpen?' open':''}" data-act="brk"><span>Итого</span><span class="v">${fmt(t.total-(PAY.usePts?ptsOff(t.total):0))}${SV.chevUp}</span></button>
     ${PAY.brkOpen?`<div class="brk">${t.ids.map(id=>`<div><span>${esc(shortName(items[id].name))}</span><b>${fmt(labPrice(curLab(),id))}</b></div>`).join('')}${t.blood?`<div><span>Взятие крови из вены</span><b>${fmt(t.blood)}</b></div>`:''}${PAY.usePts&&ptsOff(t.total)?`<div class="ptsl"><span>Оплата баллами</span><b>−${fmt(ptsOff(t.total))}</b></div>`:''}</div>`:''}
   </div>
   <div class="csec"><div class="sh" style="font-size:22px;line-height:28px">Способы оплаты</div>
@@ -651,7 +658,7 @@ function pay(){
   $('#loader').hidden=false;
   setTimeout(()=>{
     $('#loader').hidden=true;
-    if(PAY.method==='foreign'){go({s:'fail'});return}
+    if(PAY.method==='foreign'){const fp=PAY.usePts?ptsOff(cartTotals().total):0,b=$('#fail-pts');b.hidden=!fp;if(fp)b.innerHTML=`${SV.coinY}<span>Вернули ${fp} ${plural(fp,'балл','балла','баллов')} за эту запись</span>`;go({s:'fail'});return} // 439:112254
     const d=new Date(); d.setDate(d.getDate()+14);
     PAID={lab:curLab(),total,ids:t.ids.slice(),until:d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'}),untilD:d,pts:PAY.usePts?ptsOff(t.total):0};
     PAID.order=addOrder(PAID); // заказ сразу в «Моих записях» со статусом «Оформляем заказ»
@@ -693,9 +700,9 @@ const IC_MISS='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" strok
 const IC_X='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6.5 6.5 11 11m0-11-11 11"/></svg>';
 const IC_OK='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
 function callClinic(L){ // в прототипе звонок имитируем, после него спрашиваем, записались ли
-  toast(`Звоним в ${L.n}…`); SC.ev('call');
+  SC.ev('call');
   setTimeout(()=>openSheet(`<div class="sbody"></div><div class="sfoot callq"><div class="chev-ctl" data-act="close" style="color:var(--ink)">${SV.grabDown}</div>
-    <div class="sh" style="font-size:22px;line-height:28px">Записались на приём?</div>
+    <div class="sh" style="font-size:22px;line-height:28px">Удалось записаться?</div>
     <div class="callq2"><button class="big cq-yes" data-act="call-yes">${IC_OK}Да</button><button class="big cq-no" data-act="call-no">${IC_X}Нет</button></div>
     <button class="big wide cq-miss" data-act="call-miss">${IC_MISS}Не дозвонились</button>${hi()}</div>`),900);
 }
@@ -760,8 +767,10 @@ function mk(L,ids){
 }
 const lcardHTML=(L,ids,dist)=>{const r=labFor(L,ids);
   return `<button class="lcard${L.id===MV.sel?' sel':''}" data-lab="${L.id}">
-    <div class="lab"><div class="logo" style="background-image:url(${LOGO[L.brand.k]})"><span class="of">${IC.official||''}</span></div><div class="tx"><b>${esc(L.n)}</b><span class="ad">${esc(L.a)}</span><span class="mt"><u style="background:${L.mc}"></u>${esc(L.metro)}, ${L.md}</span>${dist?`<span class="mt" style="color:var(--brand-ink)">${SV.place}${dist}</span>`:''}<span class="lhrs2">${SV.clock}<b>Забор до ${(L.hours&&L.hours[0]||'—19:30').split('—')[1]}</b>${SV.chevR}</span></div></div>
+    <div class="lab"><div class="logo" style="background-image:url(${LOGO[L.brand.k]})"><span class="of">${IC.official||''}</span></div><div class="tx"><b>${esc(L.n)}</b><span class="ad">${esc(L.a)}</span><span class="mt"><u style="background:${L.mc}"></u>${esc(L.metro)}, ${L.md}</span>${dist?`<span class="mt" style="color:var(--brand-ink)">${SV.place}${dist}</span>`:''}</div></div>
+    <span class="lhrs2">${SV.clock}<b>Забор до ${(L.hours&&L.hours[0]||'—19:30').split('—')[1]}</b>${SV.chevR}</span>
     <div class="pr2"><b>${fmt(r.p)}</b>${r.full?'':`<span class="mcnt p">за ${r.k} из ${r.N}${SV.flask('var(--warn-fg)')}</span>`}</div>
+    <div class="wpts"><span>Доступно оплата</span>${SV.coinY}<span>баллами</span>${SV.infoC}</div>
     ${r.full?'':`<span class="misst">${SV.alert}Нет: ${esc(r.miss.slice(0,2).map(id=>{const n=shortName(items[id].name);return /^[А-ЯЁ][а-яё]/.test(n)?n[0].toLowerCase()+n.slice(1):n}).join(', '))}${r.miss.length>2?` и ещё ${r.miss.length-2}`:''}</span>`}
   </button>`};
 function sortedLabs(list,ids){
@@ -893,7 +902,7 @@ function openBrandSheet(){
 })();
 
 /* ---------- запись на 1 анализ: сразу к данным пациента, корзина не меняется ---------- */
-function startOne(id,L){ONE={id,L};PF=null;if(isClinic(L)){ONE=null;callClinic(L);return}go({s:'pat'});SC.ev('one');toast(`Запись на 1 анализ в ${L.n}`)}
+function startOne(id,L){if(isClinic(L)){bkStart(L,[id],true);return}ONE={id,L};PF=null;go({s:'pat'});SC.ev('one')}
 
 /*@@MODULES@@*/
 
@@ -906,6 +915,7 @@ $('#tabbar').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e
 
 /* ---------- events ---------- */
 $('#ph').addEventListener('click',e=>{
+  if(!e.target.closest('#dlg')&&bkClick(e)) return;
   const t=e.target.closest('[data-mk],[data-cl],[data-lab],[data-place],[data-me],[data-brand],[data-cart],[data-open],[data-cat],[data-chip],[data-q],[data-jump],[data-rm],[data-ck],[data-pat],[data-pm],[data-pk],[data-g],[data-act],[data-clinic-add]');
   if(!t) return;
   if(t.closest('#dlg')) return;
@@ -943,9 +953,10 @@ $('#ph').addEventListener('click',e=>{
   if(d.q){cur.q=d.q;renderGS(d.q);return}
   if(d.jump){window.__chipLock&&window.__chipLock();t.parentNode.scrollTo({left:t.offsetLeft-16,behavior:'smooth'});$$('#d-chips .chip').forEach(c=>c.classList.toggle('on',c===t));$('#'+d.jump).scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});return}
   const a=d.act;
+  if(a&&bkAct(a,t)) return;
   switch(a){
     case 'back': if(curScr()==='s-res'){resetTo({s:'ok'});break} back(); break;
-    case 'resok': if(PAID){PAID.res=true;if(PAID.order)PAID.order.consent=true} resetTo({s:'ok'}); toast('Результаты придут в «Мои записи»'); break;
+    case 'resok': if(PAID){PAID.res=true;if(PAID.order)PAID.order.consent=true} resetTo({s:'ok'}); break;
     case 'resskip': if(PAID&&PAID.order)PAID.order.consent=false; resetTo({s:'ok'}); break;
     case 'hours': openHours(); break;
     case 'wcall': toast('Звоним в Рэмси Диагностика на Конституции…'); break;
@@ -970,11 +981,11 @@ $('#ph').addEventListener('click',e=>{
     case 'prep-paid': openPrep(PAID?PAID.ids:[]); break;
     case 'ckall': {const ids=[...cart.keys()].filter(id=>!LAB||labHas(LAB,id));const all=ids.every(id=>cart.get(id).on);ids.forEach(id=>cart.get(id).on=!all);renderCart();updateFooters('s-cart');break;}
     case 'clear-cart': dialog('Очистить корзину?','Уберём все анализы и выбранную лабораторию.',[['Очистить',()=>{cart.clear();LAB=null;renderCart();updateFooters('s-cart');toast('Корзина очищена')}],['Отмена',()=>{}]]); break;
-    case 'checkout': if(!cartTotals().ids.length){toast('Отметьте анализы');break} PF=null; go({s:'pat'}); break;
+    case 'checkout': if(!cartTotals().ids.length){toast('Отметьте анализы');break} if(isClinic(LAB)){bkStart(LAB,cartTotals().ids);break} PF=null; go({s:'pat'}); break;
     case 'call': callClinic(LAB); break;
-    case 'call-yes': closeSheet(); resetTo({s:'home'}); toast('Отлично! Ждём вас в клинике'); SC.ev('call-ans'); break; // Артем 26.11: после ответа — на главную
-    case 'call-no': closeSheet(); resetTo({s:'home'}); toast('Анализы остались в корзине'); SC.ev('call-ans'); break; // Артем 26.11: после ответа — на главную
-    case 'call-miss': closeSheet(); resetTo({s:'home'}); toast('Попробуйте позвонить позже'); SC.ev('call-ans'); break; // Артем 26.11: после ответа — на главную
+    case 'call-yes': callYes(); SC.ev('call-yes'); break; // 923:57415
+    case 'call-no': closeSheet(); SC.ev('call-ans'); break; // 855:52271: «Нет» и «Не дозвонились» — остаёмся в корзине
+    case 'call-miss': closeSheet(); SC.ev('call-ans'); break;
     case 'pickfirst': if(!checkedIds().length){toast('Отметьте анализы, которые будете сдавать');break} toast('Сначала выберите клинику'); go({s:'map'}); break;
     case 'patnext': if(!patValid()){renderPat();toast(PF.err.g&&Object.keys(PF.err).length===1?'Укажите пол':'Заполните обязательные поля');const f=$('#pat-body .err input');if(f)f.focus();break} PAY.brkOpen=true; go({s:'co'}); break;
     case 'fclear': {const k=t.dataset.fk;PF[k]='';delete PF.err[k];renderPat();const i=$(`#pat-body [data-f="${k}"]`);if(i)i.focus();break;}
@@ -1079,11 +1090,12 @@ NOANIM=false;
 (function(){
   const LS=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}};
   const ferr=()=>(POP8.find(i=>/^Ферритин/.test(i.name))||POP8[0]).id;
-  function fresh(){cart.clear();LAB=null;ONE=null;ORDERS.length=0;ORDERS.push(ORD_DEMO);ORD_DEMO.st='wait';MO.tab='rec';MO.more={};PAID=null;PF=null;PATIENT=0;PAY.method='card';PAY.usePts=true;PAY.consent=true;PAY.brkOpen=true;MV.card=false;MV.sel=null;MV.searching=false;MV.place=null;MV.q='';MV.inited=false;$('#dlg').hidden=true;closeSheet();}
+  function fresh(){cart.clear();LAB=null;ONE=null;ORDERS.length=0;ORDERS.push(ORD_DEMO);ORD_DEMO.st='wait';MO.tab='rec';MO.more={};PAID=null;PF=null;PATIENT=0;PAY.method='card';PAY.usePts=true;PAY.consent=true;PAY.brkOpen=true;MV.card=false;MV.sel=null;MV.searching=false;MV.place=null;MV.q='';MV.inited=false;BK=null;BK_OVR='auto';$('#bk-mode').value='auto';$('#dlg').hidden=true;closeSheet();}
   function nav(views){const was=NOANIM;NOANIM=true;stack.length=0;cur=null;views.forEach((v,k)=>go(v,k>0,false));NOANIM=was;}
   const demo4=()=>['Пролактин','Билирубин общий','Глюкоза','Ферритин'].forEach(n=>{const i=DATA.items.find(x=>x.name===n||x.name.startsWith(n));if(i)addCart(i.id)});
   const PRL='hormones-03';
-  const remCart=()=>{['Пролактин','Билирубин общий'].forEach(n=>{const i=DATA.items.find(x=>x.name===n||x.name.startsWith(n));if(i)addCart(i.id)});LAB=wlab(REM());LAB.always=new Set(cart.keys())};
+  const remCart=n=>{['Пролактин','Билирубин общий'].slice(0,n||2).forEach(n=>{const i=DATA.items.find(x=>x.name===n||x.name.startsWith(n));if(i)addCart(i.id)});LAB=wlab(REM());LAB.always=new Set(cart.keys())};
+  const bkOvr=v=>{BK_OVR=v;$('#bk-mode').value=v};
   const REM=()=>WLABS.findIndex(w=>w.brand==='rem'), INV=()=>WLABS.findIndex(w=>w.brand==='inv');
   const wW=k=>{const W=wlab(k);W.always=new Set([ferr()]);return W};
   const scrollTo=(sel,scr)=>setTimeout(()=>{const e=$(sel),s=$(scr);if(e&&s)s.scrollTop+=e.getBoundingClientRect().top-s.getBoundingClientRect().top-(scr==='#s-detail'?380:140)},60);
@@ -1116,13 +1128,22 @@ NOANIM=false;
     {t:'«Выбрать» филиал и вернуться в корзину',ev:'labpick',hl:'[data-act=mpick]',pre:()=>{fresh();demo4();nav([CART,{s:'map'}]);setTimeout(()=>selectLab(LABS[0].id),120)}}]},
    {id:'checkout',t:'Оформление и оплата',d:'Данные пациента, 500 баллов, согласие на результаты, успех',steps:[
     {t:'«Перейти к оформлению» из корзины',ev:'scr:pat',hl:'#f-page [data-act=checkout]',pre:()=>{fresh();demo4();LAB=LABS[0];nav([CART])}},
-    {t:'Подставить данные чипсой пациента',ev:'patfill',hl:'#pat-body [data-pk="0"]',pre:()=>{fresh();demo4();LAB=LABS[0];nav([CART,{s:'pat'}])}},
     {t:'«Продолжить» к оплате',ev:'scr:co',hl:'#f-page [data-act=patnext]',pre:()=>{fresh();demo4();LAB=LABS[0];PATIENT=0;patFill(0);nav([CART,{s:'pat'}])}},
     {t:'Списать 500 баллов и оплатить',ev:'scr:res',hl:'#f-page [data-act=pay]',pre:()=>{fresh();demo4();LAB=LABS[0];PATIENT=0;patFill(0);nav([CART,{s:'pat'},{s:'co'}])}},
     {t:'Согласие на результаты: «Даю согласие» или «Пропустить»',ev:'scr:ok',hl:'#f-page [data-act=resok]',pre:()=>{fresh();demo4();LAB=LABS[0];pay0();nav([{s:'res'}])}}]},
-   {id:'clbook',t:'Запись в обычную клинику',d:'Корзина в Рэмси: записаться можно только по телефону, после звонка — «Записались на приём?»',steps:[
-    {t:'Корзина с Рэмси: «Позвонить»',ev:'call',hl:'#f-page [data-act=call]',pre:()=>{fresh();remCart();nav([CART])}},
-    {t:'Ответить «Да», «Нет» или «Не дозвонились»',ev:'call-ans',hl:'#f-page [data-act=call-yes]',pre:()=>{fresh();remCart();nav([CART]);callClinic(LAB)}}]},
+   {id:'clbook',t:'Классическая клиника: «Позвонить»',d:'Корзина в Рэмси: записаться можно только по телефону, после звонка — «Удалось записаться?» (855:51315)',steps:[
+    {t:'Корзина с Рэмси: «Позвонить»',ev:'call',hl:'#f-page [data-act=call]',pre:()=>{fresh();bkOvr('call');remCart();nav([CART])}},
+    {t:'«Удалось записаться?» — «Да» («Нет» и «Не дозвонились» оставляют в корзине)',ev:'call-yes',hl:'#f-page [data-act=call-yes]',pre:()=>{fresh();bkOvr('call');remCart();nav([CART]);callClinic(LAB)}},
+    {t:'«Очистить корзину?» — «Да, очистить» или «Нет, оставить анализы»',ev:'call-ans',hl:'#f-page [data-act=call-clear]',pre:()=>{fresh();bkOvr('call');remCart();nav([CART]);callYes()}}]},
+   {id:'clcb',t:'Классическая клиника: обратный звонок',d:'Заявка на запись — клиника перезванивает сама (855:54624)',steps:[
+    {t:'Корзина с Рэмси: «Перейти к оформлению»',ev:'bk-callback',hl:'#f-page [data-act=checkout]',pre:()=>{fresh();bkOvr('callback');remCart();nav([CART])}},
+    {t:'«Записаться» — заявка уходит в клинику',ev:'bk-sent',hl:'#bk-body [data-act=bk-send]',pre:()=>{fresh();bkOvr('callback');remCart();nav([CART]);bkStart(LAB,cartTotals().ids)}}]},
+   {id:'clrtz',t:'Классическая клиника: онлайн-запись',d:'В корзине один анализ — запись по расписанию с выбором даты и времени (923:60723)',steps:[
+    {t:'Корзина с одним анализом: «Перейти к оформлению»',ev:'bk-rtz',hl:'#f-page [data-act=checkout]',pre:()=>{fresh();remCart(1);nav([CART])}},
+    {t:'Выбрать день и время',ev:'bk-time',hl:'#slot-body .ct',pre:()=>{fresh();remCart(1);nav([CART]);bkStart(LAB,cartTotals().ids)}},
+    {t:'«Записаться»',ev:'bk-booked',hl:'#bkf-body [data-act=bk-book]',pre:()=>{fresh();remCart(1);nav([CART]);bkStart(LAB,cartTotals().ids);BK.time=slotsFor(bkDate())[0];go({s:'bkf'})}}]},
+   {id:'clone',t:'Деталька: запись на 1 анализ в клинику',d:'«Записаться на 1 анализ» у классической клиники ведёт в онлайн-запись (923:62736)',steps:[
+    {t:'«Записаться на 1 анализ» у Рэмси в «Где сдать»',ev:'bk-rtz',hl:'#one-rem',pre:()=>{fresh();nav([A,{s:'detail',id:PRL}]);setTimeout(()=>{const b=[...document.querySelectorAll('#b-where [data-act=one1]')].find(x=>{const c=x.closest('[style*="border-radius:32px"]');return c&&/Рэмси/.test(c.textContent)});if(b){b.scrollIntoView({block:'center'});b.id='one-rem'}},200)}}]},
    {id:'clinic',t:'Деталька клиники и лаборатории',d:'Из «Где сдать» в карточку клиники: цены, корзина, отзывы, запись на 1 анализ',steps:[
     {t:'Тап по названию клиники в «Где сдать»',ev:'clinic-ctx',hl:'#b-where [data-wcl]:not([data-wcl=free])',pre:()=>{fresh();nav([A,{s:'detail',id:PRL}]);scrollTo('#b-where [data-wcl]','#s-detail')}},
     {t:'«Добавить в корзину» в нижней панели',ev:'cl-add',hl:'#f-clinic [data-cla=add]',pre:()=>{fresh();nav([A,{s:'detail',id:PRL},clView('w'+REM(),PRL)])}},
