@@ -972,9 +972,9 @@ $('#ph').addEventListener('click',e=>{
     case 'clear-cart': dialog('Очистить корзину?','Уберём все анализы и выбранную лабораторию.',[['Очистить',()=>{cart.clear();LAB=null;renderCart();updateFooters('s-cart');toast('Корзина очищена')}],['Отмена',()=>{}]]); break;
     case 'checkout': if(!cartTotals().ids.length){toast('Отметьте анализы');break} PF=null; go({s:'pat'}); break;
     case 'call': callClinic(LAB); break;
-    case 'call-yes': closeSheet(); toast('Отлично! Ждём вас в клинике'); SC.ev('call-ans'); break;
-    case 'call-no': closeSheet(); toast('Анализы остались в корзине'); SC.ev('call-ans'); break;
-    case 'call-miss': closeSheet(); toast('Попробуйте позвонить позже'); SC.ev('call-ans'); break;
+    case 'call-yes': closeSheet(); resetTo({s:'home'}); toast('Отлично! Ждём вас в клинике'); SC.ev('call-ans'); break; // Артем 26.11: после ответа — на главную
+    case 'call-no': closeSheet(); resetTo({s:'home'}); toast('Анализы остались в корзине'); SC.ev('call-ans'); break; // Артем 26.11: после ответа — на главную
+    case 'call-miss': closeSheet(); resetTo({s:'home'}); toast('Попробуйте позвонить позже'); SC.ev('call-ans'); break; // Артем 26.11: после ответа — на главную
     case 'pickfirst': if(!checkedIds().length){toast('Отметьте анализы, которые будете сдавать');break} toast('Сначала выберите клинику'); go({s:'map'}); break;
     case 'patnext': if(!patValid()){renderPat();toast(PF.err.g&&Object.keys(PF.err).length===1?'Укажите пол':'Заполните обязательные поля');const f=$('#pat-body .err input');if(f)f.focus();break} PAY.brkOpen=true; go({s:'co'}); break;
     case 'fclear': {const k=t.dataset.fk;PF[k]='';delete PF.err[k];renderPat();const i=$(`#pat-body [data-f="${k}"]`);if(i)i.focus();break;}
@@ -1127,7 +1127,7 @@ NOANIM=false;
     {t:'Тап по названию клиники в «Где сдать»',ev:'clinic-ctx',hl:'#b-where [data-wcl]:not([data-wcl=free])',pre:()=>{fresh();nav([A,{s:'detail',id:PRL}]);scrollTo('#b-where [data-wcl]','#s-detail')}},
     {t:'«Добавить в корзину» в нижней панели',ev:'cl-add',hl:'#f-clinic [data-cla=add]',pre:()=>{fresh();nav([A,{s:'detail',id:PRL},clView('w'+REM(),PRL)])}},
     {t:'Вкладка «Отзывы»: сначала про этот анализ',ev:'cltab:reviews',hl:'#cl-tabs [data-cltab=reviews]',pre:()=>{fresh();nav([A,{s:'detail',id:PRL},clView('w'+REM(),PRL)])}},
-    {t:'Лаборатория: «Записаться» на 1 анализ',ev:'scr:pat',hl:'#cl-list [data-cla=one]',pre:()=>{fresh();nav([A,{s:'detail',id:PRL},clView('kush',PRL)])}},
+    {t:'Лаборатория: «Записаться» на 1 анализ',ev:'scr:pat',hl:'#cl-list [data-cla=one]',pre:()=>{fresh();nav([A,{s:'detail',id:PRL},clView('kush',PRL,'prices')])}},
     {t:'Поликлиника по ОМС из «Где сдать»',ev:'clinic-ctx',hl:'#b-where [data-wcl=free]',pre:()=>{fresh();nav([A,{s:'detail',id:PRL}]);scrollTo('#b-where [data-wcl=free]','#s-detail')}}]},
    {id:'orders',t:'Мои записи: заказ анализов',d:'Вкладка таббара, карточка заказа, детали, поддержка, «Записаться еще раз»',steps:[
     {t:'Таб «Мои записи»',ev:'tab:orders',hl:'#tabbar [data-tab=orders]',pre:()=>{fresh();nav([{s:'home'}])}},

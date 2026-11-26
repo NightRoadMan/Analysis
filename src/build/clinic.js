@@ -209,7 +209,7 @@ function renderClinicFooter(){
 }
 function clView(src,ctx,tab){
   CL.src=src; CL.ctx=ctx||null; CL.q=''; CL.more=false;
-  CL.only=!!ctx; CL.tab=tab||(ctx?'prices':'info'); // ТЗ 2.12.3: с анализом — сразу «Цены» с фильтром «Только анализы»
+  CL.only=!!ctx; CL.tab=tab||'info'; // Артем 26.11: с анализом тоже «Инфо» (620:28074); в «Ценах» включён «Только анализы»
   if(ctx&&src!=='poly'){const L=clPlace(src).L;L.always=L.always||new Set();L.always.add(ctx)}
   return {s:'clinic',src,ctx:CL.ctx,tab:CL.tab};
 }
