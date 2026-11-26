@@ -185,7 +185,7 @@ _fc = re.sub(r'<div style=\'[^\']*\' class="cp" data-base="\d+">[^<]*</div>', '<
 _fc = re.sub(r'<button class="lhrs".*?</button>', '', _fc, flags=re.S)
 _fc = re.sub(r'background-image:url\(data:[^)]*\)(, url\(data:[^)]*\))?', 'background-image:url(@@FREELOGO@@)', _fc, count=1)
 _fc = _fc.replace('data-clinic-add=""', '')
-WHERE = WHERE[:_rc] + _rnew + _fc + WHERE[_rc + len(_rnew):]
+# поликлиника ОМС убрана из «Где сдать» (Артем, 26.11: «Такого не нужно вообще нигде»)
 for _w in WLABS:
     if _w['brand'] == 'rem':
         _w.update({'n': 'Рэмси Диагностика на Конституции', 'a': 'г. Санкт-Петербург, пл. Конституции, д. 7', 'metro': 'Московская', 'mc': '#0078C9', 'md': '1 км'})

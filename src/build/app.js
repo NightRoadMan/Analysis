@@ -336,7 +336,7 @@ function renderCtg(keep){
   const cid=cur.c&&cats[cur.c]?cur.c:TILES[0]; cur.c=cid;
   const cc=$('#ctg-chips');
   if(keep&&cc.children.length) [...cc.children].forEach(c=>c.classList.toggle('on',c.dataset.chip===cid)); // лента чипсов остаётся на месте
-  else{cc.innerHTML=CHIPS_ORD.map(id=>`<button class="chip${id===cid?' on':''}" data-chip="${id}">${esc(cats[id].title)}<i>${cats[id].items.length}</i></button>`).join('');
+  else{cc.innerHTML=CHIPS_ORD.map(id=>`<button class="chip${id===cid?' on':''}" data-chip="${id}">${esc(cats[id].title)}</button>`).join('');
     requestAnimationFrame(()=>{const on=cc.querySelector('.on'); if(on) cc.scrollTo({left:on.offsetLeft-16})});}
   const list=cats[cid].items.map(id=>items[id]).sort((a,b)=>b.clinics-a.clinics);
   $('#ctg-body').innerHTML=`<div class="sec slist"><div class="sh">${esc(cats[cid].title)}</div><div class="rows3">${list.map(i=>rowHTML(i,'full')).join('')}</div></div>`;
@@ -1047,7 +1047,7 @@ window.addEventListener('resize',()=>{if(curScr()==='s-map'){renderMSheet();appl
   const s=$('#s-detail'); let lock=0;
   function upd(){
     const h=s.querySelector('.hdr'), c=$('#d-chips'); if(!h||!c||s.hidden) return;
-    const hb=h.offsetHeight; s.style.setProperty('--smt',(hb+8)+'px'); // чипсы не липкие (609:13212)
+    const hb=h.offsetHeight; s.style.setProperty('--hb',hb+'px'); s.style.setProperty('--smt',(hb+c.offsetHeight+8)+'px'); // чипсы прилипают под шапкой (Артем, 26.11)
     const stuck=c.getBoundingClientRect().top-s.getBoundingClientRect().top<=hb+.5;
     s.classList.toggle('stuck',stuck);
     if(Date.now()<lock) return;
@@ -1061,7 +1061,7 @@ window.addEventListener('resize',()=>{if(curScr()==='s-map'){renderMSheet();appl
 })();
 
 /* start: #analyses, #cat-<id> (категория), #all/#find (поиск по анализам), #search (общий поиск), #cart, #map, #lab, #pat, #res, #ok,
-   #clinic (клиника с анализом), #clinic-lab (лаборатория), #free (поликлиника ОМС), #orders (Мои записи), #order (детали заказа) */
+   #clinic (клиника с анализом), #clinic-lab (лаборатория), #orders (Мои записи), #order (детали заказа) */
 const start=(location.hash||'').slice(1);
 cur={s:'home'}; show('s-home');
 const demo=()=>['Пролактин','Билирубин общий','Глюкоза','Ферритин'].forEach(n=>{const i=DATA.items.find(x=>x.name===n||x.name.startsWith(n));if(i)addCart(i.id)});
@@ -1079,7 +1079,7 @@ else if(start==='search') go({s:'gs',q:''});
 else if(start==='cart'){demo();go({s:'cart'});}
 else if(start==='map'){demo();go({s:'cart'});go({s:'map'});}
 else if(start==='lab'){demo();LAB=LABS[0];go({s:'cart'});}
-else if(/^clinic(-lab)?$/.test(start)||start==='free'){ // деталька клиники с анализом (Рэмси), лаборатории (Инвитро) или поликлиника ОМС
+else if(/^clinic(-lab)?$/.test(start)){ // деталька клиники с анализом (Рэмси) или лаборатории (Инвитро)
   const fe='hormones-03', wk=WLABS.findIndex(w=>w.brand==='rem'); // контекст макетов 619:20514 — пролактин
   go({s:'an',q:''});go({s:'detail',id:fe});go(start==='free'?clView('poly',fe):start==='clinic'?clView('w'+wk,fe):clView('kush',fe));}
 else if(start==='orders') resetTo({s:'orders'});
@@ -1148,7 +1148,7 @@ NOANIM=false;
     {t:'«Добавить в корзину» в нижней панели',ev:'cl-add',hl:'#f-clinic [data-cla=add]',pre:()=>{fresh();nav([A,{s:'detail',id:PRL},clView('w'+REM(),PRL)])}},
     {t:'Вкладка «Отзывы»: сначала про этот анализ',ev:'cltab:reviews',hl:'#cl-tabs [data-cltab=reviews]',pre:()=>{fresh();nav([A,{s:'detail',id:PRL},clView('w'+REM(),PRL)])}},
     {t:'Лаборатория: «Записаться» на 1 анализ',ev:'scr:pat',hl:'#cl-list [data-cla=one]',pre:()=>{fresh();nav([A,{s:'detail',id:PRL},clView('kush',PRL,'prices')])}},
-    {t:'Поликлиника по ОМС из «Где сдать»',ev:'clinic-ctx',hl:'#b-where [data-wcl=free]',pre:()=>{fresh();nav([A,{s:'detail',id:PRL}]);scrollTo('#b-where [data-wcl=free]','#s-detail')}}]},
+]},
    {id:'orders',t:'Мои записи: заказ анализов',d:'Вкладка таббара, карточка заказа, детали, поддержка, «Записаться еще раз»',steps:[
     {t:'Таб «Мои записи»',ev:'tab:orders',hl:'#tabbar [data-tab=orders]',pre:()=>{fresh();nav([{s:'home'}])}},
     {t:'Раскрыть список анализов «Ещё 2 анализа»',ev:'mo-more',hl:'#mo-body [data-momore]',pre:()=>{fresh();nav([{s:'orders'}])}},
