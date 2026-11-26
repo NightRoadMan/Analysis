@@ -88,7 +88,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .hdr.flat{padding-bottom:0;border-radius:0 0 24px 24px}
 .sb{height:44px;position:relative;flex-shrink:0}
 .tb{height:54px;position:relative;padding:0 16px 10px;display:flex;align-items:flex-start}
-.gb{width:44px;height:44px;border-radius:1000px;display:flex;align-items:center;justify-content:center;position:relative;background:var(--glass);box-shadow:0 0 0 1px var(--border) inset,0 2px 8px rgba(0,0,0,.06)}
+.gb{width:44px;height:44px;border-radius:1000px;display:flex;align-items:center;justify-content:center;position:relative;background:var(--glass);box-shadow:0 0 0 1px var(--border) inset}
 .tt{position:absolute;left:64px;right:64px;top:13px;text-align:center;font-size:16px;font-weight:600;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hs{padding-inline:16px;display:flex;flex-direction:column;gap:8px}
 .hs.g12{gap:12px}
@@ -160,7 +160,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .big.two{justify-content:space-between;padding:0 16px 0 24px}
 .big.two .t{flex:1;text-align:center}
 .wide{width:343px;max-width:calc(100% - 32px)}
-.gocart{width:343px;max-width:calc(100% - 32px);height:56px;border-radius:20px;background:var(--brand);color:#fff;display:flex;align-items:center;padding:0 16px 0 40px;box-shadow:0 6px 20px rgba(49,133,140,.25)}
+.gocart{width:343px;max-width:calc(100% - 32px);height:56px;border-radius:20px;background:var(--brand);color:#fff;display:flex;align-items:center;padding:0 16px 0 40px}
 .gocart .t{flex:1;display:flex;flex-direction:column;gap:2px;text-align:center}
 .gocart .t b{font-size:16px;font-weight:600;line-height:16px}
 .gocart .t span{font-size:12px;font-weight:500;line-height:18px}
@@ -338,7 +338,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .irow .tx .k{color:var(--light)}
 .pass{display:flex;align-items:center;justify-content:space-between;background:var(--warn-bg);border-radius:12px;padding:0 0 0 12px;height:40px;color:var(--warn-fg);font-size:12px;font-weight:600;gap:8px;overflow:visible}
 .pass .im{width:47px;height:59px;background:center/contain no-repeat;margin-top:-19px;flex-shrink:0}
-.failbox{display:flex;flex-direction:column;gap:12px;padding:120px 16px 0}
+.failbox{display:flex;flex-direction:column;gap:12px;padding:30px 16px 0}
 .failbox h1{margin:8px 0 0;font-size:22px;font-weight:700;line-height:28px}
 .failbox p{margin:0;font-size:16px;line-height:24px;color:var(--soft)}
 .failbox a{color:var(--brand-ink);font-weight:500}
@@ -787,7 +787,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .cl-fb.t [fill="#31858C"]{fill:var(--brand-tint-ink)} .cl-fb.t [stroke="#31858C"]{stroke:var(--brand-tint-ink)}
 .cl-sq{width:56px;height:56px;border-radius:20px;box-shadow:0 0 0 1px var(--border) inset;background:var(--base);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
 .cl-sq [fill="#31858C"],.cl-fcart [fill="#31858C"]{fill:var(--ink)}
-.cl-fcart{align-self:flex-end;width:56px;height:56px;border-radius:18px;background:var(--base);box-shadow:0 6px 20px rgba(13,13,13,.14);display:flex;align-items:center;justify-content:center;position:relative}
+.cl-fcart{align-self:flex-end;width:56px;height:56px;border-radius:18px;background:var(--base);box-shadow:0 0 0 1px var(--border) inset;display:flex;align-items:center;justify-content:center;position:relative}
 .cl-cta{justify-content:space-between;padding:0}
 .cl-cta .m{flex:1;text-align:center}
 .cl-cta .r{display:flex;align-items:center;gap:6px;padding:0 22px;border-left:1px solid #ffffff66;height:28px}
@@ -1062,6 +1062,22 @@ button.mo-ln{text-decoration:none}
 .bk-will b{display:inline-flex;vertical-align:middle}
 .bk-will>svg{vertical-align:middle;margin:0 2px}
 .sheet .sfoot.callq .big.wide{width:100%;max-width:none}
+/* аудит 26.11: экраны записи на белом фоне, блоки через линию (855:56203, 923:61259, 923:61210) */
+#s-bk,#s-slot,#s-bkf{background:var(--base)}
+.bk-body{gap:0;padding-top:0}
+.bk-body>.csec{border-radius:0}
+.bk-body>.csec+.csec{border-top:1px solid var(--line)}
+.bk-form .big.wide{width:100%;max-width:none}
+#s-bkok .sb{z-index:2}
+.snack .sb{position:absolute;left:0;right:0;top:0}
+/* аудит 26.11: неактивные кнопки серые (854:47540), кнопки футера клиники во всю ширину (620:22245), плашка баллов на неоплате (439:112254) */
+.big[disabled]{opacity:1;background:color-mix(in srgb,var(--ink) 8%,var(--base));color:var(--light)}
+.big[disabled] *{color:inherit}
+.sbtn:disabled{opacity:1;background:color-mix(in srgb,var(--ink) 6%,var(--base));box-shadow:none;color:var(--light)}
+.callnote.off{color:var(--light)}
+.cl-ftr .big.wide{width:100%;max-width:none}
+#fail-pts{color:var(--warn-fg)}
+.showall>*:last-child{transform:none!important;rotate:none!important}.showall>*:last-child *{transform:none!important;rotate:none!important}
 
 </style>
 </head>
@@ -1305,7 +1321,7 @@ button.mo-ln{text-decoration:none}
   <div class="dlg" id="dlg" hidden></div>
   <div class="loader" id="loader" hidden><div class="spin"></div>Проверяем оплату…</div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <div class="snack" id="snack" role="status" aria-live="polite"><span></span></div>
+  <div class="snack" id="snack" role="status" aria-live="polite"><div class="sb"><div style="align-self:stretch;box-sizing:border-box;flex-shrink:0;height:44px;overflow:clip;position:relative"><div style="box-sizing:border-box;height:30px;left:78px;position:absolute;top:0px;width:219px"></div><svg viewbox="0 0 66.66 11.34" preserveaspectratio="none" width="66.66" height="11.34" xmlns="http://www.w3.org/2000/svg" style="left:293.667px;top:19.3306px;width:66.66px;height:11.34px;display:inline-block;overflow:visible;position:absolute"><g transform="matrix(1 0 0 1 42.333 0.002)"><path d="M2.667 0L2.667 1L19.333 1L19.333 0L19.333 -1L2.667 -1L2.667 0ZM22 2.667L21 2.667L21 8.667L22 8.667L23 8.667L23 2.667L22 2.667ZM19.333 11.333L19.333 10.333L2.667 10.333L2.667 11.333L2.667 12.333L19.333 12.333L19.333 11.333ZM0 8.667L1 8.667L1 2.667L0 2.667L-1 2.667L-1 8.667L0 8.667ZM2.667 11.333L2.667 10.333C1.746 10.333 1 9.587 1 8.667L0 8.667L-1 8.667C-1 10.692 0.642 12.333 2.667 12.333L2.667 11.333ZM22 8.667L21 8.667C21 9.587 20.254 10.333 19.333 10.333L19.333 11.333L19.333 12.333C21.358 12.333 23 10.692 23 8.667L22 8.667ZM19.333 0L19.333 1C20.254 1 21 1.746 21 2.667L22 2.667L23 2.667C23 0.642 21.358 -1 19.333 -1L19.333 0ZM2.667 0L2.667 -1C0.642 -1 -1 0.642 -1 2.667L0 2.667L1 2.667C1 1.746 1.746 1 2.667 1L2.667 0Z" fill-rule="nonzero" fill="#070707" style="opacity:0.35"></path><path transform="matrix(1 0 0 1 23 3.667)" d="M0.000 0.000C0.000 0.000 0.000 4.000 0.000 4.000C0.805 3.661 1.328 2.873 1.328 2.000C1.328 1.127 0.805 0.339 0.000 0.000Z" fill-rule="nonzero" fill="#070707" style="opacity:0.4"></path><path transform="matrix(1 0 0 1 2 2)" d="M1.333 0.000C1.333 0.000 16.667 0.000 16.667 0.000C17.020 0.000 17.359 0.140 17.609 0.391C17.860 0.641 18.000 0.980 18.000 1.333C18.000 1.333 18.000 6.000 18.000 6.000C18.000 6.736 17.403 7.333 16.667 7.333C16.667 7.333 1.333 7.333 1.333 7.333C0.597 7.333 0.000 6.736 0.000 6.000C0.000 6.000 0.000 1.333 0.000 1.333C-0.000 0.597 0.597 0.000 1.333 0.000Z" fill-rule="nonzero" fill="#070707"></path></g><path transform="matrix(1 0 0 1 22.027 0)" d="M5.427 8.401C6.702 7.322 8.571 7.322 9.847 8.401C9.911 8.459 9.947 8.541 9.949 8.627C9.951 8.714 9.917 8.797 9.855 8.858L7.858 10.873C7.800 10.932 7.720 10.966 7.637 10.966C7.553 10.966 7.474 10.932 7.415 10.873L5.417 8.858C5.355 8.797 5.321 8.714 5.323 8.627C5.325 8.541 5.363 8.459 5.427 8.401ZM2.762 5.711C5.510 3.155 9.766 3.155 12.514 5.711C12.576 5.771 12.611 5.854 12.612 5.940C12.613 6.026 12.579 6.109 12.519 6.170L11.364 7.337C11.245 7.456 11.053 7.459 10.931 7.343C10.028 6.526 8.854 6.073 7.637 6.073C6.420 6.074 5.247 6.526 4.345 7.343C4.223 7.459 4.030 7.456 3.911 7.337L2.757 6.170C2.696 6.109 2.662 6.026 2.663 5.940C2.664 5.854 2.700 5.771 2.762 5.711ZM0.097 3.029C4.312 -1.010 10.962 -1.010 15.177 3.029C15.238 3.089 15.272 3.172 15.272 3.257C15.273 3.343 15.239 3.425 15.179 3.486L14.022 4.653C13.903 4.772 13.711 4.773 13.590 4.655C11.984 3.129 9.853 2.278 7.637 2.278C5.421 2.278 3.289 3.129 1.683 4.655C1.562 4.773 1.369 4.772 1.250 4.653L0.094 3.486C0.033 3.425 -0.001 3.343 0.000 3.257C0.001 3.172 0.036 3.089 0.097 3.029Z" fill-rule="nonzero" fill="#070707"></path><path transform="matrix(1 0 0 1 0 0.336)" d="M2.000 6.667C2.552 6.667 3.000 7.115 3.000 7.667L3.000 9.667C3.000 10.219 2.552 10.667 2.000 10.667L1.000 10.667C0.448 10.667 0.000 10.219 0.000 9.667L0.000 7.667C0.000 7.115 0.448 6.667 1.000 6.667L2.000 6.667ZM6.667 4.667C7.219 4.667 7.667 5.115 7.667 5.667L7.667 9.667C7.667 10.219 7.219 10.667 6.667 10.667L5.667 10.667C5.115 10.667 4.667 10.219 4.667 9.667L4.667 5.667C4.667 5.115 5.115 4.667 5.667 4.667L6.667 4.667ZM11.333 2.333C11.885 2.333 12.333 2.781 12.333 3.333L12.333 9.667C12.333 10.219 11.885 10.667 11.333 10.667L10.333 10.667C9.781 10.667 9.333 10.219 9.333 9.667L9.333 3.333C9.333 2.781 9.781 2.333 10.333 2.333L11.333 2.333ZM16.000 0.000C16.552 -0.000 17.000 0.448 17.000 1.000L17.000 9.667C17.000 10.219 16.552 10.667 16.000 10.667L15.000 10.667C14.448 10.667 14.000 10.219 14.000 9.667L14.000 1.000C14.000 0.448 14.448 0.000 15.000 0.000L16.000 0.000Z" fill-rule="nonzero" fill="#070707"></path></svg><div style="box-sizing:border-box;height:21px;left:21px;position:absolute;top:14px;width:54px"><div style="border-radius:32px;box-sizing:border-box;height:21px;left:0px;position:absolute;top:0px;width:54px"><div style="box-sizing:border-box;color:var(--ink);font-family:system-ui, sans-serif;font-size:15px;font-weight:600;left:8px;letter-spacing:0.374px;line-height:18px;position:absolute;top:2px;width:max-content">10:10</div></div></div></div></div><span></span></div>
 </div>
 <aside class="scp" id="scp" hidden aria-label="Сценарии для показа">
   <div class="scph"><div><b>Сценарии для показа</b><span>Шаг отмечается сам, когда вы его проходите. Нажмите на шаг, чтобы перейти к нему.</span></div><button id="scp-tg" class="scpt" aria-expanded="true" aria-label="Свернуть панель"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="m4 6 4 4 4-4"/></svg></button></div>
@@ -1838,7 +1854,7 @@ function replaceSheet(id,W,after){
     <div class="chev-ctl" data-act="close" style="color:var(--ink)">${SV.grabDown}</div>
     <div class="sh" style="font-size:22px;line-height:28px">Заменить филиал?</div>
     <p class="rpl">${lead} для <b>${esc(LAB.n)}</b>. Заменить на <b>${esc(W.n)}</b>?</p>
-    ${miss.length?`<div class="warn">${SV.alert}<div>${miss.length>1?'Анализы не доступны':'Анализ не доступен'} для сдачи в ${esc(W.n)}:<p>${esc(miss.map(x=>shortName(items[x].name)).join(', '))}</p></div></div>`:''}
+    ${miss.length?`<div class="warn">${SV.alert}<div>${miss.length>1?'Анализы недоступны':'Анализ недоступен'} для сдачи в ${esc(W.n)}:<p>${esc(miss.map(x=>shortName(items[x].name)).join(', '))}</p></div></div>`:''}
   </div></div>
   <div class="sfoot"><button class="big wide" data-act="rep-yes">Да, заменить</button><button class="lnk" data-act="close">Нет</button>${hi()}</div>`);
 }
@@ -1852,7 +1868,7 @@ const fullCount=ids=>LABS.filter(L=>ids.every(id=>labHas(L,id))).length;
 /* ---------- cart screen ---------- */
 const checkedIds=()=>[...cart.entries()].filter(([id,v])=>v.on).map(([id])=>id);
 function cartTotals(){
-  if(ONE){const id=ONE.id,sum=labPrice(ONE.L,id),blood=isBlood(items[id])?bloodOf(ONE.L):0;return {ids:[id],sum,blood,total:sum+blood}}
+  if(ONE){const id=ONE.id,sum=labPrice(ONE.L,id),blood=0;return {ids:[id],sum,blood,total:sum+blood}}
   const ids=checkedIds().filter(id=>!LAB||labHas(LAB,id));
   const sum=ids.reduce((a,id)=>a+(LAB?labPrice(LAB,id):items[id].price),0);
   const blood=ids.some(id=>isBlood(items[id]))?bloodOf(LAB):0;
@@ -1899,7 +1915,7 @@ function renderPageFooter(id){
     if(!cart.size){f.hidden=true;return}
     const t=cartTotals();
     f.innerHTML=isClinic(LAB)&&bkMode(t.ids.length)==='call'?`<div class="callnote">${SV.clock}В клинику можно записаться только по телефону</div><button class="big wide callbtn" data-act="call" ${t.ids.length?'':'disabled'}>${IC_PH}Позвонить</button>${hi()}`
-      :`${t.ids.length?'':`<div class="callnote">${SV.infoC}Выберите анализы, чтобы перейти к оформлению заказа</div>`}<button class="big wide two" data-act="${LAB?'checkout':'pickfirst'}" ${t.ids.length?'':'disabled'}><span class="t">Перейти к оформлению</span>${CHEVW}</button>${hi()}`;
+      :`${t.ids.length?'':`<div class="callnote off">${SV.infoC}Выберите анализы, чтобы перейти к оформлению заказа</div>`}<button class="big wide two" data-act="${LAB?'checkout':'pickfirst'}" ${t.ids.length?'':'disabled'}><span class="t">Перейти к оформлению</span>${CHEVW}</button>${hi()}`;
   } else if(id==='s-pat'){
     f.innerHTML=`<button class="big wide two" data-act="patnext"><span class="t">Продолжить</span>${CHEVW}</button>${hi()}`;
   } else if(id==='s-co'){
@@ -2169,6 +2185,11 @@ function renderMap(fresh){
 function selectLab(id,card=true){
   MV.sel=id; MV.searching=false; const L=LABS.find(x=>x.id===id);
   if(card){MV.card=true;renderMSheet();SC.ev('pin');if(!labFor(L,mapIds()).full)SC.ev('pin-partial');}
+  if(card==='pin'){ // тап по метке: карта не прыгает, сдвигаем только если метку закроет карточка (Артем, 26.11)
+    const [sx,sy]=toScr(L), bot=vpH()-310, top=HDR+40;
+    if(sy>bot||sy<top||sx<40||sx>vpW()-40){MV.x+=Math.max(40-sx,Math.min(0,vpW()-40-sx));MV.y+=sy>bot?bot-sy:sy<top?top-sy:0;clampView();applyView();}
+    return;
+  }
   centerOn(L.x,L.y,Math.max(MV.s,0.8));
 }
 function zoomAt(f,cx,cy){
@@ -2214,7 +2235,7 @@ function openBrandSheet(){
     start={x:MV.x,y:MV.y,s:MV.s,p:[...pts.values()].map(a=>a.slice())}; moved=false;
   });
   vp.addEventListener('pointermove',e=>{
-    if(!pts.has(e.pointerId)||!start) return; pts.set(e.pointerId,[e.clientX,e.clientY]);
+    if(!pts.has(e.pointerId)||!start) return; if(e.pointerType==='mouse'&&!e.buttons){moved=true;end(e);return} pts.set(e.pointerId,[e.clientX,e.clientY]);
     const P=[...pts.values()];
     if(P.length===1&&start.p.length===1){const dx=P[0][0]-start.p[0][0],dy=P[0][1]-start.p[0][1]; if(!moved&&Math.hypot(dx,dy)>5){moved=true;vp.classList.add('drag')} if(moved){MV.x=start.x+dx;MV.y=start.y+dy;clampView();applyView();}}
     else if(P.length>=2&&start.p.length>=2){
@@ -2225,7 +2246,7 @@ function openBrandSheet(){
     }
   });
   const end=e=>{pts.delete(e.pointerId); if(pts.size<2&&start&&start.p.length>=2){start=null;pts.clear()} if(!pts.size){vp.classList.remove('drag'); if(!moved&&start&&!e.target.closest('.mk')){ if(MV.card){MV.card=false;renderMSheet();renderMarkers();} else if(MV.searching){MV.searching=false;renderMSheet();} } start=null;}};
-  vp.addEventListener('pointerup',end); vp.addEventListener('pointercancel',end);
+  vp.addEventListener('pointerup',end); vp.addEventListener('pointercancel',end); vp.addEventListener('lostpointercapture',e=>{if(pts.has(e.pointerId)){moved=true;end(e)}}); vp.addEventListener('dragstart',e=>e.preventDefault());
   vp.addEventListener('wheel',e=>{e.preventDefault();const r=vp.getBoundingClientRect();zoomAt(e.deltaY<0?1.12:1/1.12,e.clientX-r.left,e.clientY-r.top)},{passive:false});
   // sheet drag between peek / half / full
   let sd=null;
@@ -2669,7 +2690,7 @@ function moSel(){
   $('#ord-st').value=o.st; $('#ord-lbl').textContent=cur&&cur.s==='order'?'Статус заказа':'Статус верхнего заказа';
 }
 $('#ord-st').innerHTML=MOS.map(([v,t])=>`<option value="${v}">${t}</option>`).join('');
-$('#ord-st').addEventListener('change',e=>{const o=ORDERS[cur&&cur.s==='order'?cur.i:0];o.st=e.target.value;if(['part','done'].includes(o.st))o.consent=o.consent!==false?true:o.consent;if(o.st==='nores')o.consent=false;if(cur.s==='order')renderOrder();else renderOrders();SC.ev('mo-st')});
+$('#ord-st').addEventListener('change',e=>{const o=ORDERS[cur&&cur.s==='order'?cur.i:0];o.st=e.target.value;if(['part','done'].includes(o.st))o.consent=true;if(o.st==='nores')o.consent=false;if(cur.s==='order')renderOrder();else renderOrders();SC.ev('mo-st')});
 function moRepeat(o){ // ТЗ 2.10.1: корзина с набором заказа, весь набор отмечен, остальное — без галочек
   [...cart.values()].forEach(v=>v.on=false);
   o.ids.forEach(id=>{if(!cart.has(id))cart.set(id,{on:true});cart.get(id).on=true});
@@ -2737,14 +2758,14 @@ function bkStart(L,ids,one){
   go({s:mode==='callback'?'bk':'slot'}); SC.ev('bk-'+mode);
 }
 function bkPat(k){const d=PDATA[k];return {k,fio:[d.f,d.i,d.o].filter(Boolean).join(' '),b:d.b,phone:'+7 (999) 999 99 99'}}
-function bkTotal(){const t=BK.ids.reduce((s,id)=>s+labPrice(BK.L,id),0);const bl=BK.ids.some(id=>isBlood(items[id]))?bloodOf(BK.L):0;return t+bl}
+function bkTotal(){const t=BK.ids.reduce((s,id)=>s+labPrice(BK.L,id),0);const bl=!BK.one&&BK.ids.some(id=>isBlood(items[id]))?bloodOf(BK.L):0;return t+bl}
 function bkOff(){return BK.usePts&&BK.mode==='rtz'?ptsOff(bkTotal()):0}
 function bkPts(){return BK.ids.length*PTS_PER} // 50 за анализ (ТЗ 2.8)
 function bkWhat(){return BK.ids.length===1?shortName(items[BK.ids[0]].name):'Корзина анализов'}
 function bkHead(withPrice){
   const tot=bkTotal(), off=withPrice?bkOff():0;
   return `<div class="bk-cl"><b>${esc(BK.L.n)}</b><span>${esc(BK.L.a)}</span></div>
-  <div class="bk-what"><div><b>${esc(bkWhat())}</b>${off?`<div class="bk-pr"><span class="g">${fmt(tot-off)}</span><s>${fmt(tot)}</s></div><div class="bk-off">с учетом −${fmt0(off)} ${SV.coinY} баллов</div>`:`<div class="bk-pr">${fmt(tot)}</div>`}</div><button class="bk-pen" data-act="bk-edit" aria-label="Изменить">${IC_PEN}</button></div>`;
+  <div class="bk-what"><div><b>${esc(bkWhat())}</b>${off?`<div class="bk-pr"><span class="g">${fmt(tot-off)}</span><s>${fmt(tot)}</s></div><div class="bk-off">с учетом −${fmt0(off)} ${SV.coinY} баллов</div>`:`<div class="bk-pr">${fmt(tot)}</div>`}</div></div>`;
 }
 function bkPatHTML(){
   const chips=PATIENTS.map((p,k)=>`<button class="pchip${k===BK.k?' on':''}" data-bkp="${k}">${esc(p.n)}</button>`).join('');
@@ -2830,7 +2851,7 @@ function bkFinish(){ // записанные анализы уходят из к
 
 /* шторка «Позвонить»: «Да» → «Очистить корзину?» (923:57415) */
 function callYes(){
-  openSheet(`<div class="sbody"></div><div class="sfoot callq">
+  openSheet(`<div class="chev-ctl" data-act="close" style="color:var(--ink)">${SV.grabDown}</div><div class="sbody"></div><div class="sfoot callq">
     <div class="sh" style="font-size:22px;line-height:28px">Очистить корзину?</div>
     <p class="callq-p">Вы записались по телефону, оформлять эти анализы в приложении не нужно.</p>
     <button class="big wide" data-act="call-clear">Да, очистить</button>
@@ -2888,7 +2909,7 @@ $('#ph').addEventListener('click',e=>{
   if(!t) return;
   if(t.closest('#dlg')) return;
   const d=t.dataset;
-  if(d.mk){selectLab(d.mk);return}
+  if(d.mk){selectLab(d.mk,'pin');return}
   if(d.cl){const [x,y]=d.cl.split(',').map(Number);centerOn(x,y,0.8);return}
   if(d.lab){selectLab(d.lab);return}
   if(d.place!==undefined){pickPlace(PLACES[+d.place]);return}
@@ -2904,7 +2925,7 @@ $('#ph').addEventListener('click',e=>{
     const nm=shortName(items[id].name);
     if(inCart(id)&&LAB&&LAB.id===W.id){delCart(id);if(!cart.size)LAB=null;refresh();toast(`${nm} убран из корзины`);SC.ev('wrm');return}
     if(inCart(id)){
-      if(!LAB){setLab();refresh();toast(`Сдаёте в ${W.n}`);SC.ev('here');return}
+      if(!LAB){setLab();refresh();SC.ev('here');return}
       replaceSheet(id,W,()=>{setLab();refresh()});return}
     const add=()=>{setLab();addCart(id);cart.get(id).on=true;refresh();openUpsell(id)};
     if(LAB&&LAB.id!==W.id&&cart.size) replaceSheet(id,W,add); else add();
