@@ -216,7 +216,7 @@ def b64(path, mime='image/png'):
     return f'data:{mime};base64,' + base64.b64encode(open(path, 'rb').read()).decode()
 
 A = f'{S}/assets'
-ASSET = {k: b64(f'{A}/{k}.png') for k in ['woman', 'man', 'child', 'basket', 'pin', 'gift', 'prep', 'passport', 'res1', 'res2', 'res3']}
+ASSET = {k: b64(f'{A}/{k}.png') for k in ['woman', 'man', 'child', 'basket', 'pin', 'gift', 'prep', 'passport', 'res1', 'res2', 'res3', 'callback', 'wave']}
 CLIMG = {k: b64(f'{A}/clinic/{k}.jpg', 'image/jpeg') for k in ['h-ramsay', 'm-ramsay', 'h-invitro', 'm-invitro', 'h-poly', 'm-poly', 'a1', 'a2', 'a3', 'thumb', 'doc']}
 FREELOGO = 'data:image/svg+xml,' + urllib.parse.quote("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><rect width='48' height='48' fill='#E6F4F6'/><path d='M16 34V16h16v18M21 34v-5h6v5M24 19v6M21 22h6' fill='none' stroke='#31858C' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'/></svg>", safe="/:=' ")
 WHERE = WHERE.replace('@@FREELOGO@@', FREELOGO)
@@ -282,7 +282,7 @@ rep = {
     '@@CSS@@': css, '@@HOME@@': h, '@@SB@@': theme(p['SB']), '@@BACK@@': theme(p['BACK']),
     '@@SEARCHIC@@': p['SEARCHIC'], '@@CLEARIC@@': p['CLEARIC'], '@@TABBAR@@': theme(p['TABBAR']).replace('#F4F5F6 0%, #F4F5F600 82%', 'var(--fgrad) 0%, var(--fgrad0) 82%').replace('background-color:#EDEDED','background-color:var(--tab-on)').replace('inset 0 1px 0 #FFFFFF, inset 0 -1.5px 0 #FFFFFF','inset 0 1px 0 var(--tab-hl), inset 0 -1.5px 0 var(--tab-hl)').replace('#E6E6E6 0px 40px 30px -40px inset','var(--tab-hl2) 0px 40px 30px -40px inset'),
     '@@CHEVW@@': p['CHEVW'], '@@BASKET@@': p['BASKET'], '@@HOMEIND@@': p['IC']['homeind'],
-    '@@FAILSVG@@': FAIL, '@@CONSTS@@': consts, '@@JS@@': open(f'{B}/app.js').read().replace('/*@@MODULES@@*/', open(f'{B}/clinic.js').read() + '\n' + open(f'{B}/orders.js').read()),
+    '@@FAILSVG@@': FAIL, '@@CONSTS@@': consts, '@@JS@@': open(f'{B}/app.js').read().replace('/*@@MODULES@@*/', open(f'{B}/clinic.js').read() + '\n' + open(f'{B}/orders.js').read() + '\n' + open(f'{B}/book.js').read()),
 }
 out = shell
 for k in ['@@CSS@@', '@@HOME@@', '@@SB@@', '@@BACK@@', '@@SEARCHIC@@', '@@CLEARIC@@', '@@TABBAR@@', '@@CHEVW@@',
